@@ -1,5 +1,6 @@
 package net.vrakin.medsalary.service;
 
+import lombok.extern.slf4j.Slf4j;
 import net.vrakin.medsalary.domain.SecurityRole;
 import net.vrakin.medsalary.domain.SecurityUser;
 import net.vrakin.medsalary.repository.SecurityUserRepository;
@@ -20,9 +21,10 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
+@Slf4j
 public class SecurityUserServiceImp extends AbstractService<SecurityUser> implements UserDetailsService, SecurityUserService {
 
-    private static final Logger log = LoggerFactory.getLogger(SecurityUserServiceImp.class);
+
     private final SecurityUserRepository securityUserRepository;
 
     @Autowired
@@ -39,7 +41,7 @@ public class SecurityUserServiceImp extends AbstractService<SecurityUser> implem
         Set<GrantedAuthority> authorities = new HashSet<>();
         authorities.add(new SimpleGrantedAuthority(user.getSecurityRole().toString()));
 
-        log.info(user.toString());
+        log.error(user.toString());
 
         return new User(
                 user.getLogin(),
