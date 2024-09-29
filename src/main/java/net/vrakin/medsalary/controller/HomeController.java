@@ -73,6 +73,12 @@ public class HomeController {
         return "index";
     }
 
+    @GetMapping("/error")
+    public String error(Model model){
+        log.info("Accessing error page");
+        return "error_page";
+    }
+
    /* @DeleteMapping("/delete/files")
     public ResponseEntity<String> deleteFile(@RequestParam("file") String fileName) {
         try {

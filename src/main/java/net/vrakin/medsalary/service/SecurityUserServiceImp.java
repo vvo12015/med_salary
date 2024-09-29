@@ -3,6 +3,8 @@ package net.vrakin.medsalary.service;
 import net.vrakin.medsalary.domain.SecurityRole;
 import net.vrakin.medsalary.domain.SecurityUser;
 import net.vrakin.medsalary.repository.SecurityUserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -20,6 +22,7 @@ import java.util.Set;
 @Service
 public class SecurityUserServiceImp extends AbstractService<SecurityUser> implements UserDetailsService, SecurityUserService {
 
+    private static final Logger log = LoggerFactory.getLogger(SecurityUserServiceImp.class);
     private final SecurityUserRepository securityUserRepository;
 
     @Autowired
@@ -36,6 +39,7 @@ public class SecurityUserServiceImp extends AbstractService<SecurityUser> implem
         Set<GrantedAuthority> authorities = new HashSet<>();
         authorities.add(new SimpleGrantedAuthority(user.getSecurityRole().toString()));
 
+        log.info(user.toString());
 
         return new User(
                 user.getLogin(),
