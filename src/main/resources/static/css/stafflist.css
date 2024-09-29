@@ -23,9 +23,21 @@ body {
     border-color: #21867a;
 }
 .table {
-    margin-top: 20px;
+    margin-top: 40px;
+    border: 1px solid #2a9d8f;
 }
 .table thead {
     background-color: #2a9d8f;
     color: white;
+}
+.jumbotron {
+    background-color: #2a9d8f;
+    color: white;
+    padding: 50px;
+    margin-top: 50px;
+    text-align: center;
+    border-radius: 8px;
+}
+.container {
+    margin-top: 40px;
 }
