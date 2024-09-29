@@ -35,23 +35,28 @@ public class SecurityUserServiceImp extends AbstractService<SecurityUser> implem
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        if (log.isInfoEnabled()) {
-            log.info("Це лог з класу SecurityUserServiceImp");
-        } else {
-            System.out.println("INFO логування вимкнено");
+
+        log.info("Attempting to find user with username: {}", username);
+        Optional<SecurityUser> user = securityUserRepository.findByLogin(username);
+
+        SecurityUser securityUser = null;
+        if (user.isPresent()) {
+            securityUser = user.get();
+        }else
+        {
+            log.info("User not found");
+            throw new UsernameNotFoundException("User not found");
         }
-        SecurityUser user = securityUserRepository.findByLogin(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        log.info("User found: {}, with encoded password: {}", user.getLogin(), user.getPassword());
+        log.info("User found: {}, with encoded password: {}", securityUser.getLogin(), securityUser.getPassword());
 
-        boolean passwordMatches = passwordEncoder.matches("111", user.getPassword());
+        boolean passwordMatches = passwordEncoder.matches("111", securityUser.getPassword());
         log.info("Does the provided password match? {}", passwordMatches);
 
         return new org.springframework.security.core.userdetails.User(
-                user.getLogin(),
-                user.getPassword(),
-                Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + user.getSecurityRole().name()))
+                securityUser.getLogin(),
+                securityUser.getPassword(),
+                Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + securityUser.getSecurityRole().name()))
         );
     }
 
