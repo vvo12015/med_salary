@@ -1,41 +1,86 @@
 <!DOCTYPE html>
-<html xmlns:th="https://www.thymeleaf.org" lang="ua" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:schemaLocation="https://www.thymeleaf.org">
+<html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <title>Login page</title>
-    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.1/css/bootstrap.min.css}"/>
-    <link rel="stylesheet" th:href="@{/css/custom.css}" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вхід - Med Salary App</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f5f5f5;
+        }
+        .navbar {
+            background-color: #2a9d8f;
+        }
+        .navbar-brand, .navbar-nav .nav-link {
+            color: white;
+        }
+        .card {
+            border-color: #2a9d8f;
+        }
+        .card-header {
+            background-color: #2a9d8f;
+            color: white;
+        }
+        .btn-primary {
+            background-color: #2a9d8f;
+            border-color: #2a9d8f;
+        }
+        .btn-primary:hover {
+            background-color: #21867a;
+            border-color: #21867a;
+        }
+    </style>
 </head>
-<body class="body-login">
+<body>
 
-<div class="login-container">
-    <h2 class="login-title">Login</h2>
-    <form th:action="@{/login}" method="post">
-        <div class="mb-3">
-            <label for="username" class="form-label">Login</label>
-            <input type="text" class="form-control" id="username" name="username" required>
+<nav class="navbar navbar-expand-lg">
+    <div class="container">
+        <a class="navbar-brand" href="#">Med Salary App</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Головна</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/login">Вхід</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/register">Реєстрація</a>
+                </li>
+            </ul>
         </div>
-        <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
-            <input type="password" class="form-control" id="password" name="password" required>
-        </div>
-        <div class="mb-3 form-check">
-            <input type="checkbox" class="form-check-input" id="rememberMe" name="remember-me">
-            <label class="form-check-label" for="rememberMe">Remember Me</label>
-        </div>
-        <button type="submit" class="btn btn-primary w-100">Login</button>
+    </div>
+</nav>
 
-        <div th:if="${param.error}" class="alert alert-danger mt-3">
-            Invalid username or password.
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    Вхід до Системи
+                </div>
+                <div class="card-body">
+                    <form action="/login" method="POST">
+                        <div class="mb-3">
+                            <label for="login" class="form-label">Логін</label>
+                            <input type="text" class="form-control" id="login" name="login" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Пароль</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Увійти</button>
+                    </form>
+                </div>
+            </div>
         </div>
-        <div th:if="${param.logout}" class="alert alert-success mt-3">
-            You have been logged out successfully.
-        </div>
-    </form>
+    </div>
 </div>
-<script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
-<script th:src="@{/webjars/bootstrap/5.3.1/js/bootstrap.bundle.min.js}"></script>
-<script th:src="@{/js/custom.js}"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
