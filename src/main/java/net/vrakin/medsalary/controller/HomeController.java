@@ -49,13 +49,15 @@ public class HomeController {
     @GetMapping("/login")
     public String login(Model model) {
         log.info("Accessing login page");
-        model.addAttribute("users", userService.findAll());
+
         return "login";
     }
 
     @GetMapping("/")
     public String index(Model model){
         log.info("Accessing index page");
+        model.addAttribute("users", userService.findAll());
+        log.info("User count: {}", userService.findAll().size());
         return "index";
     }
 
