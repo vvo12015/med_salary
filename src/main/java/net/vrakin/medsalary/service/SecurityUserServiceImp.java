@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,13 +26,12 @@ public class SecurityUserServiceImp extends AbstractService<SecurityUser> implem
 
     private final SecurityUserRepository securityUserRepository;
 
-    private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Autowired
-    public SecurityUserServiceImp(SecurityUserRepository securityUserRepository, PasswordEncoder passwordEncoder) {
+    public SecurityUserServiceImp(SecurityUserRepository securityUserRepository) {
         super(securityUserRepository);
         this.securityUserRepository = securityUserRepository;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
