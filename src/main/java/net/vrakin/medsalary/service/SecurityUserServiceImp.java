@@ -13,12 +13,10 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -27,26 +25,29 @@ public class SecurityUserServiceImp extends AbstractService<SecurityUser> implem
 
     private final SecurityUserRepository securityUserRepository;
 
+    private final PasswordEncoder passwordEncoder;
+
     @Autowired
-    public SecurityUserServiceImp(SecurityUserRepository securityUserRepository) {
+    public SecurityUserServiceImp(SecurityUserRepository securityUserRepository, PasswordEncoder passwordEncoder) {
         super(securityUserRepository);
         this.securityUserRepository = securityUserRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
-    public UserDetails loadUserByUsername(String loginOrEmail) throws UsernameNotFoundException {
-        SecurityUser user = securityUserRepository.findByLoginOrEmail(loginOrEmail, loginOrEmail)
-                .orElseThrow(()->new UsernameNotFoundException("User not exists by login or email"));
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        SecurityUser user = securityUserRepository.findByLogin(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        Set<GrantedAuthority> authorities = new HashSet<>();
-        authorities.add(new SimpleGrantedAuthority(user.getSecurityRole().toString()));
+        log.info("User found: {}, with encoded password: {}", user.getLogin(), user.getPassword());
 
-        log.error(user.toString());
+        boolean passwordMatches = passwordEncoder.matches("111", user.getPassword());
+        log.info("Does the provided password match? {}", passwordMatches);
 
-        return new User(
+        return new org.springframework.security.core.userdetails.User(
                 user.getLogin(),
                 user.getPassword(),
-                authorities
+                Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + user.getSecurityRole().name()))
         );
     }
 

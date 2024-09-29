@@ -21,32 +21,6 @@ public class HomeController {
     private SecurityUserService userService;
     private PasswordEncoder passwordEncoder;
 
-    /*private StorageService storageService;
-
-    @Autowired
-    public HomeController(SecurityUserService userService, StorageService storageService) {
-        this.userService = userService;
-        this.storageService = storageService;
-    }*/
-
-   /* @GetMapping("/admin")
-    public String admin(Model model){
-        log.info("Accessing admin page");
-        model.addAttribute("users", userService.findAll());
-        return "admin";
-    }
-
-    @GetMapping("/nadmin")
-    public ModelAndView newAdminPanel(){
-        log.info("Accessing nadmin page");
-        ModelAndView mav = new ModelAndView("nadmin");
-
-        mav.addObject("users", userService.findAll());
-        mav.addObject("pageTitle", "User Manager");
-        return mav;
-    }
-*/
-
     @Autowired
     public HomeController(SecurityUserService userService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
