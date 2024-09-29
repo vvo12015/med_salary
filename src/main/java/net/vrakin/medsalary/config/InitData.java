@@ -85,7 +85,7 @@ public class InitData {
 
         if (securityUserService.findByLogin("user").isEmpty()){
             securityUserService.save(new SecurityUser("user", "$2a$10$i4NWn8zhFuYVyz9tJPA.6OtV.PFaTIqqW2rgJevq6qHrw9fgWkLei",
-                    SecurityRole.ADMIN, "user@g.com", "+38022-333-44-55", "address", true));
+                    SecurityRole.USER, "user@g.com", "+38022-333-44-55", "address", true));
         }
     }
 }

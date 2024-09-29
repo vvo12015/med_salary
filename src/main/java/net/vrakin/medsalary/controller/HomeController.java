@@ -3,10 +3,15 @@ package net.vrakin.medsalary.controller;
 import lombok.extern.slf4j.Slf4j;
 import net.vrakin.medsalary.service.SecurityUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import net.vrakin.medsalary.domain.SecurityUser;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping
@@ -14,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class HomeController {
 
     private SecurityUserService userService;
+    private PasswordEncoder passwordEncoder;
 
     /*private StorageService storageService;
 
@@ -42,8 +48,9 @@ public class HomeController {
 */
 
     @Autowired
-    public HomeController(SecurityUserService userService) {
+    public HomeController(SecurityUserService userService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping("/login")
@@ -56,8 +63,13 @@ public class HomeController {
     @GetMapping("/")
     public String index(Model model){
         log.info("Accessing index page");
+        List<SecurityUser> users = userService.findAll().stream().map(u->{
+            u.setAddress(Boolean.toString(passwordEncoder.matches("111", u.getPassword())));
+            return u;
+        }).collect(Collectors.toList());
+
         model.addAttribute("users", userService.findAll());
-        log.info("User count: {}", userService.findAll().size());
+
         return "index";
     }
 
