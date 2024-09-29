@@ -12,7 +12,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class SecurityConfig {
 
-    @Bean
+   /* @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
@@ -21,7 +21,7 @@ public class SecurityConfig {
                     authorize.requestMatchers(HttpMethod.GET, "/security-user").hasRole("ADMIN");
                     authorize.requestMatchers("/", "/**").permitAll();
                 }).build();
-    }
+    }*/
 
     @Bean
     public PasswordEncoder passwordEncoder() {
