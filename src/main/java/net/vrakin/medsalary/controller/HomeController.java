@@ -4,6 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -39,23 +41,14 @@ public class HomeController {
     }
 */
     @GetMapping("/login")
-    public String login(){
+    public String login() {
         log.info("Accessing login page");
         return "login";
-    }
-
-    @GetMapping("/registration")
-    public String registration(){
-        log.info("Accessing registration page");
-        return "registration";
     }
 
     @GetMapping("/")
     public String index(Model model){
         log.info("Accessing index page");
-
-        /*Optional<SecurityUser> user = userService.findByLogin("admin");
-        model.addAttribute("admin", user.get());*/
         return "index";
     }
 
