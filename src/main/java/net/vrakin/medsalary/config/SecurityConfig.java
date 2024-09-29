@@ -19,10 +19,13 @@ public class SecurityConfig {
 
     private final InitData initData;
 
+    private CustomAuthenticationSuccessHandler successHandler;
+
     @Autowired
     public SecurityConfig(UserDetailsService userDetailsService, InitData initData) {
         this.userDetailsService = userDetailsService;
         this.initData = initData;
+        this.successHandler = new CustomAuthenticationSuccessHandler();
     }
 
     @Bean
@@ -38,8 +41,8 @@ public class SecurityConfig {
                 })
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login")
-                        .defaultSuccessUrl("/")
-//                        .failureUrl("/auth-error")
+                        .successHandler(successHandler) // Використовуємо кастомний хендлер
+                        .failureUrl("/auth-error")
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
