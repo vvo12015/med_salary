@@ -36,7 +36,7 @@ public class SecurityUserServiceImp extends AbstractService<SecurityUser> implem
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        log.info("Attempting to find user with username: {}", username);
+        log.info("Attempting to find user with username: \"{}\"", username);
         Optional<SecurityUser> user = securityUserRepository.findByLogin(username);
 
         SecurityUser securityUser = null;
