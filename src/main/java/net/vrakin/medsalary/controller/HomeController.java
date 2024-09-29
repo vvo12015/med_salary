@@ -2,6 +2,7 @@ package net.vrakin.medsalary.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import net.vrakin.medsalary.service.SecurityUserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,6 +40,12 @@ public class HomeController {
         return mav;
     }
 */
+
+    @Autowired
+    public HomeController(SecurityUserService userService) {
+        this.userService = userService;
+    }
+
     @GetMapping("/login")
     public String login(Model model) {
         log.info("Accessing login page");

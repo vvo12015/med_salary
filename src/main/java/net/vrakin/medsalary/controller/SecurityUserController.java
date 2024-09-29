@@ -16,7 +16,6 @@ public class SecurityUserController {
 
     private SecurityUserService securityUserService;
 
-
     @Autowired
     public SecurityUserController(SecurityUserService securityUserService) {
         this.securityUserService = securityUserService;
