@@ -36,6 +36,14 @@ public class SecurityConfig {
                 })
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login")
+                        .defaultSuccessUrl("/security-user")
+                )
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                        .permitAll()
                 ).build();
     }
 
