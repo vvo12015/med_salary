@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
 
 @Controller
-@RequestMapping("security-user")
+@RequestMapping("/security-user")
 public class SecurityUserController {
 
     private SecurityUserService securityUserService;
