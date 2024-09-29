@@ -17,7 +17,10 @@
                     Вхід до Системи
                 </div>
                 <div class="card-body">
-                    <form action="/login" method="POST">
+                    <div th:if="${param.error}" class="alert alert-danger">
+                        Невірний логін або пароль.
+                    </div>
+                    <form th:action="@{/login}" method="post">
                         <div class="mb-3">
                             <label for="login" class="form-label">Логін</label>
                             <input type="text" class="form-control" id="login" name="login" required>
