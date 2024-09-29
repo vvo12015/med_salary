@@ -30,9 +30,10 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorize) -> {
-                    authorize.requestMatchers(HttpMethod.POST, "/security-user").hasRole("ADMIN");
-                    authorize.requestMatchers(HttpMethod.GET, "/security-user").hasRole("ADMIN");
-                    authorize.requestMatchers("/", "/**").permitAll();
+                    authorize.requestMatchers("/", "/login", "/register", "/error").permitAll()
+                            .requestMatchers(HttpMethod.POST, "/security-user").hasRole("ADMIN")
+                            .requestMatchers(HttpMethod.GET, "/security-user").hasRole("ADMIN")
+                            .anyRequest().authenticated();
                 })
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login")
