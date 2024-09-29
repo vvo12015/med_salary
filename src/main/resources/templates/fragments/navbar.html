@@ -25,6 +25,9 @@
                     <a class="nav-link" th:href="@{/result}">Результат</a>
                 </li>
             </ul>
+            <form th:action="@{/logout}" method="post" class="d-flex">
+                <button class="btn btn-outline-light" type="submit">Logout</button>
+            </form>
         </div>
     </div>
 </nav>
