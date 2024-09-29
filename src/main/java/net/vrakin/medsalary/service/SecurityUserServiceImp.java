@@ -23,7 +23,6 @@ import java.util.*;
 @Slf4j
 public class SecurityUserServiceImp extends AbstractService<SecurityUser> implements UserDetailsService, SecurityUserService {
 
-
     private final SecurityUserRepository securityUserRepository;
 
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -36,6 +35,11 @@ public class SecurityUserServiceImp extends AbstractService<SecurityUser> implem
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        if (log.isInfoEnabled()) {
+            log.info("Це лог з класу SecurityUserServiceImp");
+        } else {
+            System.out.println("INFO логування вимкнено");
+        }
         SecurityUser user = securityUserRepository.findByLogin(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
