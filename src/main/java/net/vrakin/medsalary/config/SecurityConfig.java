@@ -20,7 +20,10 @@ public class SecurityConfig {
                     authorize.requestMatchers(HttpMethod.POST, "/security-user").hasRole("ADMIN");
                     authorize.requestMatchers(HttpMethod.GET, "/security-user").hasRole("ADMIN");
                     authorize.requestMatchers("/", "/**").permitAll();
-                }).build();
+                })
+                .formLogin(formLogin -> formLogin
+                        .loginPage("/login")
+                ).build();
     }
 
     @Bean
