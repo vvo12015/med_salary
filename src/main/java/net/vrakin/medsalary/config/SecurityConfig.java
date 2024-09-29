@@ -30,7 +30,7 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorize) -> {
-                    authorize.requestMatchers("/", "/login", "/register", "/error").permitAll()
+                    authorize.requestMatchers("/", "/login", "/register", "/auth-error").permitAll()
                             .requestMatchers("/webjars/**", "/css/**", "/js/**", "/images/**").permitAll()
                             .requestMatchers(HttpMethod.POST, "/security-user").hasRole("ADMIN")
                             .requestMatchers(HttpMethod.GET, "/security-user").hasRole("ADMIN")
@@ -39,7 +39,7 @@ public class SecurityConfig {
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login")
                         .defaultSuccessUrl("/")
-                        .failureUrl("/error")
+                        .failureUrl("/auth-error")
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
