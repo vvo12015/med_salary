@@ -1,0 +1,150 @@
+<html xmlns:th="https://www.thymeleaf.org">
+<body>
+
+<div th:if="${message}">
+    <h2 th:text="${message}"/>
+</div>
+
+<div>
+    <form method="POST" enctype="multipart/form-data" action="/nszu-decryption/files">
+        <table>
+            <tr><td>File to upload:</td><td><input type="file" name="file" /></td></tr>
+            <tr><td>Корегуюча</td><td><input type="checkbox" name="corrective" /></td></tr>
+            <tr><td>Місяць</td><td><input type="month" name="monthYear" /></td></tr>
+            <tr><td></td><td><input type="submit" value="Upload" /></td></tr>
+        </table>
+    </form>
+</div>
+
+<div>
+    <ul>
+        <li th:each="file : ${files}">
+            <a th:href="${file}" th:text="${file}" />
+        </li>
+    </ul>
+</div>
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4>NSZU Decryption Records</h4>
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Year</th>
+                            <th>Month</th>
+                            <th>Record Kind</th>
+                            <th>Record ID</th>
+                            <th>Creation Date</th>
+                            <th>Executor Position</th>
+                            <th>Executor Name</th>
+                            <th>Provider Place</th>
+                            <th>Referral Kind</th>
+                            <th>EDRPOU</th>
+                            <th>Referring Position</th>
+                            <th>Episode ID</th>
+                            <th>Episode Kind</th>
+                            <th>Episode Start Date</th>
+                            <th>Period Start Date</th>
+                            <th>Period End Date</th>
+                            <th>Period Length</th>
+                            <th>Main Diagnosis</th>
+                            <th>Diagnosis Validation</th>
+                            <th>Clinical Status</th>
+                            <th>Additional Diagnosis</th>
+                            <th>Refuted Error Diagnosis</th>
+                            <th>Service List</th>
+                            <th>Interaction Class</th>
+                            <th>Priority</th>
+                            <th>Interaction Kind</th>
+                            <th>Hospitalization Grounds</th>
+                            <th>Treatment Result</th>
+                            <th>Patient ID</th>
+                            <th>Declaration Presence</th>
+                            <th>Sex</th>
+                            <th>Weight</th>
+                            <th>Age (Days)</th>
+                            <th>Age (Years)</th>
+                            <th>ADSG</th>
+                            <th>Service Package</th>
+                            <th>Package Number</th>
+                            <th>Tariff (UAH)</th>
+                            <th>Payment Fact</th>
+                            <th>Statistic Status</th>
+                            <th>Report Status</th>
+                            <th>Error Comment</th>
+                            <th>Error Details</th>
+                            <th>Verification Details</th>
+                            <th>Group Error Details</th>
+                            <th>NSZU Preview</th>
+                            <th>Additional Comment</th>
+                            <th>Date Preview NSZU</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="nszu : ${nszuList}">
+                            <td th:text="${nszu.id}"></td>
+                            <td th:text="${nszu.year}"></td>
+                            <td th:text="${nszu.month}"></td>
+                            <td th:text="${nszu.recordKind}"></td>
+                            <td th:text="${nszu.recordID}"></td>
+                            <td th:text="${#temporals.format(nszu.creationDate, 'dd-MM-yyyy HH:mm')}"></td>
+                            <td th:text="${nszu.executorUserPosition}"></td>
+                            <td th:text="${nszu.executorName}"></td>
+                            <td th:text="${nszu.providerPlace}"></td>
+                            <td th:text="${nszu.referralKind}"></td>
+                            <td th:text="${nszu.edrpou}"></td>
+                            <td th:text="${nszu.referringUserPosition}"></td>
+                            <td th:text="${nszu.episodeId}"></td>
+                            <td th:text="${nszu.episodeKind}"></td>
+                            <td th:text="${#temporals.format(nszu.episodeStartDate, 'dd-MM-yyyy HH:mm')}"></td>
+                            <td th:text="${#temporals.format(nszu.periodStartDate, 'dd-MM-yyyy HH:mm')}"></td>
+                            <td th:text="${#temporals.format(nszu.periodEndDate, 'dd-MM-yyyy HH:mm')}"></td>
+                            <td th:text="${nszu.periodLength}"></td>
+                            <td th:text="${nszu.mainDiagnosis}"></td>
+                            <td th:text="${nszu.mainDiagnosisValidationStatus}"></td>
+                            <td th:text="${nszu.mainDiagnosisClinicalStatus}"></td>
+                            <td th:text="${nszu.additionalDiagnosis}"></td>
+                            <td th:text="${nszu.refutedErrorAdditionalDiagnosis}"></td>
+                            <td th:text="${nszu.serviceList}"></td>
+                            <td th:text="${nszu.interactionClass}"></td>
+                            <td th:text="${nszu.priority}"></td>
+                            <td th:text="${nszu.interactionKind}"></td>
+                            <td th:text="${nszu.groundsHospitalization}"></td>
+                            <td th:text="${nszu.resultTreatment}"></td>
+                            <td th:text="${nszu.patientID}"></td>
+                            <td th:text="${nszu.presenceDeclaration ? 'Так' : 'Ні'}"></td>
+                            <td th:text="${nszu.patientSex}"></td>
+                            <td th:text="${nszu.patientWeight}"></td>
+                            <td th:text="${nszu.patientAgeDays}"></td>
+                            <td th:text="${nszu.patientAgeYears}"></td>
+                            <td th:text="${nszu.adsg}"></td>
+                            <td th:text="${nszu.servicePackage}"></td>
+                            <td th:text="${nszu.servicePackageNumber}"></td>
+                            <td th:text="${nszu.tariffUAH}"></td>
+                            <td th:text="${nszu.paymentFact}"></td>
+                            <td th:text="${nszu.statisticStatus ? 'Так' : 'Ні'}"></td>
+                            <td th:text="${nszu.reportStatus ? 'Так' : 'Ні'}"></td>
+                            <td th:text="${nszu.errorComment}"></td>
+                            <td th:text="${nszu.errorDetails}"></td>
+                            <td th:text="${nszu.detailsRequireVerification}"></td>
+                            <td th:text="${nszu.groupErrorDetails}"></td>
+                            <td th:text="${nszu.detailsPreviewNSZU}"></td>
+                            <td th:text="${nszu.additionalComment}"></td>
+                            <td th:text="${#temporals.format(nszu.datePreviewNSZU, 'dd-MM-yyyy HH:mm')}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

@@ -160,6 +160,7 @@
 					<mainClass>net.vrakin.medsalary.MedsalaryApplication</mainClass>
 				</configuration>
 			</plugin>
+
 		</plugins>
 	</build>
 

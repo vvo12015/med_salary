@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org" lang="ua">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Panel</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.1/css/bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{/css/custom.css}" />
+</head>
+<body class="body-admin">
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Admin Panel</a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <button id="logoutButton" class="btn btn-danger">Logout</button>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<h1 class="text-center">Адмін панель - Користувачі</h1>
+<div id="adminPage" class="d-flex">
+    <div id="adminControls" class="p-3" style="display:none; flex: 1;">
+        <h3>Додати/Редагувати Користувача</h3>
+        <form id="userForm">
+            <input type="hidden" id="userId">
+            <input type="text" id="login" class="form-control" placeholder="Логін" required>
+            <input type="password" id="password" class="form-control" placeholder="Пароль" required>
+            <div class="mb-3">
+                <label for="securityRole" class="form-label">Security Role</label>
+                <select class="form-select" id="securityRole" name="securityRole">
+                </select>
+            </div>
+            <input type="email" id="email" class="form-control" placeholder="Email" required>
+            <input type="text" id="phone" class="form-control" placeholder="Телефон" required>
+            <input type="text" id="address" class="form-control" placeholder="Адреса" required>
+            <button type="button" class="btn btn-success" onclick="saveUser()">Зберегти</button>
+        </form>
+    </div>
+
+    <div id="userTableContainer" class="p-3 flex-grow-1">
+        <h3>Список Користувачів</h3>
+        <table id="usersTable" class="table table-striped">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Логін</th>
+                <th>Роль</th>
+                <th>Email</th>
+                <th>Телефон</th>
+                <th>Адреса</th>
+                <th>Дії</th>
+            </tr>
+            </thead>
+            <tbody id="userTableBody">
+                <tr th:each="user: ${users}">
+                    <td th:text="${user.id}" />
+                    <td th:text="${user.login}" />
+                    <td th:text="${user.securityRole}" />
+                    <td th:text="${user.email}" />
+                    <td th:text="${user.phone}" />
+                    <td th:text="${user.address}" />
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/5.3.1/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>
