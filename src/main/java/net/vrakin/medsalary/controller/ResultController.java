@@ -2,6 +2,7 @@ package net.vrakin.medsalary.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import net.vrakin.medsalary.domain.StaffListRecord;
+import net.vrakin.medsalary.exception.CalculateTypeNotFoundException;
 import net.vrakin.medsalary.generator.GeneratorResultService;
 import net.vrakin.medsalary.mapper.StaffListRecordMapper;
 import net.vrakin.medsalary.service.StaffListRecordService;
@@ -37,7 +38,13 @@ public class ResultController {
 
         List<StaffListRecord> staffListRecordList = staffListRecordService.findAll();
 
-        model.addAttribute("result", staffListRecordList.stream().map(s->generatorResultService.generateResult(s))
+        model.addAttribute("result", staffListRecordList.stream().map(s-> {
+                    try {
+                        return generatorResultService.generateResult(s);
+                    } catch (CalculateTypeNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
                 .collect(Collectors.toList()));
         return "result";
     }
