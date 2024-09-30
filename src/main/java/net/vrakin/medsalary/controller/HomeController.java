@@ -2,13 +2,18 @@ package net.vrakin.medsalary.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import net.vrakin.medsalary.service.SecurityUserService;
+import net.vrakin.medsalary.service.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import net.vrakin.medsalary.domain.SecurityUser;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,6 +23,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class HomeController {
 
+    private StorageService storageService;
     private SecurityUserService userService;
     private PasswordEncoder passwordEncoder;
 
@@ -53,7 +59,7 @@ public class HomeController {
         return "error_page";
     }
 
-   /* @DeleteMapping("/delete/files")
+    @DeleteMapping("/delete/files")
     public ResponseEntity<String> deleteFile(@RequestParam("file") String fileName) {
         try {
             storageService.delete(fileName);
@@ -61,5 +67,5 @@ public class HomeController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Помилка при видаленні файлу");
         }
-    }*/
+    }
 }
