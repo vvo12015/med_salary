@@ -9,40 +9,12 @@
 </head>
 <body>
 
-<!-- Навігаційна панель -->
-<nav class="navbar navbar-expand-lg navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#">Відділи</a>
-        <div class="collapse navbar-collapse">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-				<li class="nav-item">
-                    <a class="nav-link" th:href="@{/nadmin}">Головна</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/users}">Користувачі</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/nszu-decryption}">Розшифровка</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/stafflist}">Штатний розпис</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/department}">Відділи</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/user-position}">Посади</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/result}">Результат</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<img th:src="@{/img/departments_col_names.jpg}" alt="Excel Spreadsheet Header" class="img-fluid" />
 
 <div class="container mt-5">
-    <h2>Завантаження файлів</h2>
+    <h2>Завантаження файлу таблиці відділув</h2>
     <form method="POST" id="AddFile" enctype="multipart/form-data" action="/department/files">
         <div class="mb-3">
             <label for="file" class="form-label">Виберіть файл для завантаження:</label>
