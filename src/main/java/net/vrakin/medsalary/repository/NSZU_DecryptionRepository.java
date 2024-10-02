@@ -10,7 +10,7 @@ import java.util.List;
 public interface NSZU_DecryptionRepository extends JpaRepository<NszuDecryption, Long> {
     List<NszuDecryption> findByExecutorNameAndExecutorUserPosition(String executorName, String executorUserPosition);
     List<NszuDecryption> findByExecutorName(String executorName);
-    List<NszuDecryption> findByYearAndMonth(int year, int month);
+    List<NszuDecryption> findByYearNumAndMonthNum(int year, int month);
     List<NszuDecryption> findByRecordKind(String recordKind);
     List<NszuDecryption> findByProviderPlace(String providerPlace);
 

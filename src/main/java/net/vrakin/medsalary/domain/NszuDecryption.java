@@ -18,9 +18,9 @@ public class NszuDecryption {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private int year;
+    private int yearNum;
 
-    private int month;
+    private int monthNum;
 
     @Column(name = "record_kind")
     private String recordKind;
@@ -164,8 +164,8 @@ public class NszuDecryption {
     public String toString() {
         return "NszuDecryption{" +
                 "id=" + id +
-                ", year=" + year +
-                ", month=" + month +
+                ", year=" + yearNum +
+                ", month=" + monthNum +
                 ", recordKind='" + recordKind + '\'' +
                 ", recordID='" + recordID + '\'' +
                 ", creationDate=" + creationDate +

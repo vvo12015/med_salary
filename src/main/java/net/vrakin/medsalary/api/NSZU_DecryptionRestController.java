@@ -54,7 +54,7 @@ public class NSZU_DecryptionRestController {
     public ResponseEntity<List<NszuDecryptionDTO>> getByYearAndMonth(@RequestParam int year,
                                                                      @RequestParam int month){
         List<NszuDecryptionDTO> nszuDecryptionDtoList = nszuDecryptionMapper.toDtoList(
-                nszuDecryptionService.findByYearAndMonth(year, month));
+                nszuDecryptionService.findByYearNumAndMonthNum(year, month));
 
         return new ResponseEntity<>(nszuDecryptionDtoList, HttpStatus.OK);
     }
@@ -65,8 +65,8 @@ public class NSZU_DecryptionRestController {
 
         List<NszuDecryptionDTO> nszuDecryptionDtoList = nszuDecryptionMapper
                 .toDtoList(nszuDecryptionService.findByRecordKind(recordKind).stream().filter(nszu_decryption -> {
-                            return ((nszu_decryption.getYear()==year)
-                                    && (nszu_decryption.getYear()==month));
+                            return ((nszu_decryption.getYearNum()==year)
+                                    && (nszu_decryption.getYearNum()==month));
                         })
                         .toList());
 
@@ -79,8 +79,8 @@ public class NSZU_DecryptionRestController {
 
         List<NszuDecryptionDTO> nszuDecryptionDtoList = nszuDecryptionMapper
                 .toDtoList(nszuDecryptionService.findByProviderPlace(providerPlace).stream().filter(nszu_decryption -> {
-                            return ((nszu_decryption.getYear()==year)
-                                    && (nszu_decryption.getYear()==month));
+                            return ((nszu_decryption.getYearNum()==year)
+                                    && (nszu_decryption.getYearNum()==month));
                         })
                         .toList());
 
@@ -95,8 +95,8 @@ public class NSZU_DecryptionRestController {
                 .orElseThrow(()->new ResourceNotFoundException("NSZU_Decryption", "servicePackageName", servicePackageName));
         List<NszuDecryptionDTO> nszuDecryptionDtoList = nszuDecryptionMapper
                 .toDtoList(nszuDecryptionService.findByServicePackageName(servicePackage.getNumber()).stream().filter(nszu_decryption -> {
-                            return ((nszu_decryption.getYear()==year)
-                                    && (nszu_decryption.getMonth()==month));
+                            return ((nszu_decryption.getMonthNum()==year)
+                                    && (nszu_decryption.getMonthNum()==month));
                         })
                         .toList());
 

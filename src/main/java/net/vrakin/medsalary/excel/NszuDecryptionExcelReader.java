@@ -22,7 +22,7 @@ public class NszuDecryptionExcelReader extends AbstractExcelReader<NszuDecryptio
     @Autowired
     public NszuDecryptionExcelReader(ExcelHelper excelHelper, NSZU_DecryptionMapper mapper) {
         super(excelHelper, mapper);
-        this.startColNumber = 5;
+        this.startColNumber = 4;
 
         createColumnList();
     }
@@ -75,7 +75,7 @@ public class NszuDecryptionExcelReader extends AbstractExcelReader<NszuDecryptio
         columns.add(new Column("Номер послуги", 36));
         columns.add(new Column("Тариф, грн", 37));
         columns.add(new Column("Фактична частина оплати за період (без ГБ), грн", 38));
-         columns.add(new Column("Включення медичного запису до статистики", 39));
+        columns.add(new Column("Включення медичного запису до статистики", 39));
         columns.add(new Column("Включення медичного запису до звіту", 40));
         columns.add(new Column("Коментар щодо виявлених помилок", 41));
         columns.add(new Column("Деталі виявлених помилок за результатами автоматичної перевірки ЕМЗ щодо відповідності критеріям повноти та достовірності даних", 42));
@@ -151,9 +151,6 @@ public class NszuDecryptionExcelReader extends AbstractExcelReader<NszuDecryptio
                 dto.setDatePreviewNSZU(excelHelper.mapToDate(stringList.get(index++)));
             return dto;
     }
-
-
-
 
     private String truncateString(String input) {
         if (input.length() > 255) {

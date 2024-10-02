@@ -10,7 +10,7 @@ public interface NSZU_DecryptionService extends Service<NszuDecryption> {
 
     List<NszuDecryption> findByExecutorNameAndExecutorUserPosition(String executorName, String executorUserPosition);
 
-    List<NszuDecryption> findByYearAndMonth(int year, int month);
+    List<NszuDecryption> findByYearNumAndMonthNum(int year, int month);
 
     List<NszuDecryption> findByRecordKind(String recordKind);
 

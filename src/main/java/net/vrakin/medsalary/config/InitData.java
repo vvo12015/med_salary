@@ -13,8 +13,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class InitData {
 
-   
-
     private final SecurityUserService securityUserService;
     
      private final PremiumCategoryService premiumCategoryService;
@@ -29,7 +27,7 @@ public class InitData {
         this.servicePackageService = servicePackageService;
     }
 
-    void init(){
+    public void init(){
         createSecurityUsers();
         createPremiumCategory();
         createServicePackage();

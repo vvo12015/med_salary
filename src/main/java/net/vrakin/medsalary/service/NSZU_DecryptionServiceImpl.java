@@ -27,8 +27,8 @@ public class NSZU_DecryptionServiceImpl extends AbstractService<NszuDecryption> 
     }
 
     @Override
-    public List<NszuDecryption> findByYearAndMonth(int year, int month) {
-        return nszuDecryptionRepository.findByYearAndMonth(year, month);
+    public List<NszuDecryption> findByYearNumAndMonthNum(int year, int month) {
+        return nszuDecryptionRepository.findByYearNumAndMonthNum(year, month);
     }
 
     @Override
