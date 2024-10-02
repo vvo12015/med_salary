@@ -118,7 +118,7 @@ public class GeneratorResultServiceImpl implements GeneratorResultService {
         Float employmentSum =
                 staffListRecordService.findByUser(user)
                         .stream()
-                        .map(u->u.getEmployment())
+                        .map(StaffListRecord::getEmployment)
                         .reduce(0f, (u1, u2)-> u1 + u2);
         Float employmentPart = staffListRecord.getEmployment() / employmentSum;
         return employmentPart;
