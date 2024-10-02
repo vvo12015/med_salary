@@ -11,31 +11,20 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-@NoArgsConstructor
-public class CalculateByOneDaySurgery implements CalculateStrategy {
+public class CalculateByOneDaySurgery extends AbstractCalculateStrategy implements CalculateStrategy {
 
     public static final float PACKAGE_COST = 160f;
-    private NSZU_DecryptionService nszu_decryptionService;
+
     @Autowired
     public CalculateByOneDaySurgery(NSZU_DecryptionService nszu_decryptionService) {
-        this.nszu_decryptionService = nszu_decryptionService;
+        super(nszu_decryptionService);
     }
 
     @Override
     public float calculate(ServicePackage servicePackage, UserPosition userPosition, String placeProvide
             , Float partEmployment) {
-        List<NszuDecryption> nszuDecryptionList = nszu_decryptionService
-                .findByServicePackageNameAndProviderPlaceAndExecutorUserPosition(
-                        servicePackage,
-                        placeProvide,
-                        userPosition.getNszuName()
-                );
+        List<NszuDecryption> nszuDecryptionList = getNszuDecryptionList(servicePackage, userPosition, placeProvide);
 
         return PACKAGE_COST * nszuDecryptionList.size() * partEmployment;
     }
-
-   /* @Override
-    public boolean isValidPackage(ServicePackage servicePackage) {
-        return servicePackage.getNumber().equals("47");
-    }*/
 }

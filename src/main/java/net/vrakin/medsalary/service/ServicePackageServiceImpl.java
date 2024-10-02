@@ -1,5 +1,6 @@
 package net.vrakin.medsalary.service;
 
+import lombok.extern.slf4j.Slf4j;
 import net.vrakin.medsalary.domain.ServicePackage;
 import net.vrakin.medsalary.repository.ServicePackageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class ServicePackageServiceImpl extends AbstractService<ServicePackage> implements ServicePackageService {
 
     private final ServicePackageRepository servicePackageRepository;
@@ -47,6 +49,9 @@ public class ServicePackageServiceImpl extends AbstractService<ServicePackage> i
 
     @Override
     public List<ServicePackage> findByNumbers(List<String> numbers) {
+        StringBuilder stringBuilder = new StringBuilder();
+        numbers.forEach(number -> stringBuilder.append(number).append(","));
+        log.info("numbers: {}", stringBuilder);
         return numbers.stream().map(n->findByNumber(n).get()).collect(Collectors.toList());
     }
 }

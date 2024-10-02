@@ -12,35 +12,26 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
-@NoArgsConstructor
-public class CalculateByStationaryNoOperation implements CalculateStrategy {
+public class CalculateByStationaryNoOperation extends AbstractCalculateStrategy implements CalculateStrategy {
 
-    private NSZU_DecryptionService nszu_decryptionService;
-    @Autowired
+    private final float PACKAGE_COST = 200F / 3;
+
+        @Autowired
     public CalculateByStationaryNoOperation(NSZU_DecryptionService nszu_decryptionService) {
-        this.nszu_decryptionService = nszu_decryptionService;
+        super(nszu_decryptionService);
     }
 
     @Override
     public float calculate(ServicePackage servicePackage, UserPosition userPosition, String placeProvide
             , Float partEmployment) {
-        List<NszuDecryption> nszuDecryptionList = nszu_decryptionService
-                .findByServicePackageNameAndProviderPlaceAndExecutorUserPosition(
-                        servicePackage,
-                        placeProvide,
-                        userPosition.getNszuName()
-                );
+        List<NszuDecryption> nszuDecryptionList = getNszuDecryptionList(servicePackage, userPosition, placeProvide);
 
         if (Objects.nonNull(nszuDecryptionList) && nszuDecryptionList.size()>0){
-            return nszuDecryptionList.size() * 200f / 3 * partEmployment;
+            return nszuDecryptionList.size() * PACKAGE_COST * partEmployment;
         }
 
         return 0f;
 
     }
-    /*@Override
-    public boolean isValidPackage(ServicePackage servicePackage) {
-        return servicePackage.getHospKind().equals(ServicePackage.HospKind.STATIONARY) &&
-                servicePackage.getOperationKind().equals(ServicePackage.OperationKind.NO_OPERATION);
-    }*/
+
 }

@@ -19,9 +19,11 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Controller
 @RequestMapping("/department")
@@ -54,8 +56,10 @@ public class DepartmentController {
         log.info("Accessing department page");
 
         model.addAttribute("files", storageService.loadAll().map(
-                        path -> path.getFileName().toString())
-                .collect(Collectors.toList()));
+                            path -> path.getFileName().toString())
+                            .filter(f->f.startsWith("department"))
+                            .collect(Collectors.toList()));
+
         model.addAttribute("stafflist", staffListRecordMapper.toDtoList(staffListRecordService.findAll()));
         model.addAttribute("departments", departmentMapper.toDtoList(departmentService.findAll()));
 
