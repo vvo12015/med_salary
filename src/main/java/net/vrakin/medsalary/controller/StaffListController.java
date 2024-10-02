@@ -77,10 +77,10 @@ public class StaffListController {
     public String stafflist(Model model){
         log.info("Accessing new stafflist page");
 
-        List<String> files = storageService.loadAll().map(
-                path -> path.getFileName().toString()).collect(Collectors.toList());
-        log.info(files.toString());
-        model.addAttribute("files", files);
+        model.addAttribute("files", storageService.loadAll().map(
+                        path -> path.getFileName().toString())
+                .filter(f->f.startsWith("stafflist"))
+                .collect(Collectors.toList()));
 
         List<StaffListRecord> staffListRecords = staffListRecordService.findAll();
         staffListRecords.forEach(st->log.info("staffRecordId: {}, name: {}", st.getId(), st.getUser().getName()));

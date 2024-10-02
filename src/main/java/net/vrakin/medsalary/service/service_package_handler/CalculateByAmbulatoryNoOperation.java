@@ -1,6 +1,5 @@
 package net.vrakin.medsalary.service.service_package_handler;
 
-import lombok.NoArgsConstructor;
 import net.vrakin.medsalary.domain.NszuDecryption;
 import net.vrakin.medsalary.domain.ServicePackage;
 import net.vrakin.medsalary.domain.UserPosition;
@@ -11,29 +10,23 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-@NoArgsConstructor
-public class CalculateByAmbulatoryNoOperation implements CalculateStrategy {
+public class CalculateByAmbulatoryNoOperation extends AbstractCalculateStrategy implements CalculateStrategy {
 
     public static final int SUM_THRESHOLD = 30_000;
     public static final int LIMIT_THRESHOLD = 20_000;
     public static final float IN_LIMIT_THRESHOLD = 0.3f;
     private static final float OUT_LIMIT_THRESHOLD = 0.1F;
-    private NSZU_DecryptionService nszu_decryptionService;
 
     @Autowired
     public CalculateByAmbulatoryNoOperation(NSZU_DecryptionService nszu_decryptionService) {
-        this.nszu_decryptionService = nszu_decryptionService;
+        super(nszu_decryptionService);
     }
 
     @Override
     public float calculate(ServicePackage servicePackage, UserPosition userPosition, String placeProvide
                            , Float partEmployment) {
-        List<NszuDecryption> nszuDecryptionList = nszu_decryptionService
-                .findByServicePackageNameAndProviderPlaceAndExecutorUserPosition(
-                        servicePackage,
-                        placeProvide,
-                        userPosition.getNszuName()
-                );
+        List<NszuDecryption> nszuDecryptionList = getNszuDecryptionList(servicePackage,
+                userPosition, placeProvide);
 
         float sum = nszuDecryptionList.stream().map(n->{
             if (isValidSum(n.getPaymentFact())){
@@ -44,15 +37,6 @@ public class CalculateByAmbulatoryNoOperation implements CalculateStrategy {
         return calculateAmbulPremiumBySum(sum, partEmployment);
     }
 
-    private static boolean isValidSum(String str) {
-        try {
-            Float.parseFloat(str);
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
-        }
-    }
-
     private float calculateAmbulPremiumBySum(float x, float coefficient) {
         float rs = x - SUM_THRESHOLD * coefficient;
         
@@ -61,9 +45,5 @@ public class CalculateByAmbulatoryNoOperation implements CalculateStrategy {
         }else return  x * IN_LIMIT_THRESHOLD * LIMIT_THRESHOLD;
     }
 
-   /* @Override
-    public boolean isValidPackage(ServicePackage servicePackage) {
-        return servicePackage.getHospKind().equals(ServicePackage.HospKind.AMBULATORY) &&
-                servicePackage.getOperationKind().equals(ServicePackage.OperationKind.NO_OPERATION);
-    }*/
+
 }

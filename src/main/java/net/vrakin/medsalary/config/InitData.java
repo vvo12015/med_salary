@@ -3,10 +3,10 @@ package net.vrakin.medsalary.config;
 import net.vrakin.medsalary.domain.SecurityRole;
 import net.vrakin.medsalary.domain.SecurityUser;
 import net.vrakin.medsalary.service.SecurityUserService;
-/*import net.vrakin.medsalary.domain.PremiumCategory;
+import net.vrakin.medsalary.domain.PremiumCategory;
 import net.vrakin.medsalary.domain.ServicePackage;
 import net.vrakin.medsalary.service.PremiumCategoryService;
-import net.vrakin.medsalary.service.ServicePackageService;*/
+import net.vrakin.medsalary.service.ServicePackageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,16 +17,16 @@ public class InitData {
 
     private final SecurityUserService securityUserService;
     
-     /*private final PremiumCategoryService premiumCategoryService;
+     private final PremiumCategoryService premiumCategoryService;
 
-    private final ServicePackageService servicePackageService;*/
+    private final ServicePackageService servicePackageService;
 
     @Autowired
-    public InitData(SecurityUserService securityUserService/*, PremiumCategoryService premiumCategoryService, 
-            ServicePackageService servicePackageService*/) {
+    public InitData(SecurityUserService securityUserService, PremiumCategoryService premiumCategoryService,
+            ServicePackageService servicePackageService) {
         this.securityUserService = securityUserService;
-      /*  this.premiumCategoryService = premiumCategoryService;
-        this.servicePackageService = servicePackageService;*/
+        this.premiumCategoryService = premiumCategoryService;
+        this.servicePackageService = servicePackageService;
     }
 
     void init(){
@@ -36,16 +36,16 @@ public class InitData {
     }
 
     void createPremiumCategory() {
-        /*if (premiumCategoryService.findAll().isEmpty()){
+        if (premiumCategoryService.findAll().isEmpty()){
             premiumCategoryService.save(new PremiumCategory(null, "ZERO", 0, 1f, null));
             premiumCategoryService.save(new PremiumCategory(null, "DIAGNOSTIC", 2880, 1f, null));
             premiumCategoryService.save(new PremiumCategory(null, "URGENCY", 2880, 1f, null));
             premiumCategoryService.save(new PremiumCategory(null, "RECEPTION", 0, 1.6f, null));
-        }*/
+        }
     }
 
     void createServicePackage() {
-       /* if (servicePackageService.findAll().isEmpty()){
+        if (servicePackageService.findAll().isEmpty()){
             servicePackageService.save(new ServicePackage(null, "Стаціонарна допомога дорослим та дітям без проведення хірургічних операцій", "4"
                     , ServicePackage.HospKind.STATIONARY, ServicePackage.OperationKind.NO_OPERATION, true));
             servicePackageService.save(new ServicePackage(null, "Профілактика, діагностика, спостереження та лікування в амбулаторних умовах", "9"
@@ -74,7 +74,7 @@ public class InitData {
                     , ServicePackage.HospKind.AMBULATORY, ServicePackage.OperationKind.NO_OPERATION, true ));
             servicePackageService.save(new ServicePackage(null, "Хірургічні операції дорослим та дітям в умовах стаціонару одного дня", "47"
                     , ServicePackage.HospKind.AMBULATORY, ServicePackage.OperationKind.NO_OPERATION, true ));
-        }*/
+        }
     }
 
     void createSecurityUsers() {

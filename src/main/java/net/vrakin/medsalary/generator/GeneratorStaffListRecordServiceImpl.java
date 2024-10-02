@@ -57,11 +57,13 @@ public class GeneratorStaffListRecordServiceImpl implements GeneratorStaffListRe
         entity.setStaffListId(staffListRecordDTO.getStaffListId());
 
         UserPosition userPosition;
-        List<UserPosition> userPositions = userPositionService.findByCodeIsPro(staffListRecordDTO.getUserPosition().getCodeIsPro());
+        List<UserPosition> userPositions = userPositionService
+                .findByCodeIsPro(staffListRecordDTO.getUserPosition().getCodeIsPro());
 
         if (userPositions.size()>0)
         {
             userPosition = userPositions.stream().findFirst().get();
+
         }else if(Objects.nonNull(staffListRecordDTO.getUserPosition().getCodeIsPro())){
             userPosition = new UserPosition();
             userPosition.setCodeIsPro(staffListRecordDTO.getUserPosition().getCodeIsPro());
@@ -126,6 +128,7 @@ public class GeneratorStaffListRecordServiceImpl implements GeneratorStaffListRe
         }else {
             throw new ExcelFileErrorException("user", "name or IPN", "");
         }
+        log.info("UserPosition: {}, Department: {}, User: {}", userPosition.getName(), department.getName(), user.getName());
         entity.setUser(user);
         return entity;
     }

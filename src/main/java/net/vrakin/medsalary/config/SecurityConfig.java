@@ -60,7 +60,7 @@ public class SecurityConfig {
                 })
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login")
-                        .successHandler(successHandler) // Використовуємо кастомний хендлер
+                        .successHandler(successHandler)
                         .failureUrl("/auth-error")
                 )
                 .logout(logout -> logout

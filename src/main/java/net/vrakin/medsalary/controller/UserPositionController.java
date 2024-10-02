@@ -20,6 +20,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/user-position")
@@ -46,7 +47,10 @@ public class UserPositionController {
     @GetMapping
     public String user(Model model){
         log.info("Accessing admin page");
-
+        model.addAttribute("files", storageService.loadAll().map(
+                        path -> path.getFileName().toString())
+                .filter(f->f.startsWith("user_positions"))
+                .collect(Collectors.toList()));
         List<UserPosition> userPositions = userPositionService.findAll();
         model.addAttribute("userPositions", userPositionService.findAll());
         userPositions.stream().forEach(up->log.info(up.toString()));
