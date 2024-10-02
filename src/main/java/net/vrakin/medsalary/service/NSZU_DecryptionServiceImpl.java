@@ -2,6 +2,7 @@ package net.vrakin.medsalary.service;
 
 import net.vrakin.medsalary.domain.NszuDecryption;
 import net.vrakin.medsalary.domain.ServicePackage;
+import net.vrakin.medsalary.domain.User;
 import net.vrakin.medsalary.repository.NSZU_DecryptionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,7 @@ public class NSZU_DecryptionServiceImpl extends AbstractService<NszuDecryption> 
         this.nszuDecryptionRepository = repository;
     }
 
-    private NSZU_DecryptionRepository nszuDecryptionRepository;
+    private final NSZU_DecryptionRepository nszuDecryptionRepository;
 
     @Override
     public List<NszuDecryption> findByExecutorNameAndExecutorUserPosition(String executorName, String executorUserPosition) {
@@ -41,8 +42,8 @@ public class NSZU_DecryptionServiceImpl extends AbstractService<NszuDecryption> 
     }
 
     @Override
-    public List<NszuDecryption> findByServicePackageName(String servicePackageNumber) {
-        return nszuDecryptionRepository.findByServicePackageName(servicePackageNumber);
+    public List<NszuDecryption> findByServicePackageName(String servicePackageName) {
+        return nszuDecryptionRepository.findByServicePackageName(servicePackageName);
     }
 
     @Override
@@ -52,8 +53,7 @@ public class NSZU_DecryptionServiceImpl extends AbstractService<NszuDecryption> 
         for (String servicePackageNumber : servicePackageNames) {
             List<NszuDecryption> nszuDecryptions = nszuDecryptionRepository.findByServicePackageName(servicePackageNumber);
 
-            if (nszuDecryptions.size()>0)
-            nszuDecryptionList.add(nszuDecryptions.stream().findFirst().get());
+            if (!nszuDecryptions.isEmpty()) nszuDecryptionList.add(nszuDecryptions.stream().findFirst().get());
         }
         return nszuDecryptionList;
     }
@@ -64,12 +64,25 @@ public class NSZU_DecryptionServiceImpl extends AbstractService<NszuDecryption> 
     }
 
     @Override
-    public List<NszuDecryption> findByServicePackageNameAndProviderPlaceAndExecutorUserPosition(ServicePackage servicePackage,
+    public List<NszuDecryption> findByUserAndServicePackageNameAndProviderPlaceAndExecutorUserPosition(
+                                                                                                User user,
+                                                                                                ServicePackage servicePackage,
                                                                                                 String providerPlace,
                                                                                                 String executorUserPosition) {
-        return nszuDecryptionRepository.findByServicePackageNameAndProviderPlaceAndExecutorUserPosition(
+        return nszuDecryptionRepository.findByExecutorNameAndServicePackageNameAndProviderPlaceAndExecutorUserPosition(
+                user.getName(),
                 String.format("%s %s", servicePackage.getNumber(), servicePackage.getName()),
                 providerPlace,
                 executorUserPosition);
+    }
+
+    @Override
+    public List<NszuDecryption> findByExecutorNameAndServicePackageName(String executorName, String servicePackageName) {
+        return nszuDecryptionRepository.findByExecutorNameAndServicePackageName(executorName, servicePackageName);
+    }
+
+    @Override
+    public List<NszuDecryption> findByExecutorNameAndProviderPlace(String executorName, String placeProvide) {
+        return nszuDecryptionRepository.findByExecutorNameAndProviderPlace(executorName, placeProvide);
     }
 }

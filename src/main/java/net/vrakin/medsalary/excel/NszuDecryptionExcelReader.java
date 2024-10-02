@@ -1,6 +1,7 @@
 package net.vrakin.medsalary.excel;
 
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.vrakin.medsalary.domain.NszuDecryption;
 import net.vrakin.medsalary.dto.NszuDecryptionDTO;
 import net.vrakin.medsalary.mapper.NSZU_DecryptionMapper;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 
 @Service
 @NoArgsConstructor
+@Slf4j
 public class NszuDecryptionExcelReader extends AbstractExcelReader<NszuDecryption, NszuDecryptionDTO>
         implements ExcelReader<NszuDecryption, NszuDecryptionDTO>
 {
@@ -134,7 +136,7 @@ public class NszuDecryptionExcelReader extends AbstractExcelReader<NszuDecryptio
                 dto.setPatientAgeDays(Integer.parseInt(stringList.get(index++)));
                 dto.setPatientAgeYears(Integer.parseInt(stringList.get(index++)));
                 dto.setAdsg(truncateString(stringList.get(index++)));
-                dto.setServicePackage(truncateString(stringList.get(index++)));
+                dto.setServicePackageName(truncateString(stringList.get(index++)));
                 dto.setServicePackageNumber(truncateString(stringList.get(index++)));
                 dto.setTariffUAH(Float.parseFloat(stringList.get(index++)));
                 dto.setPaymentFact(truncateString(stringList.get(index++)));

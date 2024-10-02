@@ -10,6 +10,7 @@ public interface ExcelHelper {
 
     public static final String WORD_SEPARATOR = "&&";
     public static final String PACKAGE_NUMBER_SEPARATOR = ",";
+    public static final String FILE_EXTENSION = ".xlsx";
     List<String> readExcel(File file, int startColNumber);
 
     List<String> readRowCountExcel(File file, int startColNumber, int count);

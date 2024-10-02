@@ -124,8 +124,8 @@ public class NszuDecryption {
     @Column(name = "service_package_name")
     private String servicePackageName;
 
-    @Column(name = "service_number")
-    private String serviceNumber;
+    @Column(name = "service_package_number")
+    private String servicePackageNumber;
 
     @Column(name = "tariff_uah")
     private float tariffUAH;
@@ -199,8 +199,8 @@ public class NszuDecryption {
                 ", patientAgeDays=" + patientAgeDays +
                 ", patientAgeYears=" + patientAgeYears +
                 ", ADSG='" + adsg + '\'' +
-                ", servicePackage='" + servicePackageName + '\'' +
-                ", servicePackageNumber='" + serviceNumber + '\'' +
+                ", servicePackageName='" + servicePackageName + '\'' +
+                ", servicePackageNumber='" + servicePackageNumber + '\'' +
                 ", tariffUAH=" + tariffUAH +
                 ", paymentFact='" + paymentFact + '\'' +
                 ", statisticStatus=" + statisticStatus +

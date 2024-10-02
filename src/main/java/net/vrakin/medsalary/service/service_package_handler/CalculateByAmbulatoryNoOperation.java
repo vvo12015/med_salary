@@ -1,8 +1,6 @@
 package net.vrakin.medsalary.service.service_package_handler;
 
-import net.vrakin.medsalary.domain.NszuDecryption;
-import net.vrakin.medsalary.domain.ServicePackage;
-import net.vrakin.medsalary.domain.UserPosition;
+import net.vrakin.medsalary.domain.*;
 import net.vrakin.medsalary.service.NSZU_DecryptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,18 +21,18 @@ public class CalculateByAmbulatoryNoOperation extends AbstractCalculateStrategy 
     }
 
     @Override
-    public float calculate(ServicePackage servicePackage, UserPosition userPosition, String placeProvide
-                           , Float partEmployment) {
-        List<NszuDecryption> nszuDecryptionList = getNszuDecryptionList(servicePackage,
-                userPosition, placeProvide);
+    public void calculate(ServicePackage servicePackage, Result result) {
+        List<NszuDecryption> nszuDecryptionList = getNszuDecryptionList(servicePackage, result);
 
         float sum = nszuDecryptionList.stream().map(n->{
             if (isValidSum(n.getPaymentFact())){
                 return Float.parseFloat(n.getPaymentFact());
             }else return n.getTariffUAH();
-        }).reduce(0f, (n1, n2) -> n1+ n2);
+        }).reduce(0f, Float::sum);
         
-        return calculateAmbulPremiumBySum(sum, partEmployment);
+        result.setAmblNSZU_Premium(
+                result.getAmblNSZU_Premium() + calculateAmbulPremiumBySum(sum, result.getEmploymentPart())
+        );
     }
 
     private float calculateAmbulPremiumBySum(float x, float coefficient) {

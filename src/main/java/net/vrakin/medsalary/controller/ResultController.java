@@ -38,7 +38,8 @@ public class ResultController {
 
         List<StaffListRecord> staffListRecordList = staffListRecordService.findAll();
 
-        model.addAttribute("result", staffListRecordList.stream().map(s-> {
+
+        model.addAttribute("results", staffListRecordList.stream().map(s-> {
                     try {
                         return generatorResultService.generateResult(s);
                     } catch (CalculateTypeNotFoundException e) {

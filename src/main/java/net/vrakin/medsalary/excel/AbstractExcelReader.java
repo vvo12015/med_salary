@@ -40,7 +40,7 @@ public abstract class AbstractExcelReader<E, D> implements ExcelReader<E, D> {
     }
 
     public List<D> readAllDto(File file){
-        return filterRow(file).stream().map(s-> toDTOFromString(s))
+        return filterRow(file).stream().map(this::toDTOFromString)
                 .collect(Collectors.toList());
     }
 
@@ -54,7 +54,7 @@ public abstract class AbstractExcelReader<E, D> implements ExcelReader<E, D> {
             tableHeadFromFile = tableHeadFromFileOptional.get();
         }else {
             log.warn("file: {}, startColNumber: {}, countRows: {}", file.getAbsolutePath(), startColNumber,
-                    excelHelper.readRowCountExcel(file, startColNumber, 1).stream().count());
+                    (long) excelHelper.readRowCountExcel(file, startColNumber, 1).size());
             return false;
         }
 

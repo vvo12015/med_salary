@@ -1,11 +1,14 @@
 package net.vrakin.medsalary.service.service_package_handler;
 
+import net.vrakin.medsalary.domain.Result;
 import net.vrakin.medsalary.domain.ServicePackage;
 import net.vrakin.medsalary.service.NSZU_DecryptionService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class CalculateManagerImpl implements CalculateManager {
@@ -16,6 +19,7 @@ public class CalculateManagerImpl implements CalculateManager {
 
     private final NSZU_DecryptionService nszu_decryptionService;
 
+    @Autowired
     public CalculateManagerImpl(NSZU_DecryptionService nszu_decryptionService) {
         this.nszu_decryptionService = nszu_decryptionService;
 
@@ -35,28 +39,27 @@ public class CalculateManagerImpl implements CalculateManager {
         priorityServicePackageNumbers.add("15");
     }
 
-    public CalculateStrategy build(ServicePackage servicePackage) {
+    public void calculate(ServicePackage servicePackage, Result result) {
+
+        CalculateStrategy calculator = null;
+
         if (stationaryServicePackageNumbers.contains(servicePackage.getNumber())){
-            CalculateStrategy calculator = new CalculateByStationaryNoOperation(nszu_decryptionService);
-            return calculator;
+            calculator = new CalculateByStationaryNoOperation(nszu_decryptionService);
         }
 
         if (ambularotyServicePackageNumbers.contains(servicePackage.getNumber())){
-            CalculateStrategy calculator = new CalculateByAmbulatoryNoOperation(nszu_decryptionService);
-            return calculator;
+            calculator = new CalculateByAmbulatoryNoOperation(nszu_decryptionService);
         }
 
         if (servicePackage.getNumber().equals(ONE_SERVICE_PACKAGE_ONE_DAY_SERGERY_NUMBER)){
-            CalculateStrategy calculator = new CalculateByOneDaySurgery(nszu_decryptionService);
-            return calculator;
+            calculator = new CalculateByOneDaySurgery(nszu_decryptionService);
         }
 
         if (priorityServicePackageNumbers.contains(servicePackage.getNumber())){
-            CalculateStrategy calculator = new CalculateByPriorityServicePackage(nszu_decryptionService);
-            return calculator;
+            calculator = new CalculateByPriorityServicePackage(nszu_decryptionService);
         }
 
-        return null;
+        if (Objects.nonNull(calculator)) calculator.calculate(servicePackage, result);
     }
 
 

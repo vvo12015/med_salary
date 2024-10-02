@@ -2,6 +2,7 @@ package net.vrakin.medsalary.service.service_package_handler;
 
 import lombok.NoArgsConstructor;
 import net.vrakin.medsalary.domain.NszuDecryption;
+import net.vrakin.medsalary.domain.Result;
 import net.vrakin.medsalary.domain.ServicePackage;
 import net.vrakin.medsalary.domain.UserPosition;
 import net.vrakin.medsalary.service.NSZU_DecryptionService;
@@ -20,11 +21,11 @@ public class CalculateByPriorityServicePackage extends AbstractCalculateStrategy
     }
 
     @Override
-    public float calculate(ServicePackage servicePackage, UserPosition userPosition, String placeProvide
-            , Float partEmployment) {
-        List<NszuDecryption> nszuDecryptionList = getNszuDecryptionList(servicePackage, userPosition, placeProvide);
+    public void calculate(ServicePackage servicePackage, Result result) {
+        List<NszuDecryption> nszuDecryptionList = getNszuDecryptionList(servicePackage, result);
 
-        return PACKAGE_COST * nszuDecryptionList.size() * partEmployment;
+        result.setAmblNSZU_Premium(result.getAmblNSZU_Premium()
+                + PACKAGE_COST * nszuDecryptionList.size() * result.getEmploymentPart());
     }
 
 }

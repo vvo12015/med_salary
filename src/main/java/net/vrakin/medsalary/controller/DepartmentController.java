@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.vrakin.medsalary.domain.Department;
 import net.vrakin.medsalary.dto.DepartmentDTO;
 import net.vrakin.medsalary.excel.DepartmentExcelReader;
+import net.vrakin.medsalary.excel.ExcelHelper;
 import net.vrakin.medsalary.mapper.DepartmentMapper;
 import net.vrakin.medsalary.mapper.StaffListRecordMapper;
 import net.vrakin.medsalary.service.DepartmentService;
@@ -88,7 +89,7 @@ public class DepartmentController {
 
         int monthNumber = LocalDateTime.now().getMonthValue();
         int yearNumber = LocalDateTime.now().getYear();
-        String savedFileName = String.format("%s_%d_%02d.xslx", "department", yearNumber, monthNumber);
+        String savedFileName = String.format("%s_%d_%02d" + ExcelHelper.FILE_EXTENSION, "department", yearNumber, monthNumber);
 
         File destinationFile = storageService.store(file, savedFileName);
 

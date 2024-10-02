@@ -42,7 +42,22 @@ public class Result {
     private Float oneDaySurgery;
 
     @Column
+    private Float employmentPart;
+
+    @Column
     private LocalDate date;
+
+    public Result(User user, UserPosition userPosition, Department department, Float employmentPart) {
+        this.id = null;
+        this.user = user;
+        this.userPosition = userPosition;
+        this.department = department;
+        this.employmentPart = employmentPart;
+        this.hospNSZU_Premium = 0f;
+        this.amblNSZU_Premium = 0f;
+        this.oneDaySurgery = 0f;
+        this.date = LocalDate.now();
+    }
 
     @Override
     public String toString() {

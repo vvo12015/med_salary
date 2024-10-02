@@ -26,5 +26,7 @@ public class ResultDTO {
 
     private Float amblNSZU_Premium;
 
+    private Float employmentPart;
+
     private LocalDate date;
 }

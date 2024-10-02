@@ -1,6 +1,7 @@
 package net.vrakin.medsalary.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import net.vrakin.medsalary.excel.ExcelHelper;
 import net.vrakin.medsalary.excel.NszuDecryptionExcelReader;
 import net.vrakin.medsalary.service.NSZU_DecryptionService;
 import net.vrakin.medsalary.service.StorageService;
@@ -76,7 +77,7 @@ public class NSZU_DecryptionController {
         YearMonth yearMonth = YearMonth.parse(monthYear);
         int monthNumber = yearMonth.getMonthValue();
         int yearNumber = yearMonth.getYear();
-        String savedFileName = String.format("%s_%d_%02d.xslx", corrective?"correct":"decryption", yearNumber, monthNumber);
+        String savedFileName = String.format("%s_%d_%02d" + ExcelHelper.FILE_EXTENSION, corrective?"correct":"decryption", yearNumber, monthNumber);
 
         if (storageService.load(savedFileName).toFile().exists()){
             storageService.delete(savedFileName);

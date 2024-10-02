@@ -84,7 +84,7 @@ public class NszuDecryptionDTO {
 
     private String adsg;
 
-    private String servicePackage;
+    private String servicePackageName;
 
     private String servicePackageNumber;
 

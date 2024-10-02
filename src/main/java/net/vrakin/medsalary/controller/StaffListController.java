@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.vrakin.medsalary.domain.StaffListRecord;
 import net.vrakin.medsalary.dto.StaffListRecordDTO;
 import net.vrakin.medsalary.dto.UserDTO;
+import net.vrakin.medsalary.excel.ExcelHelper;
 import net.vrakin.medsalary.excel.StaffListRecordExcelReader;
 import net.vrakin.medsalary.generator.GeneratorStaffListRecordService;
 import net.vrakin.medsalary.mapper.*;
@@ -116,7 +117,7 @@ public class StaffListController {
 
         int monthNumber = LocalDate.now().getMonthValue();
         int yearNumber = LocalDate.now().getYear();
-        String savedFileName = String.format("%s_%d_%02d.xslx", "staffList", yearNumber, monthNumber);
+        String savedFileName = String.format("%s_%d_%02d" + ExcelHelper.FILE_EXTENSION, "staffList", yearNumber, monthNumber);
 
         File destinationFile = storageService.store(file, savedFileName);
 

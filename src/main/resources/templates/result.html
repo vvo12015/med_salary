@@ -9,37 +9,7 @@
 </head>
 <body>
 
-<!-- Навігаційна панель -->
-<nav class="navbar navbar-expand-lg navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#">Результат</a>
-        <div class="collapse navbar-collapse">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/nadmin}">Головна</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/users}">Користувачі</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/nszu-decryption}">Розшифровка</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/stafflist}">Штатний розпис</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/department}">Відділи</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/user-position}">Посади</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/result}">Результат</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
 
 <!-- Таблиця з записами -->
 <div class="container mt-5">
@@ -54,230 +24,22 @@
             <th>Премія за стаціонарні взаємодії</th>
             <th>Премія за амбілаторні взаємодії</th>
             <th>Хірургія одного дня</th>
-            <th>Дії</th>
         </tr>
         </thead>
         <tbody id="staffTable">
-        <tr th:each="staff : ${stafflist}" th:attr="data-id=${staff.id}">
-            <td>
-                <select class="form-select">
-                    <option th:each="position : ${userPositions}" th:value="${position.id}" th:selected="${position.id == staff.userPosition.id}" th:text="${position.name}"></option>
-                </select>
-            </td>
-            <td>
-                <select class="form-select">
-                    <option th:each="department : ${departments}" th:value="${department.id}" th:selected="${department.id == staff.department.id}" th:text="${department.name}"></option>
-                </select>
-            </td>
-            <td>
-                <select class="form-select">
-                    <option th:each="category : ${premiumCategories}" th:value="${category.id}" th:selected="${category.id == staff.premiumCategory.id}" th:text="${category.name}"></option>
-                </select>
-            </td>
-            <td>
-                <select class="form-select">
-                    <option th:each="user : ${users}" th:value="${user.id}" th:selected="${user.id == staff.user.id}" th:text="${user.name}"></option>
-                </select>
-            </td>
-            <td><input type="text" class="form-control" th:value="${staff.staffListId}"></td>
-            <td><input type="text" class="form-control" th:value="${staff.employment}"></td>
-            <td>
-                <button class="btn btn-primary" th:attr="onclick='updateStaff(' + ${staff.id} + ')'">Зберегти</button>
-                <button class="btn btn-danger" th:attr="onclick='deleteStaff(' + ${staff.id} + ')'">Видалити</button>
-            </td>
+        <tr th:each="result : ${results}" th:attr="data-id=${result.id}">
+            <td th:text="${result.user.name}"></td>
+            <td th:text="${result.department.name}"></td>
+            <td th:text="${result.userPosition.name}"></td>
+            <td th:text="${result.userPosition.maxPoint}"></td>
+            <td th:text="${result.userPosition.pointValue}"></td>
+            <td th:text="${result.hospNSZU_Premium}"></td>
+            <td th:text="${result.amblNSZU_Premium}"></td>
+            <td th:text="${result.oneDaySurgery}"></td>
         </tr>
         </tbody>
     </table>
 </div>
-
-<script th:inline="javascript">
-		let userPositions = [];
-		[[${userPositions}]].forEach(userPosition => {
-			userPositions.push({
-				id: userPosition.id,
-				name: userPosition.name
-			});
-		});
-
-		let departments = [];
-		[[${departments}]].forEach(department => {
-			departments.push({
-				id: department.id,
-				name: department.name
-			});
-		});
-
-		let premiumCategories = [];
-		[[${premiumCategories}]].forEach(premiumCategory => {
-			premiumCategories.push({
-				id: premiumCategory.id,
-				name: premiumCategory.name
-			});
-		});
-		let users = [];
-		[[${users}]].forEach(user => {
-			users.push({
-				id: user.id,
-				name: user.name
-			});
-		});
-	</script>
-
-<script>
-		document.querySelector('#AddStaffForm').addEventListener('submit',
-		function(event) {
-		event.preventDefault();
-
-		const form = event.target;
-		const formData = new FormData(form);
-		const formObject = {};
-		formData.forEach((value, key) => formObject[key] = value);
-
-
-		fetch('/api/stafflist', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify(formObject)
-			}).then(response => response.json())
-			.then(newStaff => {
-				console.log(userPositions, departments, premiumCategories, users);
-				addRowToTable(newStaff, userPositions, departments, premiumCategories, users);
-				form.reset();
-			})
-			.catch(error => {
-				console.error('Помилка:', error);
-			});
-		});
-
-		function addRowToTable(staff, userPositions, departments, premiumCategories, users) {
-			const staffTable = document.getElementById('staffTable');
-			const newRow = document.createElement('tr');
-			newRow.setAttribute('data-id', staff.id);
-
-			const createOptions = (items, selectedId) => {
-				return items.map(item =>
-					`<option value="${item.id}" ${item.id === selectedId ? 'selected' : ''}>${item.name}</option>`
-				).join('');
-			};
-
-			newRow.innerHTML = `
-				<td>
-					<select name="userPosition" class="form-select">
-						${createOptions(userPositions, staff.userPosition.id)}
-					</select>
-				</td>
-				<td>
-					<select name="department" class="form-select">
-						${createOptions(departments, staff.department.id)}
-					</select>
-				</td>
-				<td>
-					<select name="premiumCategory" class="form-select">
-						${createOptions(premiumCategories, staff.premiumCategory.id)}
-					</select>
-				</td>
-				<td>
-					<select name="user" class="form-select">
-						${createOptions(users, staff.user.id)}
-					</select>
-				</td>
-				<td><input type="text" name="staffListId" class="form-control" value="${staff.staffListId}"></td>
-				<td><input type="text" name="employment" class="form-control" value="${staff.employment}"></td>
-				<td>
-					<button class="btn btn-primary" onclick="updateStaff(${staff.id})">Зберегти</button>
-					<button class="btn btn-danger" onclick="deleteStaff(${staff.id})">Видалити</button>
-				</td>
-			`;
-
-			staffTable.appendChild(newRow);
-		}
-
-
-        function updateStaff(id) {
-            const row = document.querySelector(`tr[data-id='${id}']`);
-
-			console.log("row: " + row);
-
-			const stId = id;
-
-            const updatedData = {
-				id: stId,
-                userPositionId: row.querySelector("select[name='userPosition']").value,
-                departmentId: row.querySelector("select[name='department']").value,
-                premiumCategoryId: row.querySelector("select[name='premiumCategory']").value,
-                userId: row.querySelector("select[name='user']").value,
-                staffListId: row.querySelector("input[name='staffListId']").value,
-                employment: row.querySelector("input[name='employment']").value,
-				status: "EDIT"
-            };
-
-			console.log(updatedData);
-
-            fetch(`/api/stafflist/${id}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(updatedData)
-            })
-            .then(response => {
-                if (response.ok) {
-                    alert('Дані успішно оновлено!');
-                } else {
-                    alert('Помилка при оновленні даних!');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Помилка при оновленні даних!');
-            });
-        }
-
-        function deleteStaff(id) {
-               if (confirm('Ви дійсно хочете видалити цей запис?')) {
-               fetch(`/api/stafflist/${id}`, {
-                    method: 'DELETE'
-               })
-                .then(response => {
-                    if (response.ok) {
-                        // Видаляємо рядок з таблиці після успішного видалення на сервері
-                        document.querySelector(`tr[data-id='${id}']`).remove();
-                        alert('Запис успішно видалено!');
-                    } else {
-                        alert('Помилка при видаленні запису!');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Помилка при видаленні запису!');
-                });
-            }
-        }
-
-		function deleteFile(fileName) {
-            if (confirm('Ви дійсно хочете видалити цей файл?')) {
-                const deleteUrl = '/delete/files?file=' + encodeURIComponent(fileName);
-
-                fetch(deleteUrl, {
-                    method: 'DELETE'
-                })
-                .then(response => {
-                    if (response.ok) {
-                        alert('Файл успішно видалено!');
-                        location.reload(); // Оновлення сторінки після видалення файлу
-                    } else {
-                        alert('Помилка при видаленні файлу!');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Помилка при видаленні файлу!');
-                });
-            }
-        }
-    </script>
 
 </body>
 </html>

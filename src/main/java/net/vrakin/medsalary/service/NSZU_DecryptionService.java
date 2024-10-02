@@ -2,6 +2,7 @@ package net.vrakin.medsalary.service;
 
 import net.vrakin.medsalary.domain.NszuDecryption;
 import net.vrakin.medsalary.domain.ServicePackage;
+import net.vrakin.medsalary.domain.User;
 
 import java.util.List;
 
@@ -20,9 +21,14 @@ public interface NSZU_DecryptionService extends Service<NszuDecryption> {
     List<NszuDecryption> findByServicePackageName(List<String> servicePackageNumbers);
     List<NszuDecryption> findByExecutorName(String executorName);
 
-    List<NszuDecryption> findByServicePackageNameAndProviderPlaceAndExecutorUserPosition(
+    List<NszuDecryption> findByUserAndServicePackageNameAndProviderPlaceAndExecutorUserPosition(
+            User user,
             ServicePackage servicePackage,
             String providerPlace,
             String executorUserPosition
     );
+
+    List<NszuDecryption> findByExecutorNameAndServicePackageName(String executorName, String servicePackageName);
+
+    List<NszuDecryption> findByExecutorNameAndProviderPlace(String executorName, String placeProvide);
 }

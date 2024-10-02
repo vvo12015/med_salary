@@ -3,6 +3,7 @@ package net.vrakin.medsalary.controller;
 import lombok.extern.slf4j.Slf4j;
 import net.vrakin.medsalary.domain.UserPosition;
 import net.vrakin.medsalary.dto.UserPositionDTO;
+import net.vrakin.medsalary.excel.ExcelHelper;
 import net.vrakin.medsalary.excel.UserPositionExcelReader;
 import net.vrakin.medsalary.mapper.UserPositionMapper;
 import net.vrakin.medsalary.service.StorageService;
@@ -78,7 +79,7 @@ public class UserPositionController {
 
         int monthNumber = LocalDateTime.now().getMonthValue();
         int yearNumber = LocalDateTime.now().getYear();
-        String savedFileName = String.format("%s_%d_%02d.xslx", "user_position", yearNumber, monthNumber);
+        String savedFileName = String.format("%s_%d_%02d" + ExcelHelper.FILE_EXTENSION, "user_position", yearNumber, monthNumber);
 
         File destinationFile = storageService.store(file, savedFileName);
 
