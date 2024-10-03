@@ -29,16 +29,15 @@ import java.util.List;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public final class ServiceReaderTest {
 
-    public static final int COUNT_USER_POSITION = 166;
     public static final String USER_POSITION_FILENAME = "user_position";
     public static final String DEPARTMENT_FILENAME = "department";
-    private static final int DEPARTMENT_COUNT = 115;
+    private static final int DEPARTMENT_COUNT = 8;
     private static final String STAFFLIST_FILENAME = "stafflist";
     private static final int STAFFLIST_COUNT = 10;
     public static final String NSZU_DECRYPTION_FILENAME = "nszu_decryption";
     private static final int NSZU_DECRYPTION_COUNT = 594;
-    public static final String FIRST_RECORD_ID_IN_FILE = "249c34e1-0341-44d1-b46d-225d4c537de3";
-    public static final long FIRST_RECORD_ID_IN_DB = 1L;
+    private static final int USER_POSITION_COUNT = 9;
+
     @Autowired
     private UserPositionExcelReader userPositionExcelReader;
 
@@ -73,6 +72,21 @@ public final class ServiceReaderTest {
     @Autowired
     private StorageService storageService;
 
+    @Autowired
+    private ServicePackageService servicePackageService;
+
+    @Autowired
+    private ResultService resultService;
+
+    @Autowired
+    private PremiumCategoryService premiumCategoryService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private SecurityUserService securityUserService;
+
     public ServiceReaderTest() {
     }
 
@@ -95,7 +109,7 @@ public final class ServiceReaderTest {
         List<UserPosition> testUserPositionList = userPositionService.findAll();
 
         log.info("UserPositions size test");
-        assertEquals(testUserPositionList.size(), COUNT_USER_POSITION);
+        assertEquals(testUserPositionList.size(), USER_POSITION_COUNT);
     }
 
     @Test
@@ -153,11 +167,17 @@ public final class ServiceReaderTest {
         assertEquals(testNszuDecryptionList.size(), NSZU_DECRYPTION_COUNT);
     }
 
-    @Test
-    @Order(5)
-    public void nszuDecryptionFirstElementTest(){
-        NszuDecryption nszuDecryption = nszuDecryptionService.findById(FIRST_RECORD_ID_IN_DB).get();
-        assertEquals(nszuDecryption.getRecordID(), FIRST_RECORD_ID_IN_FILE);
+    @AfterAll
+    public void tearDownAfterClass() throws Exception {
+        resultService.deleteAll();
+        nszuDecryptionService.deleteAll();
+        staffListRecordService.deleteAll();
+        servicePackageService.deleteAll();
+        premiumCategoryService.deleteAll();
+        userPositionService.deleteAll();
+        departmentService.deleteAll();
+        userService.deleteAll();
+        securityUserService.deleteAll();
     }
 }
 

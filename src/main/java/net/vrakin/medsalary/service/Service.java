@@ -23,4 +23,6 @@ public interface Service<T> {
     public List<T> findAllById(List<Long> ids);
 
     void saveAll(List<T> entities);
+
+    void deleteAll();
 }

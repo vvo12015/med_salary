@@ -82,6 +82,18 @@ public class CalculateTest {
     @Autowired
     private ServicePackageService servicePackageService;
 
+    @Autowired
+    private ResultService resultService;
+
+    @Autowired
+    private PremiumCategoryService premiumCategoryService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private SecurityUserService securityUserService;
+
     public CalculateTest() {
     }
 
@@ -170,5 +182,18 @@ public class CalculateTest {
         calculateManager.calculate(servicePackage13, result);
 
         assertEquals(result.getAmblNSZU_Premium(), 160f);
+    }
+
+    @AfterAll
+    public void tearDownAfterClass() throws Exception {
+        resultService.deleteAll();
+        nszuDecryptionService.deleteAll();
+        staffListRecordService.deleteAll();
+        servicePackageService.deleteAll();
+        premiumCategoryService.deleteAll();
+        userPositionService.deleteAll();
+        departmentService.deleteAll();
+        userService.deleteAll();
+        securityUserService.deleteAll();
     }
 }

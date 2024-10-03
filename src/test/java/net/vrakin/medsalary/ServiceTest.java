@@ -76,6 +76,21 @@ public final class ServiceTest {
     @Autowired
     private CalculateManager calculateManager;
 
+    @Autowired
+    private ServicePackageService servicePackageService;
+
+    @Autowired
+    private ResultService resultService;
+
+    @Autowired
+    private PremiumCategoryService premiumCategoryService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private SecurityUserService securityUserService;
+
     public ServiceTest() {
     }
 
@@ -276,6 +291,19 @@ public final class ServiceTest {
         log.info("sum: {}, actual: {}", sumDoctor6ServicePackage9Up7, actualDoctor6ServicePackage9Up7);
 
         assertEquals(sumDoctor6ServicePackage9Up7, 30600f);
+    }
+
+    @AfterAll
+    public void tearDownAfterClass() throws Exception {
+        resultService.deleteAll();
+        nszuDecryptionService.deleteAll();
+        staffListRecordService.deleteAll();
+        servicePackageService.deleteAll();
+        premiumCategoryService.deleteAll();
+        userPositionService.deleteAll();
+        departmentService.deleteAll();
+        userService.deleteAll();
+        securityUserService.deleteAll();
     }
 }
 

@@ -40,4 +40,8 @@ public abstract class AbstractService<E> {
     public void saveAll(List<E> entities){
         repository.saveAll(entities);
     }
+
+    public void deleteAll(){
+        repository.deleteAll();
+    }
 }
