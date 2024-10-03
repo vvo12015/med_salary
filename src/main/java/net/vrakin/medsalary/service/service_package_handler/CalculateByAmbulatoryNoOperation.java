@@ -1,5 +1,6 @@
 package net.vrakin.medsalary.service.service_package_handler;
 
+import lombok.extern.slf4j.Slf4j;
 import net.vrakin.medsalary.domain.*;
 import net.vrakin.medsalary.service.NSZU_DecryptionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@Slf4j
 public class CalculateByAmbulatoryNoOperation extends AbstractCalculateStrategy implements CalculateStrategy {
 
     public static final int SUM_THRESHOLD = 30_000;
@@ -29,6 +31,7 @@ public class CalculateByAmbulatoryNoOperation extends AbstractCalculateStrategy 
                 return Float.parseFloat(n.getPaymentFact());
             }else return n.getTariffUAH();
         }).reduce(0f, Float::sum);
+        log.info("sum: {}", sum);
         
         result.setAmblNSZU_Premium(
                 result.getAmblNSZU_Premium() + calculateAmbulPremiumBySum(sum, result.getEmploymentPart())
@@ -38,9 +41,9 @@ public class CalculateByAmbulatoryNoOperation extends AbstractCalculateStrategy 
     private float calculateAmbulPremiumBySum(float x, float coefficient) {
         float rs = x - SUM_THRESHOLD * coefficient;
         
-        if (x > LIMIT_THRESHOLD * coefficient){
-            return x * IN_LIMIT_THRESHOLD * LIMIT_THRESHOLD + (x - LIMIT_THRESHOLD) * OUT_LIMIT_THRESHOLD;
-        }else return  x * IN_LIMIT_THRESHOLD * LIMIT_THRESHOLD;
+        if (rs > LIMIT_THRESHOLD * coefficient){
+            return IN_LIMIT_THRESHOLD * LIMIT_THRESHOLD + ((rs - LIMIT_THRESHOLD * coefficient) * OUT_LIMIT_THRESHOLD);
+        }else return  rs * IN_LIMIT_THRESHOLD;
     }
 
 

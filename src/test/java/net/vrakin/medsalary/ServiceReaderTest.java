@@ -8,11 +8,8 @@ import net.vrakin.medsalary.domain.StaffListRecord;
 import net.vrakin.medsalary.domain.UserPosition;
 import net.vrakin.medsalary.dto.StaffListRecordDTO;
 import net.vrakin.medsalary.excel.*;
-import net.vrakin.medsalary.generator.GeneratorResultService;
 import net.vrakin.medsalary.generator.GeneratorStaffListRecordService;
-import net.vrakin.medsalary.mapper.UserPositionMapper;
 import net.vrakin.medsalary.service.*;
-import net.vrakin.medsalary.service.service_package_handler.CalculateManager;
 import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,7 +27,7 @@ import java.util.List;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public final class FullWaysCalculateTest {
+public final class ServiceReaderTest {
 
     public static final int COUNT_USER_POSITION = 166;
     public static final String USER_POSITION_FILENAME = "user_position";
@@ -47,9 +44,6 @@ public final class FullWaysCalculateTest {
 
     @Autowired
     private UserPositionService userPositionService;
-
-    @Autowired
-    private UserPositionMapper userPositionMapper;
 
     @Autowired
     private DepartmentExcelReader departmentExcelReader;
@@ -69,8 +63,6 @@ public final class FullWaysCalculateTest {
     @Autowired
     private NszuDecryptionExcelReader nszuDecryptionExcelReader;
 
-    @Autowired
-    private GeneratorResultService generatorResultService;
 
     @Autowired
     private NSZU_DecryptionService nszuDecryptionService;
@@ -81,7 +73,7 @@ public final class FullWaysCalculateTest {
     @Autowired
     private StorageService storageService;
 
-    public FullWaysCalculateTest() {
+    public ServiceReaderTest() {
     }
 
     @BeforeAll
@@ -91,7 +83,7 @@ public final class FullWaysCalculateTest {
 
     @Test
     @Order(1)
-    public void userPositionTest() throws IOException {
+    public void userPositionTest(){
         log.info("UserPosition loaded");
 
         String destinationFileName = String.format("%s_test%s", USER_POSITION_FILENAME, ExcelHelper.FILE_EXTENSION);
@@ -108,7 +100,7 @@ public final class FullWaysCalculateTest {
 
     @Test
     @Order(2)
-    public void departmentTest() throws IOException {
+    public void departmentTest(){
         log.info("Department loaded");
 
         String destinationFileName = String.format("%s_test%s", DEPARTMENT_FILENAME, ExcelHelper.FILE_EXTENSION);
@@ -125,7 +117,7 @@ public final class FullWaysCalculateTest {
 
     @Test
     @Order(3)
-    public void staffListTest() throws IOException {
+    public void staffListTest(){
         log.info("StaffList loaded");
 
         String destinationFileName = String.format("%s_test%s", STAFFLIST_FILENAME, ExcelHelper.FILE_EXTENSION);
@@ -146,7 +138,7 @@ public final class FullWaysCalculateTest {
 
     @Test
     @Order(4)
-    public void nszuDecryptionTest() throws IOException {
+    public void nszuDecryptionTest(){
         log.info("NSZU Decryption loaded");
 
         String destinationFileName = String.format("%s_test%s", NSZU_DECRYPTION_FILENAME, ExcelHelper.FILE_EXTENSION);
@@ -163,7 +155,7 @@ public final class FullWaysCalculateTest {
 
     @Test
     @Order(5)
-    public void nszuDecryptionFirstElementTest() throws IOException{
+    public void nszuDecryptionFirstElementTest(){
         NszuDecryption nszuDecryption = nszuDecryptionService.findById(FIRST_RECORD_ID_IN_DB).get();
         assertEquals(nszuDecryption.getRecordID(), FIRST_RECORD_ID_IN_FILE);
     }

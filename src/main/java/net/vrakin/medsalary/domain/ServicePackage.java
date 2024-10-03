@@ -44,4 +44,8 @@ public class ServicePackage {
         MIXED
     }
 
+    public String getFullName(){
+        return String.format("%s %s", this.number, this.name);
+    }
+
 }

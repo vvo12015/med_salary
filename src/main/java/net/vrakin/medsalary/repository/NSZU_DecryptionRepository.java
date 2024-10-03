@@ -24,4 +24,13 @@ public interface NSZU_DecryptionRepository extends JpaRepository<NszuDecryption,
     List<NszuDecryption> findByExecutorNameAndServicePackageName(String executorName, String servicePackageName);
 
     List<NszuDecryption> findByExecutorNameAndProviderPlace(String executorName, String placeProvide);
+
+    List<NszuDecryption> findByExecutorNameAndExecutorUserPositionAndServicePackageName(String executorName,
+                                                                                        String executorUserPosition,
+                                                                                        String servicePackageName);
+
+    List<NszuDecryption> findByExecutorNameAndExecutorUserPositionAndServicePackageNameAndProviderPlace(String executorName,
+                                                                                                        String executorUserPosition,
+                                                                                                        String servicePackageName,
+                                                                                                        String providerPlace);
 }

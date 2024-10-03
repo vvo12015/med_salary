@@ -10,6 +10,12 @@ public interface NSZU_DecryptionService extends Service<NszuDecryption> {
 
     List<NszuDecryption> findByExecutorNameAndExecutorUserPosition(String executorName, String executorUserPosition);
 
+    List<NszuDecryption> findByExecutorNameAndServicePackageName(String executorName, String servicePackageName);
+
+    List<NszuDecryption> findByExecutorNameAndExecutorUserPositionAndServicePackageName(String executorName,
+                                                                                String executorUserPosition,
+                                                                                String servicePackageName);
+
     List<NszuDecryption> findByYearNumAndMonthNum(int year, int month);
 
     List<NszuDecryption> findByRecordKind(String recordKind);
@@ -17,8 +23,8 @@ public interface NSZU_DecryptionService extends Service<NszuDecryption> {
     List<NszuDecryption> findByProviderPlace(String providerPlace);
 
     List<NszuDecryption> findByServicePackageName(String servicePackageNumber);
-
     List<NszuDecryption> findByServicePackageName(List<String> servicePackageNumbers);
+
     List<NszuDecryption> findByExecutorName(String executorName);
 
     List<NszuDecryption> findByUserAndServicePackageNameAndProviderPlaceAndExecutorUserPosition(
@@ -28,7 +34,8 @@ public interface NSZU_DecryptionService extends Service<NszuDecryption> {
             String executorUserPosition
     );
 
-    List<NszuDecryption> findByExecutorNameAndServicePackageName(String executorName, String servicePackageName);
-
     List<NszuDecryption> findByExecutorNameAndProviderPlace(String executorName, String placeProvide);
+    List<NszuDecryption> findByExecutorNameAndExecutorUserPositionAndServicePackageNameAndProviderPlace(String executorName,
+                                                                                                        String executorUserPosition,
+                                                                                                        String servicePackageName, String providerPlace);
 }

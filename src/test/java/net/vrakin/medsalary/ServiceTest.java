@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public final class CalculateTest {
+public final class ServiceTest {
 
     public static final String USER_POSITION_FILENAME = "user_position";
     public static final String DEPARTMENT_FILENAME = "department";
@@ -76,7 +76,7 @@ public final class CalculateTest {
     @Autowired
     private CalculateManager calculateManager;
 
-    public CalculateTest() {
+    public ServiceTest() {
     }
 
     @BeforeAll

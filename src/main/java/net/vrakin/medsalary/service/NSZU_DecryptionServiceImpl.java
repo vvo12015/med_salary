@@ -85,4 +85,20 @@ public class NSZU_DecryptionServiceImpl extends AbstractService<NszuDecryption> 
     public List<NszuDecryption> findByExecutorNameAndProviderPlace(String executorName, String placeProvide) {
         return nszuDecryptionRepository.findByExecutorNameAndProviderPlace(executorName, placeProvide);
     }
+
+    @Override
+    public List<NszuDecryption> findByExecutorNameAndExecutorUserPositionAndServicePackageName(String executorName,
+                                                                                               String executorUserPosition,
+                                                                                               String servicePackageName) {
+        return nszuDecryptionRepository.findByExecutorNameAndExecutorUserPositionAndServicePackageName(executorName,
+                                                                            executorUserPosition, servicePackageName);
+    }
+
+    @Override
+    public List<NszuDecryption> findByExecutorNameAndExecutorUserPositionAndServicePackageNameAndProviderPlace(String executorName,
+                                                                                               String executorUserPosition,
+                                                                                               String servicePackageName, String providerPlace) {
+        return nszuDecryptionRepository.findByExecutorNameAndExecutorUserPositionAndServicePackageNameAndProviderPlace(executorName,
+                executorUserPosition, servicePackageName, providerPlace);
+    }
 }
