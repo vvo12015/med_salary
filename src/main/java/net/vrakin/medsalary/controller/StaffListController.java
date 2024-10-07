@@ -33,7 +33,6 @@ public class StaffListController {
     private final UserMapper userMapper;
     private final PremiumCategoryMapper premiumCategoryMapper;
     private UserService userService;
-    private UserEleksService userEleksService;
     private UserPositionService userPositionService;
     private StaffListRecordService staffListRecordService;
     private DepartmentService departmentService;
@@ -59,7 +58,6 @@ public class StaffListController {
                                UserPositionMapper userPositionMapper, PremiumCategoryService premiumCategoryService,
                                GeneratorStaffListRecordService generatorStaffListRecordService, UserMapper userMapper, PremiumCategoryMapper premiumCategoryMapper) {
         this.userService = userService;
-        this.userEleksService = userEleksService;
         this.userPositionService = userPositionService;
         this.staffListRecordService = staffListRecordService;
         this.departmentService = departmentService;
