@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class RegistrationController {
 
     private final SecurityUserService securityUserService;
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
     public RegistrationController(SecurityUserService securityUserService, PasswordEncoder passwordEncoder) {

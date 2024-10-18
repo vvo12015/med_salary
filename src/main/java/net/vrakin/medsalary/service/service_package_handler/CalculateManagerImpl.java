@@ -6,61 +6,41 @@ import net.vrakin.medsalary.service.NSZU_DecryptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 public class CalculateManagerImpl implements CalculateManager {
 
-    private List<String> stationaryServicePackageNumbers = new ArrayList<>();
-    private List<String> ambularotyServicePackageNumbers = new ArrayList<>();
-    private List<String> priorityServicePackageNumbers = new ArrayList<>();
-
-    private final NSZU_DecryptionService nszu_decryptionService;
+    private final Map<String, CalculateStrategy> calculateStrategyMap = new HashMap<>();
 
     @Autowired
     public CalculateManagerImpl(NSZU_DecryptionService nszu_decryptionService) {
-        this.nszu_decryptionService = nszu_decryptionService;
 
-        stationaryServicePackageNumbers.add("4");
-        stationaryServicePackageNumbers.add("17");
-        stationaryServicePackageNumbers.add("23");
-        stationaryServicePackageNumbers.add("38");
+        calculateStrategyMap.put("4", new CalculateByStationaryNoOperation(nszu_decryptionService));
+        calculateStrategyMap.put("17", new CalculateByStationaryNoOperation(nszu_decryptionService));
+        calculateStrategyMap.put("23", new CalculateByStationaryNoOperation(nszu_decryptionService));
+        calculateStrategyMap.put("38", new CalculateByStationaryNoOperation(nszu_decryptionService));
 
-        ambularotyServicePackageNumbers.add("9");
-        ambularotyServicePackageNumbers.add("35");
 
-        priorityServicePackageNumbers.add("10");
-        priorityServicePackageNumbers.add("11");
-        priorityServicePackageNumbers.add("12");
-        priorityServicePackageNumbers.add("13");
-        priorityServicePackageNumbers.add("14");
-        priorityServicePackageNumbers.add("15");
+        calculateStrategyMap.put("9", new CalculateByAmbulatoryNoOperation(nszu_decryptionService));
+        //не рахуємо
+        //calculateStrategyMap.put("35", new CalculateByAmbulatoryNoOperation(nszu_decryptionService));
+
+        calculateStrategyMap.put("47", new CalculateByOneDaySurgery(nszu_decryptionService));
+
+        calculateStrategyMap.put("10", new CalculateByPriorityServicePackage(nszu_decryptionService));
+        calculateStrategyMap.put("11", new CalculateByPriorityServicePackage(nszu_decryptionService));
+        calculateStrategyMap.put("12", new CalculateByPriorityServicePackage(nszu_decryptionService));
+        calculateStrategyMap.put("13", new CalculateByPriorityServicePackage(nszu_decryptionService));
+        calculateStrategyMap.put("14", new CalculateByPriorityServicePackage(nszu_decryptionService));
+        calculateStrategyMap.put("15", new CalculateByPriorityServicePackage(nszu_decryptionService));
     }
 
     public void calculate(ServicePackage servicePackage, Result result) {
 
-        CalculateStrategy calculator = null;
-
-        if (stationaryServicePackageNumbers.contains(servicePackage.getNumber())){
-            calculator = new CalculateByStationaryNoOperation(nszu_decryptionService);
-        }
-
-        if (ambularotyServicePackageNumbers.contains(servicePackage.getNumber())){
-            calculator = new CalculateByAmbulatoryNoOperation(nszu_decryptionService);
-        }
-
-        if (servicePackage.getNumber().equals(ONE_SERVICE_PACKAGE_ONE_DAY_SERGERY_NUMBER)){
-            calculator = new CalculateByOneDaySurgery(nszu_decryptionService);
-        }
-
-        if (priorityServicePackageNumbers.contains(servicePackage.getNumber())){
-            calculator = new CalculateByPriorityServicePackage(nszu_decryptionService);
-        }
+        CalculateStrategy calculator = calculateStrategyMap.get(servicePackage.getNumber());
 
         if (Objects.nonNull(calculator)) calculator.calculate(servicePackage, result);
     }
-
 
 }

@@ -1,10 +1,10 @@
 package net.vrakin.medsalary.service.service_package_handler;
 
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import net.vrakin.medsalary.domain.*;
 import net.vrakin.medsalary.service.NSZU_DecryptionService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -23,16 +23,6 @@ public abstract class AbstractCalculateStrategy {
     protected List<NszuDecryption> getNszuDecryptionList(ServicePackage servicePackage,
                                                          Result result){
 
-
-        log.info("user: {}, servicePackageName: {}, userPosition: {}, placeProvider: {}",
-                result.getUser().getName(), servicePackage.getFullName(), result.getUserPosition().getNszuName(), getPlaceProvide(result.getDepartment())
-                        .substring(getPlaceProvide(result.getDepartment()).lastIndexOf(",")));
-
-        log.info("ByServicePackage: {}, ByUserPosition: {}, ByPlaceProvider: {}",
-                nszu_decryptionService.findByExecutorNameAndServicePackageName(result.getUser().getName() , servicePackage.getFullName()).size(),
-                nszu_decryptionService.findByExecutorNameAndExecutorUserPosition(result.getUser().getName(), result.getUserPosition().getNszuName()).size(),
-                nszu_decryptionService.findByExecutorNameAndProviderPlace(result.getUser().getName() , getPlaceProvide(result.getDepartment())).size());
-
         List<NszuDecryption> nszuDecryptionList = nszu_decryptionService
                 .findByExecutorNameAndExecutorUserPositionAndServicePackageNameAndProviderPlace(
                         result.getUser().getName(),
@@ -40,8 +30,10 @@ public abstract class AbstractCalculateStrategy {
                         servicePackage.getFullName(),
                         getPlaceProvide(result.getDepartment()));
 
-        log.info("nszuDecryptionListCount: {}", nszuDecryptionList.size());
-        return nszuDecryptionList;
+
+        List<NszuDecryption> nszuResult =  nszuDecryptionList.stream().filter(n->(n.isReportStatus() && n.isStatisticStatus())).toList();
+
+        return nszuResult;
     }
 
     protected static boolean isValidSum(String str) {

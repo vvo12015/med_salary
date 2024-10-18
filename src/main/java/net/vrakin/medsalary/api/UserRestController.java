@@ -6,7 +6,6 @@ import net.vrakin.medsalary.exception.IdMismatchException;
 import net.vrakin.medsalary.exception.ResourceExistException;
 import net.vrakin.medsalary.exception.ResourceNotFoundException;
 import net.vrakin.medsalary.mapper.UserMapper;
-import net.vrakin.medsalary.service.DepartmentService;
 import net.vrakin.medsalary.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,15 +21,11 @@ public class UserRestController {
     private final UserService userService;
     private final UserMapper userMapper;
 
-    private final DepartmentService departmentService;
-
     @Autowired
     public UserRestController(UserService userService,
-                              UserMapper userMapper,
-                              DepartmentService departmentService) {
+                              UserMapper userMapper) {
         this.userService = userService;
         this.userMapper = userMapper;
-        this.departmentService = departmentService;
     }
 
     @GetMapping
@@ -50,9 +45,9 @@ public class UserRestController {
     }
 
     @GetMapping("/login/{ipn}")
-    public ResponseEntity<UserDTO> getByLogin(@PathVariable String IPN) throws ResourceNotFoundException {
-        User user = userService.findByIPN(IPN)
-                .orElseThrow(()->new ResourceNotFoundException("User", "IPN", IPN));
+    public ResponseEntity<UserDTO> getByLogin(@PathVariable String ipn) throws ResourceNotFoundException {
+        User user = userService.findByIPN(ipn)
+                .orElseThrow(()->new ResourceNotFoundException("User", "IPN", ipn));
 
         UserDTO userDTO = userMapper.toDto(user);
 

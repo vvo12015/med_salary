@@ -4,5 +4,5 @@ public enum DTOStatus {
         CREATE,
         EDIT,
         FROM_ENTITY,
-        FROM_FILE;
+        FROM_FILE
 }

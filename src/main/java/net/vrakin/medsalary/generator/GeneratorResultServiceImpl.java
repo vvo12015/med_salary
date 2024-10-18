@@ -1,16 +1,17 @@
 package net.vrakin.medsalary.generator;
 
-import net.vrakin.medsalary.domain.*;
-import net.vrakin.medsalary.exception.CalculateTypeNotFoundException;
-import net.vrakin.medsalary.exception.ResourceNotFoundException;
-import net.vrakin.medsalary.service.*;
-import net.vrakin.medsalary.service.service_package_handler.*;
+import net.vrakin.medsalary.domain.Result;
+import net.vrakin.medsalary.domain.ServicePackage;
+import net.vrakin.medsalary.domain.StaffListRecord;
+import net.vrakin.medsalary.domain.User;
+import net.vrakin.medsalary.service.ServicePackageService;
+import net.vrakin.medsalary.service.StaffListRecordService;
+import net.vrakin.medsalary.service.service_package_handler.CalculateManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -37,7 +38,7 @@ public class GeneratorResultServiceImpl implements GeneratorResultService {
     }
 
     @Override
-    public Result generateResult(StaffListRecord staffListRecord) throws ResourceNotFoundException {
+    public Result generate(StaffListRecord staffListRecord){
 
         Float employmentPart = getEmploymentPart(staffListRecord, staffListRecord.getUser());
         Result result = new Result(staffListRecord.getUser(), staffListRecord.getUserPosition(), staffListRecord.getDepartment(), employmentPart);

@@ -3,6 +3,8 @@ package net.vrakin.medsalary.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -37,6 +39,21 @@ public class StaffListRecord {
     @JoinColumn(name = "premium_category_id")
     private PremiumCategory premiumCategory;
 
+    @Column
+    private LocalDateTime employmentStartDate;
+
+    @Column
+    private LocalDateTime employmentEndDate;
+
+    @Column
+    private LocalDateTime startDate;
+
+    @Column
+    private LocalDateTime endDate;
+
+    @Column
+    private Float Salary;
+
     @Override
     public String toString() {
         return "StaffListRecord{" +
@@ -46,6 +63,10 @@ public class StaffListRecord {
                 ", departmentNameId=" + department.getId() +
                 ", employment=" + employment +
                 ", user.Id=" + user.getId() +
+                ", employmentStartDate=" + employmentStartDate +
+                ", employmentEndDate=" + employmentEndDate +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
                 '}';
     }
 }

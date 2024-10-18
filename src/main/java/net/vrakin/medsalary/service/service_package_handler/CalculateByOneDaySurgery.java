@@ -23,6 +23,7 @@ public class CalculateByOneDaySurgery extends AbstractCalculateStrategy implemen
     public void calculate(ServicePackage servicePackage, Result result) {
         List<NszuDecryption> nszuDecryptionList = getNszuDecryptionList(servicePackage, result);
 
+        result.setCountEMR_oneDaySurgery(nszuDecryptionList.size());
 
         result.setOneDaySurgery(result.getOneDaySurgery() +
                 + PACKAGE_COST * nszuDecryptionList.size() * result.getEmploymentPart());

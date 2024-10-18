@@ -1,0 +1,29 @@
+<div th:fragment="uploadFile(imgFileName, formName, formAction)">
+    <div class="container mt-5 d-flex justify-content-center">
+        <img th:src="@{${imgFileName}}" alt="Excel Spreadsheet Header" class="img-fluid w-100" />
+    </div>
+
+    <div class="container mt-5">
+        <h2 th:text="'Завантаження файлу таблиці ' + ${formName}"></h2>
+        <form method="POST" id="AddFile" enctype="multipart/form-data" th:action="${formAction}">
+            <div class="mb-3">
+                <label for="file" class="form-label">Виберіть файл для завантаження:</label>
+                <input id="file" type="file" name="file" class="form-control" />
+                <label for="monthYear">Місяць:</label><br>
+                <input type="month" id="monthYear" name="monthYear" />
+            </div>
+            <button type="submit" class="btn btn-primary">Завантажити</button>
+        </form>
+
+        <div class="mt-4">
+            <h4>Завантажені файли</h4>
+            <ul class="list-group">
+                <li class="list-group-item d-flex justify-content-between align-items-center" th:each="file : ${files}">
+                    <a th:href="${file}" th:text="${file}"></a>
+                    <button class="btn btn-danger btn-sm" th:data-name="${file}" th:onclick="deleteFile(this.getAttribute('data-name'))">Видалити</button>
+                </li>
+            </ul>
+            <h4 th:text="${message}"></h4>
+        </div>
+    </div>
+</div>

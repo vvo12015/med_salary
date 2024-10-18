@@ -1,6 +1,9 @@
 package net.vrakin.medsalary.dto;
 
+import jakarta.persistence.Column;
 import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -31,6 +34,16 @@ public class StaffListRecordDTO {
     private PremiumCategoryDTO premiumCategory;
 
     private String premiumCategoryName;
+
+    private LocalDateTime employmentStartDate;
+
+    private LocalDateTime employmentEndDate;
+
+    private LocalDateTime startDate;
+
+    private LocalDateTime endDate;
+
+    private Float Salary;
 
     private DTOStatus status;
 }

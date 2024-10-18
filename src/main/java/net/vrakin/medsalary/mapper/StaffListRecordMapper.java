@@ -3,14 +3,13 @@ package net.vrakin.medsalary.mapper;
 import lombok.NoArgsConstructor;
 import net.vrakin.medsalary.domain.StaffListRecord;
 import net.vrakin.medsalary.dto.*;
-import net.vrakin.medsalary.excel.ExcelHelper;
+import net.vrakin.medsalary.generator.GeneratorStaffListRecordService;
 import org.mapstruct.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Mapper(componentModel = "spring")
 @NoArgsConstructor
 public abstract class StaffListRecordMapper  implements BaseMapper<StaffListRecord, StaffListRecordDTO> {
-    private ExcelHelper excelHelper;
 
     private UserMapper userMapper;
 
@@ -20,17 +19,19 @@ public abstract class StaffListRecordMapper  implements BaseMapper<StaffListReco
 
     private PremiumCategoryMapper premiumCategoryMapper;
 
+    private GeneratorStaffListRecordService generatorStaffListRecordService;
+
     @Autowired
-    public void setExcelHelper(ExcelHelper excelHelper,
-                               UserMapper userMapper,
+    public void setExcelHelper(UserMapper userMapper,
                                DepartmentMapper departmentMapper,
                                UserPositionMapper userPositionMapper,
-                               PremiumCategoryMapper premiumCategoryMapper) {
-        this.excelHelper = excelHelper;
+                               PremiumCategoryMapper premiumCategoryMapper,
+                               GeneratorStaffListRecordService generatorStaffListRecordService) {
         this.userMapper = userMapper;
         this.departmentMapper = departmentMapper;
         this.userPositionMapper = userPositionMapper;
         this.premiumCategoryMapper = premiumCategoryMapper;
+        this.generatorStaffListRecordService = generatorStaffListRecordService;
     }
 
     public StaffListRecordDTO toDto(StaffListRecord entity){
@@ -46,5 +47,7 @@ public abstract class StaffListRecordMapper  implements BaseMapper<StaffListReco
         return staffListRecordDTO;
     }
 
-    public abstract StaffListRecord toEntity(StaffListRecordDTO dto);
+    public StaffListRecord toEntity(StaffListRecordDTO dto) throws Exception {
+        return generatorStaffListRecordService.generate(dto);
+    }
 }

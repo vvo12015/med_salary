@@ -41,3 +41,7 @@ body {
 .container {
     margin-top: 40px;
 }
+.error-field {
+    color: red;
+    font-weight: bold;
+}

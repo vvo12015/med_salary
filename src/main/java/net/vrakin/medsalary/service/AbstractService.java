@@ -24,13 +24,19 @@ public abstract class AbstractService<E> {
         return repository.save(entity);
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(Long id) throws ResourceNotFoundException {
         repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Entity", "id", id.toString()));
         repository.deleteById(id);
     }
 
     public void deleteAllById(List<Long> ids) {
-        ids.forEach(this::deleteById);
+        ids.forEach(id -> {
+            try {
+                deleteById(id);
+            } catch (ResourceNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     public List<E> findAllById(List<Long> ids) throws ResourceNotFoundException {

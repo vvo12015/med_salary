@@ -4,9 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import net.vrakin.medsalary.config.InitData;
 import net.vrakin.medsalary.domain.*;
 import net.vrakin.medsalary.dto.StaffListRecordDTO;
-import net.vrakin.medsalary.excel.*;
+import net.vrakin.medsalary.excel.entity.reader.*;
 import net.vrakin.medsalary.generator.GeneratorStaffListRecordService;
-import net.vrakin.medsalary.repository.ServicePackageRepository;
 import net.vrakin.medsalary.service.*;
 import net.vrakin.medsalary.service.service_package_handler.CalculateManager;
 import org.junit.jupiter.api.*;
@@ -14,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -98,7 +96,7 @@ public class CalculateTest {
     }
 
     @BeforeAll
-    public void setUp() throws IOException {
+    public void setUp() throws Exception {
         initData.init();
         String userPositionFile = String.format("%s_test%s", USER_POSITION_FILENAME, ExcelHelper.FILE_EXTENSION);
         List<UserPosition> userPositionList = userPositionExcelReader.readAllEntries(storageService.load(userPositionFile).toFile());

@@ -11,30 +11,7 @@
 
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-<div class="container mt-5 d-flex justify-content-center">
-    <img th:src="@{/img/stafflist.jpg}" alt="Excel Spreadsheet Header" class="img-fluid w-100" />
-</div>
-
-<div class="container mt-5">
-    <h2>Завантаження файлів</h2>
-    <form method="POST" id="AddFile" enctype="multipart/form-data" action="/stafflist/files">
-        <div class="mb-3">
-            <label for="file" class="form-label">Виберіть файл для завантаження:</label>
-            <input id="file" type="file" name="file" class="form-control" />
-        </div>
-        <button type="submit" class="btn btn-primary">Завантажити</button>
-    </form>
-
-    <div class="mt-4">
-        <h4>Завантажені файли</h4>
-        <ul class="list-group">
-            <li class="list-group-item d-flex justify-content-between align-items-center" th:each="file : ${files}">
-                <a th:href="${file}" th:text="${file}"></a>
-				<button class="btn btn-danger btn-sm" th:data-name="${file}" th:onclick="deleteFile(this.getAttribute('data-name'))">Видалити</button>
-            </li>
-        </ul>
-    </div>
-</div>
+<div th:replace="~{fragments/uploadfile :: uploadFile('imgFileName'='/img/stafflist.jpg', 'formName'=' штатного розпису', 'formAction'='/stafflist/files')}"></div>
 
 <div class="container mt-5">
     <div class="card">

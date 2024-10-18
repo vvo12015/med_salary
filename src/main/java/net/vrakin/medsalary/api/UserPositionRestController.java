@@ -19,8 +19,8 @@ import java.util.List;
 @RequestMapping("/api/user-positions")
 public class UserPositionRestController {
 
-    private UserPositionMapper userPositionMapper;
-    private UserPositionService userPositionService;
+    private final UserPositionMapper userPositionMapper;
+    private final UserPositionService userPositionService;
 
     @Autowired
     public UserPositionRestController(UserPositionMapper userPositionMapper, UserPositionService userPositionService) {

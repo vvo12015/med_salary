@@ -12,6 +12,13 @@
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
 <div class="container mt-5">
+    <p th:text="${result_count}">Кількість згенерованих результатів</p>
+    <button type="button" class="btn btn-primary" th:onclick="location = '/result/generate'">
+        Сгенерувати результати
+    </button>
+</div>
+
+<div class="container mt-5">
     <table class="table">
         <thead>
         <tr>
@@ -23,19 +30,30 @@
             <th>Премія за стаціонарні взаємодії</th>
             <th>Премія за амбілаторні взаємодії</th>
             <th>Хірургія одного дня</th>
+            <th>Кількість стаціонарних ЕМЗ</th>
+            <th>Кількість амбулаторних ЕМЗ</th>
+            <th>Кількість пріоритетних ЕМЗ</th>
+            <th>Кількість ЕМЗ хірургії одного дня</th>
+            <th>Сума 9- го пакету</th>
         </tr>
         </thead>
         <tbody id="staffTable">
         <tr th:each="result : ${results}" th:attr="data-id=${result.id}">
-            <td th:text="${result.user.name}"></td>
-            <td th:text="${result.department.name}"></td>
-            <td th:text="${result.userPosition.name}"></td>
-            <td th:text="${result.userPosition.maxPoint}"></td>
-            <td th:text="${result.userPosition.pointValue}"></td>
-            <td th:text="${result.hospNSZU_Premium}"></td>
-            <td th:text="${result.amblNSZU_Premium}"></td>
-            <td th:text="${result.oneDaySurgery}"></td>
+            <td th:text="${result.user.name != null ? result.user.name : 'null'}"></td>
+            <td th:text="${result.department.name != null ? result.department.name : 'null'}"></td>
+            <td th:text="${result.userPosition.name != null ? result.userPosition.name : 'null'}"></td>
+            <td th:text="${result.userPosition.maxPoint != null ? result.userPosition.maxPoint : 0}"></td>
+            <td th:text="${result.userPosition.pointValue != null ? result.userPosition.pointValue : 0}"></td>
+            <td th:text="${result.hospNSZU_Premium != null ? result.hospNSZU_Premium : 0}"></td>
+            <td th:text="${result.amblNSZU_Premium != null ? result.amblNSZU_Premium : 0}"></td>
+            <td th:text="${result.oneDaySurgery != null ? result.oneDaySurgery : 0}"></td>
+            <td th:text="${result.countEMR_stationary != null ? result.countEMR_stationary : 0}"></td>
+            <td th:text="${result.countEMR_ambulatory != null ? result.countEMR_ambulatory : 0}"></td>
+            <td th:text="${result.countEMR_priorityService != null ? result.countEMR_priorityService : 0}"></td>
+            <td th:text="${result.countEMR_oneDaySurgery != null ? result.countEMR_oneDaySurgery : 0}"></td>
+            <td th:text="${result.sumForAmlPackage != null ? result.sumForAmlPackage : 0}"></td>
         </tr>
+
         </tbody>
     </table>
 </div>

@@ -14,7 +14,7 @@ import java.util.List;
 @RequestMapping("/security-user")
 public class SecurityUserController {
 
-    private SecurityUserService securityUserService;
+    private final SecurityUserService securityUserService;
 
     @Autowired
     public SecurityUserController(SecurityUserService securityUserService) {

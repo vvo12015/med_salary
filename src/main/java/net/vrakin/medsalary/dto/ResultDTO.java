@@ -29,4 +29,12 @@ public class ResultDTO {
     private Float employmentPart;
 
     private LocalDate date;
+
+    private Integer countEMR_stationary;
+
+    private Float sumForAmlPackage;
+
+    private Integer countEMR_ambulatory;
+    private Integer countEMR_oneDaySurgery;
+    private Integer countEMR_priorityService;
 }

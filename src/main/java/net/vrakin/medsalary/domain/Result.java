@@ -47,6 +47,14 @@ public class Result {
     @Column
     private LocalDate date;
 
+    private Integer countEMR_stationary;
+
+    private Float sumForAmlPackage;
+
+    private Integer countEMR_ambulatory;
+    private Integer countEMR_oneDaySurgery;
+    private Integer countEMR_priorityService;
+
     public Result(User user, UserPosition userPosition, Department department, Float employmentPart) {
         this.id = null;
         this.user = user;
@@ -72,4 +80,5 @@ public class Result {
                 ", date=" + date.toString() +
                 '}';
     }
+
 }

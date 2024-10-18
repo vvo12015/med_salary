@@ -6,10 +6,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ResultServiceImpl extends AbstractService<Result> implements ResultService {
-    private ResultRepository resultRepository;
 
     public ResultServiceImpl(ResultRepository resultRepository) {
         super(resultRepository);
-        this.resultRepository = resultRepository;
     }
 }

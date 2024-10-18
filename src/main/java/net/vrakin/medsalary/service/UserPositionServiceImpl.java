@@ -9,7 +9,7 @@ import java.util.List;
 @Service
 public class UserPositionServiceImpl extends AbstractService<UserPosition> implements UserPositionService {
 
-    private UserPositionRepository userPositionRepository;
+    private final UserPositionRepository userPositionRepository;
 
     public UserPositionServiceImpl(UserPositionRepository userPositionRepository) {
         super(userPositionRepository);

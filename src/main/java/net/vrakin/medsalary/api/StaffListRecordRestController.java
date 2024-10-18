@@ -20,11 +20,11 @@ import java.util.List;
 @RequestMapping("/api/stafflist")
 public class StaffListRecordRestController {
 
-    private StaffListRecordMapper staffListRecordMapper;
+    private final StaffListRecordMapper staffListRecordMapper;
 
-    private StaffListRecordService staffListRecordService;
+    private final StaffListRecordService staffListRecordService;
 
-    private GeneratorStaffListRecordService generatorStaffListRecordService;
+    private final GeneratorStaffListRecordService generatorStaffListRecordService;
 
     @Autowired
     public StaffListRecordRestController(StaffListRecordMapper staffListRecordMapper, StaffListRecordService staffListRecordService,
@@ -49,7 +49,7 @@ public class StaffListRecordRestController {
     }
 
     @PostMapping
-    public ResponseEntity<StaffListRecordDTO> add(@RequestBody StaffListRecordDTO staffListRecordDTO) {
+    public ResponseEntity<StaffListRecordDTO> add(@RequestBody StaffListRecordDTO staffListRecordDTO) throws Exception {
 
         if (staffListRecordDTO.getId() != null) {
             throw new ResourceExistException("StaffListRecordId", staffListRecordDTO.getId().toString());
@@ -73,7 +73,7 @@ public class StaffListRecordRestController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<StaffListRecordDTO> updateStaffListRecord(@PathVariable Long id, @RequestBody StaffListRecordDTO staffListRecordDTO) {
+    public ResponseEntity<StaffListRecordDTO> updateStaffListRecord(@PathVariable Long id, @RequestBody StaffListRecordDTO staffListRecordDTO) throws Exception {
 
         if (!staffListRecordDTO.getId().equals(id)){
             throw new IdMismatchException("StaffListRecord", id.toString(), staffListRecordDTO.getId().toString());

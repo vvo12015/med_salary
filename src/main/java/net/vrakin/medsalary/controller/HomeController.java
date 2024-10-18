@@ -1,6 +1,7 @@
 package net.vrakin.medsalary.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import net.vrakin.medsalary.domain.SecurityUser;
 import net.vrakin.medsalary.service.SecurityUserService;
 import net.vrakin.medsalary.service.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,29 +13,29 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import net.vrakin.medsalary.domain.SecurityUser;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping
 @Slf4j
 public class HomeController {
 
-    private StorageService storageService;
-    private SecurityUserService userService;
-    private PasswordEncoder passwordEncoder;
+    private final StorageService storageService;
+    private final SecurityUserService userService;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public HomeController(SecurityUserService userService, PasswordEncoder passwordEncoder) {
+    public HomeController(StorageService storageService,
+            SecurityUserService userService, PasswordEncoder passwordEncoder) {
+        this.storageService = storageService;
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping("/login")
-    public String login(Model model) {
+    public String login() {
         log.info("Accessing login page");
 
         return "login";
@@ -43,18 +44,17 @@ public class HomeController {
     @GetMapping("/")
     public String index(Model model){
         log.info("Accessing index page");
-        List<SecurityUser> users = userService.findAll().stream().map(u->{
-            u.setAddress(Boolean.toString(passwordEncoder.matches("111", u.getPassword())));
-            return u;
-        }).collect(Collectors.toList());
+        List<SecurityUser> users = userService.findAll().stream()
+                .peek(u-> u.setAddress(Boolean.toString(passwordEncoder.matches("111", u.getPassword()))))
+                .toList();
 
-        model.addAttribute("users", userService.findAll());
+        model.addAttribute("users", users);
 
         return "index";
     }
 
     @GetMapping("/auth-error")
-    public String error(Model model){
+    public String error(){
         log.info("Accessing error page");
         return "error_page";
     }

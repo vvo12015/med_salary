@@ -1,53 +1,71 @@
 package net.vrakin.medsalary.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import net.vrakin.medsalary.domain.Result;
 import net.vrakin.medsalary.domain.StaffListRecord;
-import net.vrakin.medsalary.exception.CalculateTypeNotFoundException;
+import net.vrakin.medsalary.excel.entity.reader.ResultExcelWriter;
 import net.vrakin.medsalary.generator.GeneratorResultService;
-import net.vrakin.medsalary.mapper.StaffListRecordMapper;
 import net.vrakin.medsalary.service.StaffListRecordService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/result")
 @Slf4j
 public class ResultController {
 
-    private GeneratorResultService generatorResultService;
+    public static final int THREADS_COUNT = 10;
+    private final GeneratorResultService generatorResultService;
 
-    private StaffListRecordService staffListRecordService;
+    private final StaffListRecordService staffListRecordService;
+    private final ResultExcelWriter resultExcelWriter;
 
-    private StaffListRecordMapper staffListRecordMapper;
-
-    public ResultController(GeneratorResultService generatorResultService, StaffListRecordService staffListRecordService,
-                            StaffListRecordMapper staffListRecordMapper) {
+    public ResultController(GeneratorResultService generatorResultService,
+                            StaffListRecordService staffListRecordService,
+                            ResultExcelWriter resultExcelWriter) {
         this.generatorResultService = generatorResultService;
         this.staffListRecordService = staffListRecordService;
-        this.staffListRecordMapper = staffListRecordMapper;
+        this.resultExcelWriter = resultExcelWriter;
     }
+
+    private List<Result> resultList = new ArrayList<>();
 
     @GetMapping
     public String result(Model model){
         log.info("Accessing result page");
 
-        List<StaffListRecord> staffListRecordList = staffListRecordService.findAll();
+        model.addAttribute("resultList", resultList);
 
-
-        model.addAttribute("results", staffListRecordList.stream().map(s-> {
-                    try {
-                        return generatorResultService.generateResult(s);
-                    } catch (CalculateTypeNotFoundException e) {
-                        throw new RuntimeException(e);
-                    }
-                })
-                .collect(Collectors.toList()));
         return "result";
     }
+
+    @GetMapping("/generate")
+    public String resultGenerate(Model model) throws IOException {
+        log.info("Accessing generate result page");
+
+        List<StaffListRecord> staffListRecordList = staffListRecordService.findAll();
+
+        resultList = staffListRecordList.stream().map(s -> {
+            try {
+                return generatorResultService.generate(s);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        })
+        .toList();
+
+        resultExcelWriter.writeAll(resultList);
+        model.addAttribute("result_count", resultList.size());
+        model.addAttribute("results", resultList);
+
+        return "result";
+    }
+
 
 }

@@ -17,13 +17,13 @@ import java.util.Optional;
 
 @Service
 @Slf4j
-public class GeneratorStaffListRecordServiceImpl implements GeneratorStaffListRecordService {
-    private UserPositionService userPositionService;
-    private DepartmentService departmentService;
-    private PremiumCategoryService premiumCategoryService;
+public class GeneratorStaffListRecordServiceImpl implements Generator<StaffListRecordDTO, StaffListRecord>, GeneratorStaffListRecordService {
+    private final UserPositionService userPositionService;
+    private final DepartmentService departmentService;
+    private final PremiumCategoryService premiumCategoryService;
 
-    private StaffListRecordService staffListRecordService;
-    private UserService userService;
+    private final StaffListRecordService staffListRecordService;
+    private final UserService userService;
 
     @Autowired
     public GeneratorStaffListRecordServiceImpl(UserPositionService userPositionService, DepartmentService departmentService,
@@ -38,7 +38,7 @@ public class GeneratorStaffListRecordServiceImpl implements GeneratorStaffListRe
     }
 
     @Override
-    public StaffListRecord generate(StaffListRecordDTO staffListRecordDTO) {
+    public StaffListRecord generate(StaffListRecordDTO staffListRecordDTO){
 
         StaffListRecord entity;
 
@@ -60,7 +60,7 @@ public class GeneratorStaffListRecordServiceImpl implements GeneratorStaffListRe
         List<UserPosition> userPositions = userPositionService
                 .findByCodeIsPro(staffListRecordDTO.getUserPosition().getCodeIsPro());
 
-        if (userPositions.size()>0)
+        if (!userPositions.isEmpty())
         {
             userPosition = userPositions.stream().findFirst().get();
 
@@ -71,14 +71,14 @@ public class GeneratorStaffListRecordServiceImpl implements GeneratorStaffListRe
                 userPosition.setName(staffListRecordDTO.getUserPosition().getName());
             }
             userPosition = userPositionService.save(userPosition);
-            log.info(userPosition.toString());
+            log.info("Create userPosition: {}", userPosition.toString());
         }else {
             throw new ExcelFileErrorException("userPosition", "name or codeIsPro", "");
         }
 
         entity.setUserPosition(userPosition);
 
-        Department department = null;
+        Department department;
         Optional<Department> departmentOptional = departmentService.findByDepartmentIsProId(
                 staffListRecordDTO.getDepartment().getDepartmentIsProId());
 
@@ -101,17 +101,13 @@ public class GeneratorStaffListRecordServiceImpl implements GeneratorStaffListRe
         entity.setDepartment(department);
         entity.setEmployment(staffListRecordDTO.getEmployment());
 
-        PremiumCategory premiumCategory = null;
+        String premiumCategoryName = Objects.requireNonNullElse(staffListRecordDTO.getPremiumCategoryName(), "ZERO");
 
-        if (Objects.nonNull(staffListRecordDTO.getPremiumCategoryName())){
-            premiumCategory = premiumCategoryService.findByName(staffListRecordDTO.getPremiumCategoryName()).get();
-        }else {
-            premiumCategory = premiumCategoryService.findByName("ZERO").get();
-        }
+        entity.setPremiumCategory(premiumCategoryService.findByName(premiumCategoryName)
+                .orElseThrow(() -> new ResourceNotFoundException("PremiumCategory", "premiumCategoryName", premiumCategoryName)));
 
-        entity.setPremiumCategory(premiumCategory);
 
-        User user = null;
+        User user;
         Optional<User> userOptional = userService.findByIPN(staffListRecordDTO.getUser().getIpn());
 
         if (userOptional.isPresent())
@@ -133,7 +129,7 @@ public class GeneratorStaffListRecordServiceImpl implements GeneratorStaffListRe
         return entity;
     }
 
-    private StaffListRecord getStaffListRecordFromCreateDTO(StaffListRecordDTO staffListRecordDTO) {
+    private StaffListRecord getStaffListRecordFromCreateDTO(StaffListRecordDTO staffListRecordDTO) throws ResourceNotFoundException{
         StaffListRecord entity = null;
         if (staffListRecordDTO.getStatus().equals(DTOStatus.CREATE)) {
             if ((staffListRecordDTO.getId() != null)) throw new ResourceExistException("StaffListRecordDTO", "id");
@@ -165,7 +161,7 @@ public class GeneratorStaffListRecordServiceImpl implements GeneratorStaffListRe
                             , staffListRecordDTO.getDepartment().getId().toString()));
 
         entity.setDepartment(department);
-        PremiumCategory premiumCategory = null;
+        PremiumCategory premiumCategory;
         if (Objects.isNull(staffListRecordDTO.getPremiumCategoryName())) premiumCategory = null;
         else {
             premiumCategory = premiumCategoryService.findByName(staffListRecordDTO.getPremiumCategoryName())

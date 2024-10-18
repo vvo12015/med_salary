@@ -1,6 +1,7 @@
 package net.vrakin.medsalary.api;
 
 
+import lombok.extern.slf4j.Slf4j;
 import net.vrakin.medsalary.domain.Department;
 import net.vrakin.medsalary.dto.DepartmentDTO;
 import net.vrakin.medsalary.exception.IdMismatchException;
@@ -8,9 +9,6 @@ import net.vrakin.medsalary.exception.ResourceExistException;
 import net.vrakin.medsalary.exception.ResourceNotFoundException;
 import net.vrakin.medsalary.mapper.DepartmentMapper;
 import net.vrakin.medsalary.service.DepartmentService;
-import net.vrakin.medsalary.service.UserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,18 +18,15 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/departments")
+@Slf4j
 public class DepartmentRestController {
 
-    private static final Logger log = LoggerFactory.getLogger(DepartmentRestController.class);
     private final DepartmentService departmentService;
-    private final UserService userService;
     private final DepartmentMapper departmentMapper;
 
     @Autowired
     public DepartmentRestController(DepartmentService departmentService,
-                                    UserService userService,
                                     DepartmentMapper departmentMapper) {
-        this.userService = userService;
         this.departmentService = departmentService;
         this.departmentMapper = departmentMapper;
     }
@@ -77,7 +72,7 @@ public class DepartmentRestController {
     @PutMapping("/{id}")
     public ResponseEntity<DepartmentDTO> updateDepartment(@PathVariable Long id, @RequestBody DepartmentDTO departmentDTO) {
 
-        log.info("Editing department with id: " + id + " and name: " + departmentDTO.getName());
+        log.info("Editing department with id: {} and name: {}", id, departmentDTO.getName());
 
         if (!departmentDTO.getId().equals(id)){
             throw new IdMismatchException("Department", id.toString(), departmentDTO.getId().toString());
@@ -93,7 +88,6 @@ public class DepartmentRestController {
         department.setNameEleks(departmentDTO.getNameEleks());
 
         departmentService.save(department);
-
 
         DepartmentDTO savedDepartmentDTO = departmentMapper.toDto(departmentService.save(department));
 

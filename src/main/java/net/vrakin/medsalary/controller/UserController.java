@@ -15,7 +15,7 @@ import java.util.List;
 @Slf4j
 public class UserController {
 
-    private UserService userService;
+    private final UserService userService;
 
     public UserController(UserService userService) {
         this.userService = userService;
@@ -27,7 +27,7 @@ public class UserController {
 
         List<User> users = userService.findAll();
         model.addAttribute("users", userService.findAll());
-        users.stream().forEach(u->log.info(u.toString()));
+        users.forEach(u->log.info(u.toString()));
         return "user";
     }
 }
