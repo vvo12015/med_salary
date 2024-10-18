@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class CalculateByStationaryNoOperation extends AbstractCalculateStrategy implements CalculateStrategy {
@@ -23,7 +24,7 @@ public class CalculateByStationaryNoOperation extends AbstractCalculateStrategy 
     public void calculate(ServicePackage servicePackage, Result result) {
         List<NszuDecryption> nszuDecryptionList = getNszuDecryptionList(servicePackage, result);
 
-        result.setCountEMR_stationary(result.getCountEMR_stationary() + nszuDecryptionList.size());
+        result.setCountEMR_stationary(Objects.requireNonNullElse(result.getCountEMR_stationary(), 0) + nszuDecryptionList.size());
 
         if (!nszuDecryptionList.isEmpty()){
             result.setHospNSZU_Premium(

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class CalculateByPriorityServicePackage extends AbstractCalculateStrategy implements CalculateStrategy {
@@ -22,7 +23,7 @@ public class CalculateByPriorityServicePackage extends AbstractCalculateStrategy
     public void calculate(ServicePackage servicePackage, Result result) {
         List<NszuDecryption> nszuDecryptionList = getNszuDecryptionList(servicePackage, result);
 
-        result.setCountEMR_priorityService(result.getCountEMR_priorityService()+ nszuDecryptionList.size());
+        result.setCountEMR_priorityService(Objects.requireNonNullElse(result.getCountEMR_priorityService(), 0) + nszuDecryptionList.size());
 
         result.setAmblNSZU_Premium(result.getAmblNSZU_Premium()
                 + PACKAGE_COST * nszuDecryptionList.size() * result.getEmploymentPart());

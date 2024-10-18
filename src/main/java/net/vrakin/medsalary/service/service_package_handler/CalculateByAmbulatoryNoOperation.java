@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 public class CalculateByAmbulatoryNoOperation extends AbstractCalculateStrategy implements CalculateStrategy {
@@ -33,8 +34,8 @@ public class CalculateByAmbulatoryNoOperation extends AbstractCalculateStrategy 
                 .reduce(0f, Float::sum);
 
         nszuDecryptionList.forEach(n->log.info(n.toString()));
-        result.setSumForAmlPackage(result.getSumForAmlPackage() + sum);
-        result.setCountEMR_ambulatory(result.getCountEMR_ambulatory() + nszuDecryptionList.size());
+        result.setSumForAmlPackage(Objects.requireNonNullElse(result.getSumForAmlPackage(), 0f) + sum);
+        result.setCountEMR_ambulatory(Objects.requireNonNullElse(result.getCountEMR_ambulatory(), 0) + nszuDecryptionList.size());
         log.info("pib: {}, count: {}, sum: {}, calculateSum: {}"
                 , result.getUser().getName(), nszuDecryptionList.size(), sum, calculateAmbulPremiumBySum(sum, result.getEmploymentPart()));
 
