@@ -155,6 +155,7 @@ public class NszuDecryptionExcelReader extends AbstractExcelReader<NszuDecryptio
                 dto.setDetailsPreviewNSZU(truncateString(stringList.get(index++)));
                 dto.setAdditionalComment(truncateString(stringList.get(index++)));
                 dto.setDatePreviewNSZU(excelHelper.mapToDate(stringList.get(index)));
+                log.info("NszuDecryptionDTO: {}", dto.toString());
             return dto;
     }
 

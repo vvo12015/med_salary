@@ -46,20 +46,8 @@ public class ResultExcelWriter implements ExcelWriter<Result> {
         excelHelper.writeExcel(file.toFile(), rows);
     }
 
-    private List<String> getColumnNames() {
+    private List<String> getColumnNames(){
 
-        List<String> resultColumnNames = new ArrayList<>();
-
-        resultColumnNames.add("Id");
-        resultColumnNames.add("ПІБ працівника");
-        resultColumnNames.add("Назва відділення");
-        resultColumnNames.add("Посада");
-        resultColumnNames.add("Ставка");
-        resultColumnNames.add("Премія стаціонар");
-        resultColumnNames.add("Премія поліклініка");
-        resultColumnNames.add("Премія хір. одного дня");
-        resultColumnNames.add("Дата генерації запису");
-
-        return resultColumnNames;
+        return resultMapper.toStringListColNames();
     }
 }

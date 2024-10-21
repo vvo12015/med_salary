@@ -26,6 +26,6 @@ public class CalculateByOneDaySurgery extends AbstractCalculateStrategy implemen
         result.setCountEMR_oneDaySurgery(nszuDecryptionList.size());
 
         result.setOneDaySurgery(result.getOneDaySurgery() +
-                + PACKAGE_COST * nszuDecryptionList.size() * result.getEmploymentPart());
+                + PACKAGE_COST * nszuDecryptionList.size() * result.getEmploymentPart() * result.getHourCoefficient());
     }
 }

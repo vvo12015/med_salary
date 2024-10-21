@@ -55,8 +55,9 @@ public class Result {
     private Integer countEMR_oneDaySurgery;
     private Integer countEMR_priorityService;
     private Float employment;
+    private Float hourCoefficient;
 
-    public Result(User user, UserPosition userPosition, Department department, Float employment, Float employmentPart) {
+    public Result(User user, UserPosition userPosition, Department department, Float employment, Float employmentPart, Float hourCoefficient) {
         this.id = null;
         this.user = user;
         this.userPosition = userPosition;
@@ -67,6 +68,7 @@ public class Result {
         this.amblNSZU_Premium = 0f;
         this.oneDaySurgery = 0f;
         this.date = LocalDate.now();
+        this.hourCoefficient = hourCoefficient;
     }
 
     @Override
@@ -76,11 +78,18 @@ public class Result {
                 ", user=" + user.getName() +
                 ", userPosition=" + userPosition.getName() +
                 ", department=" + department.getName() +
-                ", hospNSZU_Premium=" + hospNSZU_Premium.toString() +
-                ", amblNSZU_Premium=" + amblNSZU_Premium.toString() +
-                ", oneDaySurgery=" + oneDaySurgery.toString() +
-                ", date=" + date.toString() +
+                ", hospNSZU_Premium=" + hospNSZU_Premium +
+                ", amblNSZU_Premium=" + amblNSZU_Premium +
+                ", oneDaySurgery=" + oneDaySurgery +
+                ", employmentPart=" + employmentPart +
+                ", date=" + date +
+                ", countEMR_stationary=" + countEMR_stationary +
+                ", sumForAmlPackage=" + sumForAmlPackage +
+                ", countEMR_ambulatory=" + countEMR_ambulatory +
+                ", countEMR_oneDaySurgery=" + countEMR_oneDaySurgery +
+                ", countEMR_priorityService=" + countEMR_priorityService +
+                ", employment=" + employment +
+                ", hourCoefficient=" + hourCoefficient +
                 '}';
     }
-
 }

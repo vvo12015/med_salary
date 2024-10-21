@@ -5,6 +5,7 @@ import net.vrakin.medsalary.domain.ServicePackage;
 import net.vrakin.medsalary.domain.User;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface NSZU_DecryptionService extends Service<NszuDecryption> {
 
@@ -38,4 +39,6 @@ public interface NSZU_DecryptionService extends Service<NszuDecryption> {
     List<NszuDecryption> findByExecutorNameAndExecutorUserPositionAndServicePackageNameAndProviderPlace(String executorName,
                                                                                                         String executorUserPosition,
                                                                                                         String servicePackageName, String providerPlace);
+
+    Optional<NszuDecryption> findByRecordId(String recordId);
 }

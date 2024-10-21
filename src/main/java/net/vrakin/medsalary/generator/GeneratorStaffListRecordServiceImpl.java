@@ -25,17 +25,20 @@ public class GeneratorStaffListRecordServiceImpl implements Generator<StaffListR
 
     private final StaffListRecordService staffListRecordService;
     private final UserService userService;
+    private final TimeSheetService timeSheetService;
 
     @Autowired
     public GeneratorStaffListRecordServiceImpl(UserPositionService userPositionService, DepartmentService departmentService,
                                                PremiumCategoryService premiumCategoryService,
                                                StaffListRecordService staffListRecordService,
-                                               UserService userService) {
+                                               UserService userService,
+                                               TimeSheetService timeSheetService) {
         this.userPositionService = userPositionService;
         this.departmentService = departmentService;
         this.premiumCategoryService = premiumCategoryService;
         this.staffListRecordService = staffListRecordService;
         this.userService = userService;
+        this.timeSheetService = timeSheetService;
     }
 
     @Override
@@ -89,7 +92,6 @@ public class GeneratorStaffListRecordServiceImpl implements Generator<StaffListR
                     , staffListRecordDTO.getDepartment().getDepartmentIsProId(),
                     e.getMessage());
         }
-
 
         if (departmentOptional.isPresent())
         {

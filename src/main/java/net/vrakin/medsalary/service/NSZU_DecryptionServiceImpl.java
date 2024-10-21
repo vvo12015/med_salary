@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class NSZU_DecryptionServiceImpl extends AbstractService<NszuDecryption> implements NSZU_DecryptionService{
@@ -100,5 +101,10 @@ public class NSZU_DecryptionServiceImpl extends AbstractService<NszuDecryption> 
                                                                                                String servicePackageName, String providerPlace) {
         return nszuDecryptionRepository.findByExecutorNameAndExecutorUserPositionAndServicePackageNameAndProviderPlace(executorName,
                 executorUserPosition, servicePackageName, providerPlace);
+    }
+
+    @Override
+    public Optional<NszuDecryption> findByRecordId(String recordId) {
+        return nszuDecryptionRepository.findByRecordID(recordId);
     }
 }

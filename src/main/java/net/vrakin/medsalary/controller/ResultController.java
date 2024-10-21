@@ -26,6 +26,7 @@ public class ResultController {
     public static final String USER_POSITION_FILENAME = "user_positions";
     public static final String DEPARTMENT_FILENAME = "departments";
     private static final String STAFFLIST_FILENAME = "stafflist";
+    private static final String TIME_SHEET_FILENAME = "time_sheet";
     public static final String NSZU_DECRYPTION_FILENAME = "nszu_list";
 
     public static final int THREADS_COUNT = 10;
@@ -50,6 +51,10 @@ public class ResultController {
 
     private final NSZU_DecryptionService nszuDecryptionService;
 
+    private final TimeSheetService timeSheetService;
+
+    private final TimeSheetExcelReader timeSheetExcelReader;
+
     private final InitData initData;
 
     private final StorageService storageService;
@@ -65,7 +70,9 @@ public class ResultController {
                             GeneratorStaffListRecordService generatorStaffListRecordService,
                             NszuDecryptionExcelReader nszuDecryptionExcelReader,
                             NSZU_DecryptionService nszuDecryptionService,
-                            InitData initData, StorageService storageService) {
+                            InitData initData, StorageService storageService,
+                            TimeSheetService timeSheetService,
+                            TimeSheetExcelReader timeSheetExcelReader) {
         this.generatorResultService = generatorResultService;
         this.staffListRecordService = staffListRecordService;
         this.resultExcelWriter = resultExcelWriter;
@@ -79,6 +86,8 @@ public class ResultController {
         this.nszuDecryptionService = nszuDecryptionService;
         this.initData = initData;
         this.storageService = storageService;
+        this.timeSheetService = timeSheetService;
+        this.timeSheetExcelReader = timeSheetExcelReader;
     }
 
     private List<Result> resultList = new ArrayList<>();
@@ -105,40 +114,62 @@ public class ResultController {
     public String resultGenerateFromFiles(Model model) throws Exception {
         log.info("Accessing generate result from files page");
 
-        initData.init();
-        String userPositionFile = String.format("%s%s", USER_POSITION_FILENAME, ExcelHelper.FILE_EXTENSION);
-        List<UserPosition> userPositionList = userPositionExcelReader.readAllEntries(storageService.loadFromWorkDir(userPositionFile).toFile());
-        userPositionService.saveAll(userPositionList);
+        log.info("resultList.size: {}", resultList.size());
 
-        String departmentFileName = String.format("%s%s", DEPARTMENT_FILENAME, ExcelHelper.FILE_EXTENSION);
-        List<Department> departmentList = departmentExcelReader.readAllEntries(storageService.loadFromWorkDir(departmentFileName).toFile());
-        departmentService.saveAll(departmentList);
+        if (resultList.isEmpty()) {
+            String userPositionFile = String.format("%s%s", USER_POSITION_FILENAME, ExcelHelper.FILE_EXTENSION);
+            log.info("Loading userPositions from file");
+            List<UserPosition> userPositionList = userPositionExcelReader.readAllEntries(storageService.loadFromWorkDir(userPositionFile).toFile());
 
-        String staffListFileName = String.format("%s%s", STAFFLIST_FILENAME, ExcelHelper.FILE_EXTENSION);
+            log.info("Saving userPositions");
+            userPositionService.saveAll(userPositionList);
 
-        List<StaffListRecordDTO> staffListDTO = staffListRecordExcelReader.readAllDto(storageService.loadFromWorkDir(staffListFileName).toFile());
-        List<StaffListRecord> staffList = new ArrayList<>();
+            String departmentFileName = String.format("%s%s", DEPARTMENT_FILENAME, ExcelHelper.FILE_EXTENSION);
+            log.info("Loading department from file");
+            List<Department> departmentList = departmentExcelReader.readAllEntries(storageService.loadFromWorkDir(departmentFileName).toFile());
+            log.info("Saving department");
+            departmentService.saveAll(departmentList);
 
-        for (StaffListRecordDTO staffListRecordDTO : staffListDTO) {
-            StaffListRecord staffListRecord = generatorStaffListRecordService.generate(staffListRecordDTO);
-            staffList.add(staffListRecord);
+            String timeSheetFileName = String.format("%s%s", TIME_SHEET_FILENAME, ExcelHelper.FILE_EXTENSION);
+            log.info("Loading time sheet from file");
+            List<TimeSheet> timeSheets = timeSheetExcelReader.readAllEntries(storageService.loadFromWorkDir(timeSheetFileName).toFile());
+            log.info("Saving timeSheets");
+            timeSheetService.saveAll(timeSheets);
+
+            String staffListFileName = String.format("%s%s", STAFFLIST_FILENAME, ExcelHelper.FILE_EXTENSION);
+
+            log.info("Loading staffList from file");
+            List<StaffListRecordDTO> staffListDTO = staffListRecordExcelReader.readAllDto(storageService.loadFromWorkDir(staffListFileName).toFile());
+            List<StaffListRecord> staffList = new ArrayList<>();
+
+            log.info("Generating stafflist start");
+            for (StaffListRecordDTO staffListRecordDTO : staffListDTO) {
+                if (staffListRecordService.findByStaffListId(staffListRecordDTO.getStaffListId()).isEmpty()) {
+                    StaffListRecord staffListRecord = generatorStaffListRecordService.generate(staffListRecordDTO);
+                    staffList.add(staffListRecord);
+                }
+            }
+            log.info("Saving staffList");
+            staffListRecordService.saveAll(staffList);
+
+            String nszuDecryptionName = String.format("%s%s", NSZU_DECRYPTION_FILENAME, ExcelHelper.FILE_EXTENSION);
+
+            log.info("Loading NSZU_Decryption from file");
+            List<NszuDecryption> nszuDecryptionList = nszuDecryptionExcelReader.readAllEntries(storageService.loadFromWorkDir(nszuDecryptionName).toFile());
+
+            log.info("Saving NSZU_Decryption");
+            if (nszuDecryptionService.findAll().size() < 5) nszuDecryptionService.saveAll(nszuDecryptionList);
+
+            generateAndSendResult(model);
         }
-        staffListRecordService.saveAll(staffList);
-
-        String nszuDecryptionName = String.format("%s%s", NSZU_DECRYPTION_FILENAME, ExcelHelper.FILE_EXTENSION);
-
-        List<NszuDecryption> nszuDecryptionList = nszuDecryptionExcelReader.readAllEntries(storageService.loadFromWorkDir(nszuDecryptionName).toFile());
-
-        nszuDecryptionService.saveAll(nszuDecryptionList);
-
-        generateAndSendResult(model);
-
         return "result";
     }
 
     private void generateAndSendResult(Model model) throws IOException {
+        log.info("StaffList find start");
         List<StaffListRecord> staffListRecordList = staffListRecordService.findAll();
 
+        log.info("Result generating start");
         resultList = staffListRecordList.stream().map(s -> {
                     try {
                         return generatorResultService.generate(s);
@@ -148,7 +179,9 @@ public class ResultController {
                 })
                 .toList();
 
+        log.info("Result write in file");
         resultExcelWriter.writeAll(resultList);
+
         model.addAttribute("result_count", resultList.size());
         model.addAttribute("results", resultList);
     }

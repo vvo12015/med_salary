@@ -1,11 +1,11 @@
 package net.vrakin.medsalary.generator;
 
-import net.vrakin.medsalary.domain.Result;
-import net.vrakin.medsalary.domain.ServicePackage;
-import net.vrakin.medsalary.domain.StaffListRecord;
-import net.vrakin.medsalary.domain.User;
+import net.vrakin.medsalary.domain.*;
+import net.vrakin.medsalary.exception.ResourceNotFoundException;
+import net.vrakin.medsalary.repository.TimeSheetRepository;
 import net.vrakin.medsalary.service.ServicePackageService;
 import net.vrakin.medsalary.service.StaffListRecordService;
+import net.vrakin.medsalary.service.TimeSheetService;
 import net.vrakin.medsalary.service.service_package_handler.CalculateManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,6 +29,7 @@ public class GeneratorResultServiceImpl implements GeneratorResultService {
     private final ServicePackageService servicePackageService;
 
     private final CalculateManager calculateManager;
+    private TimeSheetService timeSheetService;
 
     @Autowired
     public GeneratorResultServiceImpl(StaffListRecordService staffListRecordService, ServicePackageService servicePackageService,
@@ -41,8 +43,10 @@ public class GeneratorResultServiceImpl implements GeneratorResultService {
     public Result generate(StaffListRecord staffListRecord){
 
         Float employmentPart = getEmploymentPart(staffListRecord, staffListRecord.getUser());
+
+        Float hourCoefficient = getHourCoefficient(staffListRecord.getStaffListId());
         Result result = new Result(staffListRecord.getUser(), staffListRecord.getUserPosition(),
-                staffListRecord.getDepartment(), getEmployment(staffListRecord.getUser()), employmentPart);
+                staffListRecord.getDepartment(), getEmployment(staffListRecord.getUser()), employmentPart, hourCoefficient);
 
         if (Objects.requireNonNullElse(staffListRecord.getDepartment().getServicePackages(), EMPTY_SING).equals(EMPTY_SING)
                 || Objects.requireNonNullElse(staffListRecord.getUserPosition().getServicePackageNumbers(), EMPTY_SING).equals(EMPTY_SING)) {
@@ -68,6 +72,19 @@ public class GeneratorResultServiceImpl implements GeneratorResultService {
         log.info("result: {}", result);
 
         return result;
+    }
+
+    private Float getHourCoefficient(String staffListId) {
+        Optional<TimeSheet> timeSheetOptional = timeSheetService.findByStaffListRecordId(staffListId);
+
+        if (timeSheetOptional.isPresent()){
+            Float hourFact = timeSheetOptional.get().getFactTime();
+            Float hourPlan = timeSheetOptional.get().getPlanTime();
+
+            return hourFact/hourPlan;
+        }else {
+            throw new ResourceNotFoundException("Result", "StaffListId", "TimeSheet");
+        }
     }
 
     private Float getEmploymentPart(StaffListRecord staffListRecord, User user) {

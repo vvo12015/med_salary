@@ -26,7 +26,7 @@ public class CalculateByPriorityServicePackage extends AbstractCalculateStrategy
         result.setCountEMR_priorityService(Objects.requireNonNullElse(result.getCountEMR_priorityService(), 0) + nszuDecryptionList.size());
 
         result.setAmblNSZU_Premium(result.getAmblNSZU_Premium()
-                + PACKAGE_COST * nszuDecryptionList.size() * result.getEmploymentPart());
+                + PACKAGE_COST * nszuDecryptionList.size() * result.getEmploymentPart() * result.getHourCoefficient());
     }
 
 }

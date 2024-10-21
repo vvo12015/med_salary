@@ -25,15 +25,49 @@ public abstract class ResultMapper implements BaseMapper<Result, ResultDTO> {
     public List<String> toStringList(Result result){
         List<String> listOfResult = new ArrayList<>();
 
-        listOfResult.add(Objects.toString(result.getId()));
         listOfResult.add(result.getUser().getName());
         listOfResult.add(result.getDepartment().getName());
+        listOfResult.add(result.getDepartment().getDepartmentTemplateId());
         listOfResult.add(result.getUserPosition().getName());
-        listOfResult.add(result.getEmploymentPart().toString());
-        listOfResult.add(result.getHospNSZU_Premium().toString());
-        listOfResult.add(result.getAmblNSZU_Premium().toString());
-        listOfResult.add(result.getOneDaySurgery().toString());
+        listOfResult.add(Objects.requireNonNullElse(result.getUserPosition().getMaxPoint(), 0).toString());
+        listOfResult.add(Objects.requireNonNullElse(result.getHourCoefficient(), 0).toString());
+        listOfResult.add(Objects.requireNonNullElse(result.getUserPosition().getPointValue(), 0).toString());
+        listOfResult.add(String.format("%.2f",(result.getEmployment())));
+        listOfResult.add(String.format("%.2f",result.getEmploymentPart()));
+        listOfResult.add(String.format("%.2f",(result.getEmploymentPart()* result.getEmployment())));
+        listOfResult.add(Objects.requireNonNullElse(result.getHospNSZU_Premium(), 0f).toString());
+        listOfResult.add(Objects.requireNonNullElse(result.getCountEMR_stationary(), 0f).toString());
+        listOfResult.add(Objects.requireNonNullElse(result.getAmblNSZU_Premium(), 0f).toString());
+        listOfResult.add(Objects.requireNonNullElse(result.getSumForAmlPackage(), 0f).toString());
+        listOfResult.add(Objects.requireNonNullElse(result.getCountEMR_priorityService(), 0f).toString());
+        listOfResult.add(Objects.requireNonNullElse(result.getOneDaySurgery(), 0f).toString());
+        listOfResult.add(Objects.requireNonNullElse(result.getCountEMR_oneDaySurgery(), 0f).toString());
         listOfResult.add(result.getDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+
+        return listOfResult;
+    }
+
+    public List<String> toStringListColNames(){
+        List<String> listOfResult = new ArrayList<>();
+
+        listOfResult.add("ПІБ працівника");
+        listOfResult.add("Назва відділення");
+        listOfResult.add("Код шаблона відділення");
+        listOfResult.add("Назва посади");
+        listOfResult.add("Коефіцієнт відпрацьованих годин");
+        listOfResult.add("Максимальна кількість балів");
+        listOfResult.add("Сума за бал");
+        listOfResult.add("Сума ставок");
+        listOfResult.add("Частка ставки");
+        listOfResult.add("Ставка поточної посади");
+        listOfResult.add("Премія за стаціонар");
+        listOfResult.add("Кількість ЕМЗ в стаціонарі");
+        listOfResult.add("Премія 9 пакет");
+        listOfResult.add("Сума 9 пакет");
+        listOfResult.add("Кількість пріоритетних послуг");
+        listOfResult.add("Премія за стаціонар одного дня");
+        listOfResult.add("Кількість ЕМЗ стаціонару одного дня");
+        listOfResult.add("Дата");
 
         return listOfResult;
     }

@@ -28,7 +28,7 @@ public class CalculateByStationaryNoOperation extends AbstractCalculateStrategy 
 
         if (!nszuDecryptionList.isEmpty()){
             result.setHospNSZU_Premium(
-                    result.getHospNSZU_Premium() + nszuDecryptionList.size() * PACKAGE_COST * result.getEmploymentPart()
+                    result.getHospNSZU_Premium() + nszuDecryptionList.size() * PACKAGE_COST * result.getEmploymentPart() * result.getHourCoefficient()
             );
         }
 

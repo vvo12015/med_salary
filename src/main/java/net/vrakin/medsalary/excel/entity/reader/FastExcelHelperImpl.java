@@ -3,6 +3,7 @@ package net.vrakin.medsalary.excel.entity.reader;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.vrakin.medsalary.exception.CellNullPointerException;
+import net.vrakin.medsalary.exception.ResourceNotFoundException;
 import org.dhatim.fastexcel.Workbook;
 import org.dhatim.fastexcel.Worksheet;
 import org.dhatim.fastexcel.reader.Cell;
@@ -129,14 +130,23 @@ public class FastExcelHelperImpl implements ExcelHelper{
 
         try (OutputStream os = Files.newOutputStream(file.toPath());
              Workbook wb = new Workbook(os, "MyApplication", "1.0")) {
-            Worksheet ws = wb.newWorksheet("Sheet 1");
+            Worksheet ws = wb.newWorksheet("Премія");
             ws.width(0, 25);
             ws.width(1, 15);
 
-            ws.range(0, 0, 0, 1).style().fontName("Times New Roman").fontSize(16).bold().fillColor("3366FF").set();
+            List<String> colNames = listCells.stream().findFirst().orElseThrow(()->new ResourceNotFoundException("List from resultList", "first el", "first el"));
+
+            ws.range(0, 0, 0, colNames.size()).style()
+                    .fontName("Calibri")
+                    .fontSize(11)
+                    .bold()
+                    .fontColor("#000000")  // Чорний колір тексту
+                    .fillColor("#2a9d8f")  // Зелений колір заливки
+                    .set();
 
             for (int i = 0; i < listCells.size(); i++) {
                 List<String> row = listCells.get(i);
+                log.info("row: {}", row.toString());
                 for (int j = 0; j < row.size(); j++) {
                     ws.value(i, j, row.get(j));
                 }

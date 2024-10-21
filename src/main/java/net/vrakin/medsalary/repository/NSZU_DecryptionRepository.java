@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface NSZU_DecryptionRepository extends JpaRepository<NszuDecryption, Long> {
@@ -34,4 +35,6 @@ public interface NSZU_DecryptionRepository extends JpaRepository<NszuDecryption,
                                                                                                         String executorUserPosition,
                                                                                                         String servicePackageName,
                                                                                                         String providerPlace);
+
+    Optional<NszuDecryption> findByRecordID(String recordID);
 }

@@ -1,6 +1,7 @@
 package net.vrakin.medsalary.excel.entity.reader;
 
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.vrakin.medsalary.domain.TimeSheet;
 import net.vrakin.medsalary.dto.TimeSheetDTO;
 import net.vrakin.medsalary.mapper.TimeSheetMapper;
@@ -11,9 +12,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @NoArgsConstructor
+@Slf4j
 public class TimeSheetExcelReader extends AbstractExcelReader<TimeSheet, TimeSheetDTO>
         implements ExcelReader<TimeSheet, TimeSheetDTO>{
 
@@ -50,11 +53,13 @@ public class TimeSheetExcelReader extends AbstractExcelReader<TimeSheet, TimeShe
         @Override
         public TimeSheetDTO toDTOFromString(String stringDTO) {
 
+            log.info("Reading timeSheet: {}", stringDTO);
             List<String> stringList = Arrays.stream(stringDTO.split(ExcelHelper.WORD_SEPARATOR))
                     .toList();
             TimeSheetDTO dto = new TimeSheetDTO();
 
-            if (stringList.size() >= fileFormatDetails.getFileColumnCount()){
+            if (Objects.isNull(stringList.getFirst()) &&
+                    stringList.size() >= fileFormatDetails.getFileColumnCount()){
 
                 dto.setStaffListRecordId(stringList.get(TIME_SHEET_STAFFLISTID_INDEX));
                 dto.setFactTime(Float.parseFloat(stringList.get(TIME_SHEET_FACT_INDEX)));
