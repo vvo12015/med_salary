@@ -36,19 +36,21 @@ public class CalculateByAmbulatoryNoOperation extends AbstractCalculateStrategy 
         nszuDecryptionList.forEach(n->log.info(n.toString()));
         result.setSumForAmlPackage(Objects.requireNonNullElse(result.getSumForAmlPackage(), 0f) + sum);
         result.setCountEMR_ambulatory(Objects.requireNonNullElse(result.getCountEMR_ambulatory(), 0) + nszuDecryptionList.size());
-        log.info("pib: {}, count: {}, sum: {}, calculateSum: {}"
-                , result.getUser().getName(), nszuDecryptionList.size(), sum, calculateAmbulPremiumBySum(sum, result.getEmploymentPart()));
 
-        result.setAmblNSZU_Premium(
-                result.getAmblNSZU_Premium() + calculateAmbulPremiumBySum(sum, result.getEmploymentPart())
-        );
+        float coeficient = (Objects.requireNonNullElse(result.getEmployment(), 0f));
+        float amblPremium = calculateAmbulPremiumBySum(sum, coeficient);
+        log.info("pib: {}, count: {}, sum: {}, calculateSum: {}"
+                , result.getUser().getName(), nszuDecryptionList.size(), sum, amblPremium);
+
+        result.setAmblNSZU_Premium(result.getAmblNSZU_Premium() + amblPremium);
     }
 
     private float calculateAmbulPremiumBySum(float x, float coefficient) {
         float rs = x - SUM_THRESHOLD * coefficient;
         
         if (rs > LIMIT_THRESHOLD * coefficient){
-            return IN_LIMIT_THRESHOLD * LIMIT_THRESHOLD + ((rs - LIMIT_THRESHOLD * coefficient) * OUT_LIMIT_THRESHOLD);
+            return IN_LIMIT_THRESHOLD * LIMIT_THRESHOLD * coefficient
+                    + ((rs - LIMIT_THRESHOLD * coefficient) * OUT_LIMIT_THRESHOLD);
         }else return  rs * IN_LIMIT_THRESHOLD;
     }
 

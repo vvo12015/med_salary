@@ -54,12 +54,14 @@ public class Result {
     private Integer countEMR_ambulatory;
     private Integer countEMR_oneDaySurgery;
     private Integer countEMR_priorityService;
+    private Float employment;
 
-    public Result(User user, UserPosition userPosition, Department department, Float employmentPart) {
+    public Result(User user, UserPosition userPosition, Department department, Float employment, Float employmentPart) {
         this.id = null;
         this.user = user;
         this.userPosition = userPosition;
         this.department = department;
+        this.employment = employment;
         this.employmentPart = employmentPart;
         this.hospNSZU_Premium = 0f;
         this.amblNSZU_Premium = 0f;

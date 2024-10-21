@@ -11,4 +11,5 @@ import org.springframework.context.annotation.Configuration;
 @Setter
 public class StorageProperties {
     private String uploadDir;
+    private String workDir;
 }

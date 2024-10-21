@@ -8,6 +8,7 @@ import net.vrakin.medsalary.exception.ExcelFileErrorException;
 import net.vrakin.medsalary.exception.ResourceExistException;
 import net.vrakin.medsalary.exception.ResourceNotFoundException;
 import net.vrakin.medsalary.service.*;
+import org.hibernate.NonUniqueResultException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -79,8 +80,16 @@ public class GeneratorStaffListRecordServiceImpl implements Generator<StaffListR
         entity.setUserPosition(userPosition);
 
         Department department;
-        Optional<Department> departmentOptional = departmentService.findByDepartmentIsProId(
-                staffListRecordDTO.getDepartment().getDepartmentIsProId());
+        Optional<Department> departmentOptional = Optional.empty();
+        try {
+            departmentOptional = departmentService.findByDepartmentIsProId(
+                    staffListRecordDTO.getDepartment().getDepartmentIsProId());
+        }catch (NonUniqueResultException e){
+            log.error("departmentIsProId: {} , errorMessage: {}"
+                    , staffListRecordDTO.getDepartment().getDepartmentIsProId(),
+                    e.getMessage());
+        }
+
 
         if (departmentOptional.isPresent())
         {

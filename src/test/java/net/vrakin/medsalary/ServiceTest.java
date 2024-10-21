@@ -95,7 +95,7 @@ public final class ServiceTest {
     }
 
     @BeforeAll
-    public void setUp() throws IOException {
+    public void setUp() throws Exception {
         initData.init();
         String userPositionFile = String.format("%s_test%s", USER_POSITION_FILENAME, ExcelHelper.FILE_EXTENSION);
         List<UserPosition> userPositionList = userPositionExcelReader.readAllEntries(storageService.load(userPositionFile).toFile());

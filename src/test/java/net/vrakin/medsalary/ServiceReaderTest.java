@@ -131,7 +131,7 @@ public final class ServiceReaderTest {
 
     @Test
     @Order(3)
-    public void staffListTest(){
+    public void staffListTest() throws Exception {
         log.info("StaffList loaded");
 
         String destinationFileName = String.format("%s_test%s", STAFFLIST_FILENAME, ExcelHelper.FILE_EXTENSION);

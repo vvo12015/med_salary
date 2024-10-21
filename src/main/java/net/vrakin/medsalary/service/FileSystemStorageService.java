@@ -22,9 +22,11 @@ import java.nio.file.StandardCopyOption;
 import java.util.stream.Stream;
 
 @Service
+@Getter
 public class FileSystemStorageService implements StorageService {
 
-    @Getter
+
+    private final Path workLocation;
     private final Path rootLocation;
 
     @Autowired
@@ -33,8 +35,12 @@ public class FileSystemStorageService implements StorageService {
         if(properties.getUploadDir().trim().isEmpty()){
             throw new StorageException("File upload location can not be Empty.");
         }
+        if(properties.getWorkDir().trim().isEmpty()){
+            throw new StorageException("File work location can not be Empty.");
+        }
 
         this.rootLocation = Paths.get(properties.getUploadDir());
+        this.workLocation = Paths.get(properties.getWorkDir());
     }
 
     @Override
@@ -80,6 +86,11 @@ public class FileSystemStorageService implements StorageService {
     @Override
     public Path load(String filename) {
         return rootLocation.resolve(filename);
+    }
+
+    @Override
+    public Path loadFromWorkDir(String filename) {
+        return workLocation.resolve(filename);
     }
 
     @Override

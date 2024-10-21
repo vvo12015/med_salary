@@ -131,7 +131,7 @@ public class CalculateTest {
         ServicePackage servicePackage4 = servicePackageService.findByNumber(SERVICE_PACKAGE_4_NUMBER).get();
 
         Result result = new Result(staffListRecordDoctor3.getUser(), staffListRecordDoctor3.getUserPosition(),
-                staffListRecordDoctor3.getDepartment(), 1f);
+                staffListRecordDoctor3.getDepartment(), 1f, 1f);
 
         calculateManager.calculate(servicePackage4, result);
 
@@ -145,7 +145,7 @@ public class CalculateTest {
         ServicePackage servicePackage9 = servicePackageService.findByNumber(SERVICE_PACKAGE_9_NUMBER).get();
 
         Result result = new Result(staffListRecordDoctor2.getUser(), staffListRecordDoctor2.getUserPosition(),
-                staffListRecordDoctor2.getDepartment(), 1f);
+                staffListRecordDoctor2.getDepartment(), 1f, 1f);
 
         calculateManager.calculate(servicePackage9, result);
 
@@ -159,7 +159,7 @@ public class CalculateTest {
         ServicePackage servicePackage47 = servicePackageService.findByNumber(SERVICE_PACKAGE_47_NUMBER).get();
 
         Result result = new Result(staffListRecordDoctor1.getUser(), staffListRecordDoctor1.getUserPosition(),
-                staffListRecordDoctor1.getDepartment(), 1f);
+                staffListRecordDoctor1.getDepartment(), 1f, 1f);
 
         calculateManager.calculate(servicePackage47, result);
 
@@ -174,7 +174,7 @@ public class CalculateTest {
         ServicePackage servicePackage13 = servicePackageService.findByNumber(SERVICE_PACKAGE_13_NUMBER).get();
 
         Result result = new Result(staffListRecordDoctor4.getUser(), staffListRecordDoctor4.getUserPosition(),
-                staffListRecordDoctor4.getDepartment(), 1f);
+                staffListRecordDoctor4.getDepartment(), 1f, 1f);
 
         calculateManager.calculate(servicePackage12, result);
         calculateManager.calculate(servicePackage13, result);

@@ -41,7 +41,8 @@ public class GeneratorResultServiceImpl implements GeneratorResultService {
     public Result generate(StaffListRecord staffListRecord){
 
         Float employmentPart = getEmploymentPart(staffListRecord, staffListRecord.getUser());
-        Result result = new Result(staffListRecord.getUser(), staffListRecord.getUserPosition(), staffListRecord.getDepartment(), employmentPart);
+        Result result = new Result(staffListRecord.getUser(), staffListRecord.getUserPosition(),
+                staffListRecord.getDepartment(), getEmployment(staffListRecord.getUser()), employmentPart);
 
         if (Objects.requireNonNullElse(staffListRecord.getDepartment().getServicePackages(), EMPTY_SING).equals(EMPTY_SING)
                 || Objects.requireNonNullElse(staffListRecord.getUserPosition().getServicePackageNumbers(), EMPTY_SING).equals(EMPTY_SING)) {
@@ -65,16 +66,22 @@ public class GeneratorResultServiceImpl implements GeneratorResultService {
         }
 
         log.info("result: {}", result);
+
         return result;
     }
 
     private Float getEmploymentPart(StaffListRecord staffListRecord, User user) {
+        Float employmentSum = getEmployment(user);
+        return staffListRecord.getEmployment() / employmentSum;
+    }
+
+    private Float getEmployment(User user) {
         Float employmentSum =
                 staffListRecordService.findByUser(user)
                         .stream()
                         .map(StaffListRecord::getEmployment)
                         .reduce(0f, Float::sum);
-        return staffListRecord.getEmployment() / employmentSum;
+        return employmentSum;
     }
 
     private List<ServicePackage> generateListUserPositionDepartment(StaffListRecord staffListRecord) {
