@@ -63,8 +63,7 @@ public class TimeSheetExcelReader extends AbstractExcelReader<TimeSheet, TimeShe
             TimeSheetDTO dto = new TimeSheetDTO();
 
             if (!stringList.get(TIME_SHEET_STAFFLISTID_INDEX).equals(NULL) &&
-                    !stringList.get(TIME_SHEET_PLAN_INDEX).equals(NULL) &&
-                    stringList.size() <= fileFormatDetails.getFileColumnCount()){
+                    !stringList.get(TIME_SHEET_PLAN_INDEX).equals(NULL)){
 
                 dto.setStaffListRecordId(stringList.get(TIME_SHEET_STAFFLISTID_INDEX));
                 dto.setFactTime(Float.parseFloat(stringList.get(TIME_SHEET_FACT_INDEX).equals(NULL)? ZERO:stringList.get(TIME_SHEET_FACT_INDEX)));

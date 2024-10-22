@@ -11,7 +11,7 @@ import java.util.Objects;
 @Service
 public class CalculateVlk extends AbstractCalculateStrategy implements CalculateStrategy {
 
-    private static final float CALCULATE_PERCENT = 0.125f;
+    private static final float CALCULATE_PERCENT = 1.25f/100f;
 
     private static Float packageSum;
 
