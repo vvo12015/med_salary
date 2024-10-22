@@ -14,7 +14,7 @@ public abstract class AbstractCalculateStrategy {
     public static final String AMBULANCE_ADDRESS = "ЗАКАРПАТСЬКА область, МУКАЧІВСЬКИЙ район, місто МУКАЧЕВО, вулиця Грушевського Михайла, 29";
     public static final String STATIONARY_ADDRESS = "ЗАКАРПАТСЬКА область, МУКАЧІВСЬКИЙ район, місто МУКАЧЕВО, вулиця Новака Андрія, 8-13";
     public static final String WOMAN_CONSULTATION = "019708";
-    private final NSZU_DecryptionService nszu_decryptionService;
+    protected final NSZU_DecryptionService nszu_decryptionService;
 
     public AbstractCalculateStrategy(NSZU_DecryptionService nszu_decryptionService) {
         this.nszu_decryptionService = nszu_decryptionService;

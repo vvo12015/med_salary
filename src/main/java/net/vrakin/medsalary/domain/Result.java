@@ -52,12 +52,23 @@ public class Result {
     private Float sumForAmlPackage;
 
     private Integer countEMR_ambulatory;
+
     private Integer countEMR_oneDaySurgery;
+
     private Integer countEMR_priorityService;
+
     private Float employment;
+
     private Float hourCoefficient;
 
-    public Result(User user, UserPosition userPosition, Department department, Float employment, Float employmentPart, Float hourCoefficient) {
+    private Float vlkCoefficient;
+
+    private Float sumForVlk;
+
+    public Result(User user, UserPosition userPosition,
+                  Department department,
+                  Float employment, Float employmentPart,
+                  Float hourCoefficient, Float vlkCoefficient) {
         this.id = null;
         this.user = user;
         this.userPosition = userPosition;
@@ -67,8 +78,10 @@ public class Result {
         this.hospNSZU_Premium = 0f;
         this.amblNSZU_Premium = 0f;
         this.oneDaySurgery = 0f;
+        this.sumForVlk = 0f;
         this.date = LocalDate.now();
         this.hourCoefficient = hourCoefficient;
+        this.vlkCoefficient = vlkCoefficient;
     }
 
     @Override
@@ -90,6 +103,7 @@ public class Result {
                 ", countEMR_priorityService=" + countEMR_priorityService +
                 ", employment=" + employment +
                 ", hourCoefficient=" + hourCoefficient +
+                ", vlkCoefficient=" + vlkCoefficient +
                 '}';
     }
 }

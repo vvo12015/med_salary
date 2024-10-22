@@ -29,8 +29,8 @@ public abstract class ResultMapper implements BaseMapper<Result, ResultDTO> {
         listOfResult.add(result.getDepartment().getName());
         listOfResult.add(result.getDepartment().getDepartmentTemplateId());
         listOfResult.add(result.getUserPosition().getName());
-        listOfResult.add(Objects.requireNonNullElse(result.getUserPosition().getMaxPoint(), 0).toString());
         listOfResult.add(Objects.requireNonNullElse(result.getHourCoefficient(), 0).toString());
+        listOfResult.add(Objects.requireNonNullElse(result.getUserPosition().getMaxPoint(), 0).toString());
         listOfResult.add(Objects.requireNonNullElse(result.getUserPosition().getPointValue(), 0).toString());
         listOfResult.add(String.format("%.2f",(result.getEmployment())));
         listOfResult.add(String.format("%.2f",result.getEmploymentPart()));
@@ -42,6 +42,8 @@ public abstract class ResultMapper implements BaseMapper<Result, ResultDTO> {
         listOfResult.add(Objects.requireNonNullElse(result.getCountEMR_priorityService(), 0f).toString());
         listOfResult.add(Objects.requireNonNullElse(result.getOneDaySurgery(), 0f).toString());
         listOfResult.add(Objects.requireNonNullElse(result.getCountEMR_oneDaySurgery(), 0f).toString());
+        listOfResult.add(Objects.requireNonNullElse(result.getVlkCoefficient(), 0f).toString());
+        listOfResult.add(Objects.requireNonNullElse(result.getSumForVlk(), 0f).toString());
         listOfResult.add(result.getDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
 
         return listOfResult;
@@ -67,6 +69,8 @@ public abstract class ResultMapper implements BaseMapper<Result, ResultDTO> {
         listOfResult.add("Кількість пріоритетних послуг");
         listOfResult.add("Премія за стаціонар одного дня");
         listOfResult.add("Кількість ЕМЗ стаціонару одного дня");
+        listOfResult.add("Коефіцієнт год по ВЛК");
+        listOfResult.add("Сума по ВЛК");
         listOfResult.add("Дата");
 
         return listOfResult;

@@ -2,6 +2,8 @@ package net.vrakin.medsalary.repository;
 
 import net.vrakin.medsalary.domain.NszuDecryption;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -37,4 +39,8 @@ public interface NSZU_DecryptionRepository extends JpaRepository<NszuDecryption,
                                                                                                         String providerPlace);
 
     Optional<NszuDecryption> findByRecordID(String recordID);
+
+    @Query("SELECT SUM(n.tariffUAH) FROM NszuDecryption n WHERE n.servicePackageName = :servicePackageName")
+    Float sumTariffUAHByServicePackageName(@Param("servicePackageName") String servicePackageName);
+
 }

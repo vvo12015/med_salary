@@ -34,6 +34,8 @@ public class CalculateManagerImpl implements CalculateManager {
         calculateStrategyMap.put("13", new CalculateByPriorityServicePackage(nszu_decryptionService));
         calculateStrategyMap.put("14", new CalculateByPriorityServicePackage(nszu_decryptionService));
         calculateStrategyMap.put("15", new CalculateByPriorityServicePackage(nszu_decryptionService));
+
+        calculateStrategyMap.put("60", new CalculateVlk(nszu_decryptionService));
     }
 
     public void calculate(ServicePackage servicePackage, Result result) {

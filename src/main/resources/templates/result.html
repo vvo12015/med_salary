@@ -26,39 +26,13 @@
     <table class="table table-bordered">
         <thead>
         <tr>
-            <th>ПІБ</th>
-            <th>Відділ</th>
-            <th>Посада</th>
-            <th>Ставка</th>
-            <th>Максимальна кількість балів</th>
-            <th>Сума за бал</th>
-            <th>Кількість стаціонарних ЕМЗ</th>
-            <th>Премія за стаціонарні взаємодії</th>
-            <th>Премія за амбулаторні взаємодії</th>
-            <th>Сума 9-го пакету</th>
-            <th>Хірургія одного дня</th>
-            <th>Кількість ЕМЗ хірургії одного дня</th>
-            <th>Кількість пріоритетних ЕМЗ</th>
-            <th>Кількість амбулаторних ЕМЗ</th>
+            <th th:each="colname : ${colNames}" th:text="${colname != null ? colname : ''}"></th>
         </tr>
         </thead>
         <tbody id="staffTable">
-        <tr th:each="result : ${results}" th:attr="data-id=${result.id}">
-            <td th:text="${result.user.name != null ? result.user.name : 'null'}"></td>
-            <td th:text="${result.department.name != null ? result.department.name : 'null'}"></td>
-            <td th:text="${result.userPosition.name != null ? result.userPosition.name : 'null'}"></td>
-            <td th:text="${result.employmentPart != null ? result.employmentPart : 0}"></td>
-            <td th:text="${result.userPosition.maxPoint != null ? result.userPosition.maxPoint : 0}"></td>
-            <td th:text="${result.userPosition.pointValue != null ? result.userPosition.pointValue : 0}"></td>
-            <td th:text="${result.countEMR_stationary != null ? result.countEMR_stationary : 0}"></td>
-            <td th:text="${result.hospNSZU_Premium != null ? result.hospNSZU_Premium : 0}"></td>
-            <td th:text="${result.amblNSZU_Premium != null ? result.amblNSZU_Premium : 0}"></td>
-            <td th:text="${result.sumForAmlPackage != null ? result.sumForAmlPackage : 0}"></td>
-            <td th:text="${result.oneDaySurgery != null ? result.oneDaySurgery : 0}"></td>
-            <td th:text="${result.countEMR_oneDaySurgery != null ? result.countEMR_oneDaySurgery : 0}"></td>
-            <td th:text="${result.countEMR_priorityService != null ? result.countEMR_priorityService : 0}"></td>
-            <td th:text="${result.countEMR_ambulatory != null ? result.countEMR_ambulatory : 0}"></td>
-        </tr>
+            <tr th:each="result, rowStat : ${results}">
+                <td th:each="cell : ${result}" th:text="${cell}"></td>
+            </tr>
         </tbody>
     </table>
 </div>

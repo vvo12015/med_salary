@@ -25,6 +25,9 @@ public class TimeSheet {
     @Column
     private Float factTime;
 
+    @Column
+    private Float vlkTime;
+
     @Override
     public String toString() {
         return "TimeSheet{" +
@@ -32,6 +35,7 @@ public class TimeSheet {
                 ", staffListRecordId='" + staffListRecordId + '\'' +
                 ", planTime=" + planTime +
                 ", factTime=" + factTime +
+                ", hourVlk=" + vlkTime +
                 '}';
     }
 }

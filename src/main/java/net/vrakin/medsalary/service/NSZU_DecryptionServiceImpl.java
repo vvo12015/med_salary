@@ -107,4 +107,9 @@ public class NSZU_DecryptionServiceImpl extends AbstractService<NszuDecryption> 
     public Optional<NszuDecryption> findByRecordId(String recordId) {
         return nszuDecryptionRepository.findByRecordID(recordId);
     }
+
+    @Override
+    public Float sumTariffUAHByServicePackageName(String servicePackageName) {
+        return nszuDecryptionRepository.sumTariffUAHByServicePackageName(servicePackageName);
+    }
 }

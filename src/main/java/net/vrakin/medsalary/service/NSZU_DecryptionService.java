@@ -41,4 +41,6 @@ public interface NSZU_DecryptionService extends Service<NszuDecryption> {
                                                                                                         String servicePackageName, String providerPlace);
 
     Optional<NszuDecryption> findByRecordId(String recordId);
+
+    Float sumTariffUAHByServicePackageName(String servicePackageName);
 }

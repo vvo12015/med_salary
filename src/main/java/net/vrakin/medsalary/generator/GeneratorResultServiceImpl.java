@@ -2,7 +2,6 @@ package net.vrakin.medsalary.generator;
 
 import net.vrakin.medsalary.domain.*;
 import net.vrakin.medsalary.exception.ResourceNotFoundException;
-import net.vrakin.medsalary.repository.TimeSheetRepository;
 import net.vrakin.medsalary.service.ServicePackageService;
 import net.vrakin.medsalary.service.StaffListRecordService;
 import net.vrakin.medsalary.service.TimeSheetService;
@@ -29,14 +28,18 @@ public class GeneratorResultServiceImpl implements GeneratorResultService {
     private final ServicePackageService servicePackageService;
 
     private final CalculateManager calculateManager;
-    private TimeSheetService timeSheetService;
+
+    private final TimeSheetService timeSheetService;
+
+    private static Float sumVlkTime;
 
     @Autowired
     public GeneratorResultServiceImpl(StaffListRecordService staffListRecordService, ServicePackageService servicePackageService,
-                                      CalculateManager calculateManager) {
+                                      CalculateManager calculateManager, TimeSheetService timeSheetService) {
         this.staffListRecordService = staffListRecordService;
         this.servicePackageService = servicePackageService;
         this.calculateManager = calculateManager;
+        this.timeSheetService = timeSheetService;
     }
 
     @Override
@@ -45,8 +48,12 @@ public class GeneratorResultServiceImpl implements GeneratorResultService {
         Float employmentPart = getEmploymentPart(staffListRecord, staffListRecord.getUser());
 
         Float hourCoefficient = getHourCoefficient(staffListRecord.getStaffListId());
+
+        Float vlkCoefficient = getVlkCoefficient(staffListRecord.getStaffListId());
+
         Result result = new Result(staffListRecord.getUser(), staffListRecord.getUserPosition(),
-                staffListRecord.getDepartment(), getEmployment(staffListRecord.getUser()), employmentPart, hourCoefficient);
+                staffListRecord.getDepartment(), getEmployment(staffListRecord.getUser()),
+                employmentPart, hourCoefficient, vlkCoefficient);
 
         if (Objects.requireNonNullElse(staffListRecord.getDepartment().getServicePackages(), EMPTY_SING).equals(EMPTY_SING)
                 || Objects.requireNonNullElse(staffListRecord.getUserPosition().getServicePackageNumbers(), EMPTY_SING).equals(EMPTY_SING)) {
@@ -74,6 +81,22 @@ public class GeneratorResultServiceImpl implements GeneratorResultService {
         return result;
     }
 
+    private Float getVlkCoefficient(String staffListId) {
+        Optional<TimeSheet> timeSheetOptional = timeSheetService.findByStaffListRecordId(staffListId);
+
+        if (Objects.isNull(sumVlkTime)){
+            sumVlkTime = timeSheetService.sumVlkTime();
+        }
+
+        if (timeSheetOptional.isPresent()){
+            Float vlkTime = timeSheetOptional.get().getVlkTime();
+
+            return vlkTime / sumVlkTime;
+        }
+
+        return 0f;
+    }
+
     private Float getHourCoefficient(String staffListId) {
         Optional<TimeSheet> timeSheetOptional = timeSheetService.findByStaffListRecordId(staffListId);
 
@@ -83,7 +106,7 @@ public class GeneratorResultServiceImpl implements GeneratorResultService {
 
             return hourFact/hourPlan;
         }else {
-            throw new ResourceNotFoundException("Result", "StaffListId", "TimeSheet");
+            throw new ResourceNotFoundException("Result", "StaffListId", staffListId);
         }
     }
 
@@ -93,12 +116,10 @@ public class GeneratorResultServiceImpl implements GeneratorResultService {
     }
 
     private Float getEmployment(User user) {
-        Float employmentSum =
-                staffListRecordService.findByUser(user)
-                        .stream()
-                        .map(StaffListRecord::getEmployment)
-                        .reduce(0f, Float::sum);
-        return employmentSum;
+        return staffListRecordService.findByUser(user)
+                .stream()
+                .map(StaffListRecord::getEmployment)
+                .reduce(0f, Float::sum);
     }
 
     private List<ServicePackage> generateListUserPositionDepartment(StaffListRecord staffListRecord) {

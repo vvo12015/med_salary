@@ -37,11 +37,11 @@ public class CalculateByAmbulatoryNoOperation extends AbstractCalculateStrategy 
         result.setSumForAmlPackage(Objects.requireNonNullElse(result.getSumForAmlPackage(), 0f) + sum);
         result.setCountEMR_ambulatory(Objects.requireNonNullElse(result.getCountEMR_ambulatory(), 0) + nszuDecryptionList.size());
 
-        float coeficient =
+        float coefficient =
                 (Objects.requireNonNullElse(result.getEmploymentPart(), 0f)) //employment
                 * (Objects.requireNonNullElse(result.getHourCoefficient(), 0f))//hours
                 ;
-        float amblPremium = calculateAmbulPremiumBySum(sum, coeficient);
+        float amblPremium = calculateAmbulPremiumBySum(sum, coefficient);
         log.info("pib: {}, count: {}, sum: {}, calculateSum: {}"
                 , result.getUser().getName(), nszuDecryptionList.size(), sum, amblPremium);
 

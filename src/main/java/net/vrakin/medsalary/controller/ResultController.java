@@ -7,6 +7,7 @@ import net.vrakin.medsalary.dto.StaffListRecordDTO;
 import net.vrakin.medsalary.excel.entity.reader.*;
 import net.vrakin.medsalary.generator.GeneratorResultService;
 import net.vrakin.medsalary.generator.GeneratorStaffListRecordService;
+import net.vrakin.medsalary.mapper.ResultMapper;
 import net.vrakin.medsalary.service.*;
 import net.vrakin.medsalary.service.service_package_handler.CalculateManager;
 import org.springframework.stereotype.Controller;
@@ -55,9 +56,9 @@ public class ResultController {
 
     private final TimeSheetExcelReader timeSheetExcelReader;
 
-    private final InitData initData;
-
     private final StorageService storageService;
+
+    private final ResultMapper resultMapper;
 
     public ResultController(GeneratorResultService generatorResultService,
                             StaffListRecordService staffListRecordService,
@@ -72,7 +73,8 @@ public class ResultController {
                             NSZU_DecryptionService nszuDecryptionService,
                             InitData initData, StorageService storageService,
                             TimeSheetService timeSheetService,
-                            TimeSheetExcelReader timeSheetExcelReader) {
+                            TimeSheetExcelReader timeSheetExcelReader,
+                            ResultMapper resultMapper) {
         this.generatorResultService = generatorResultService;
         this.staffListRecordService = staffListRecordService;
         this.resultExcelWriter = resultExcelWriter;
@@ -84,10 +86,10 @@ public class ResultController {
         this.generatorStaffListRecordService = generatorStaffListRecordService;
         this.nszuDecryptionExcelReader = nszuDecryptionExcelReader;
         this.nszuDecryptionService = nszuDecryptionService;
-        this.initData = initData;
         this.storageService = storageService;
         this.timeSheetService = timeSheetService;
         this.timeSheetExcelReader = timeSheetExcelReader;
+        this.resultMapper = resultMapper;
     }
 
     private List<Result> resultList = new ArrayList<>();
@@ -182,7 +184,8 @@ public class ResultController {
         log.info("Result write in file");
         resultExcelWriter.writeAll(resultList);
 
+        model.addAttribute("colNames", resultMapper.toStringListColNames());
         model.addAttribute("result_count", resultList.size());
-        model.addAttribute("results", resultList);
+        model.addAttribute("results", resultList.stream().map(resultMapper::toStringList).toList());
     }
 }

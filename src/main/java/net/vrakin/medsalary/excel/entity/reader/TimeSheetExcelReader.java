@@ -24,18 +24,21 @@ public class TimeSheetExcelReader extends AbstractExcelReader<TimeSheet, TimeShe
     public static final int TIME_SHEET_NAME_INDEX = 2;
     public static final int TIME_SHEET_PLAN_INDEX = 4;
     public static final int TIME_SHEET_FACT_INDEX = 5;
+    private static final int TIME_SHEET_VLK_INDEX = 6;
+    public static final String NULL = "null";
+    public static final String ZERO = "0";
 
     @Autowired
-        public TimeSheetExcelReader(ExcelHelper excelHelper, TimeSheetMapper mapper) {
-            super(excelHelper, mapper);
+    public TimeSheetExcelReader(ExcelHelper excelHelper, TimeSheetMapper mapper) {
+        super(excelHelper, mapper);
 
-            generateFormatDetails();
-        }
+        generateFormatDetails();
+    }
 
-        @Override
-        protected List<String> filterRow(File file) {
-            return excelHelper.readExcel(file, fileFormatDetails.getStartColNumber());
-        }
+    @Override
+    protected List<String> filterRow(File file) {
+        return excelHelper.readExcel(file, fileFormatDetails.getStartColNumber());
+    }
 
     @Override
     protected void generateFormatDetails() {
@@ -46,8 +49,9 @@ public class TimeSheetExcelReader extends AbstractExcelReader<TimeSheet, TimeShe
         columns.add(new Column("Прізвище Ім'я По-батькові", TIME_SHEET_NAME_INDEX));
         columns.add(new Column("Пл.|Годин.", TIME_SHEET_PLAN_INDEX));
         columns.add(new Column("Фк.|Годин.", TIME_SHEET_FACT_INDEX));
+        columns.add(new Column("ВЛК", TIME_SHEET_VLK_INDEX));
 
-        this.fileFormatDetails = new FileFormatDetails(columns, columns.size(), ExcelHelper.FIRST_ROW_NUMBER);
+        this.fileFormatDetails = new FileFormatDetails(columns, 6, ExcelHelper.FIRST_ROW_NUMBER);
     }
 
         @Override
@@ -58,12 +62,15 @@ public class TimeSheetExcelReader extends AbstractExcelReader<TimeSheet, TimeShe
                     .toList();
             TimeSheetDTO dto = new TimeSheetDTO();
 
-            if (Objects.isNull(stringList.getFirst()) &&
-                    stringList.size() >= fileFormatDetails.getFileColumnCount()){
+            if (!stringList.get(TIME_SHEET_STAFFLISTID_INDEX).equals(NULL) &&
+                    !stringList.get(TIME_SHEET_PLAN_INDEX).equals(NULL) &&
+                    stringList.size() <= fileFormatDetails.getFileColumnCount()){
 
                 dto.setStaffListRecordId(stringList.get(TIME_SHEET_STAFFLISTID_INDEX));
-                dto.setFactTime(Float.parseFloat(stringList.get(TIME_SHEET_FACT_INDEX)));
-                dto.setFactTime(Float.parseFloat(stringList.get(TIME_SHEET_PLAN_INDEX)));
+                dto.setFactTime(Float.parseFloat(stringList.get(TIME_SHEET_FACT_INDEX).equals(NULL)? ZERO:stringList.get(TIME_SHEET_FACT_INDEX)));
+                dto.setVlkTime(Float.parseFloat(stringList.get(TIME_SHEET_VLK_INDEX).equals(NULL)? ZERO:stringList.get(TIME_SHEET_VLK_INDEX)));
+                dto.setPlanTime(Float.parseFloat(stringList.get(TIME_SHEET_PLAN_INDEX)));
+                dto.setFactTime(dto.getFactTime()-dto.getVlkTime());
             }
 
             return dto;

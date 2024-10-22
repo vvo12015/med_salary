@@ -72,6 +72,8 @@ public class InitData {
                     , ServicePackage.HospKind.AMBULATORY, ServicePackage.OperationKind.NO_OPERATION, true ));
             servicePackageService.save(new ServicePackage(null, "Хірургічні операції дорослим та дітям в умовах стаціонару одного дня", "47"
                     , ServicePackage.HospKind.AMBULATORY, ServicePackage.OperationKind.NO_OPERATION, true ));
+            servicePackageService.save(new ServicePackage(null, "Медичний огляд осіб, який організовується територіальними центрами комплектування та соціальної підтримки", "60"
+                    , ServicePackage.HospKind.AMBULATORY, ServicePackage.OperationKind.NO_OPERATION, true ));
         }
     }
 

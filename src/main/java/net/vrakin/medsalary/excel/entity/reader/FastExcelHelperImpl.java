@@ -136,12 +136,12 @@ public class FastExcelHelperImpl implements ExcelHelper{
 
             List<String> colNames = listCells.stream().findFirst().orElseThrow(()->new ResourceNotFoundException("List from resultList", "first el", "first el"));
 
-            ws.range(0, 0, 0, colNames.size()).style()
+            ws.range(0, 0, 0, colNames.size() - 1).style()
                     .fontName("Calibri")
                     .fontSize(11)
                     .bold()
-                    .fontColor("#000000")  // Чорний колір тексту
-                    .fillColor("#2a9d8f")  // Зелений колір заливки
+                    .fontColor("#000000")  // Чорний шрифт
+                    .fillColor("#00FF00")  // Яскраво-зелений фон
                     .set();
 
             for (int i = 0; i < listCells.size(); i++) {

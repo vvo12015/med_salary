@@ -27,6 +27,7 @@ public class ResultDTO {
     private Float amblNSZU_Premium;
 
     private Float employmentPart;
+
     private Float employment;
 
     private LocalDate date;
@@ -35,8 +36,13 @@ public class ResultDTO {
 
     private Float sumForAmlPackage;
 
-
     private Integer countEMR_ambulatory;
+
     private Integer countEMR_oneDaySurgery;
+
     private Integer countEMR_priorityService;
+
+    private Float vlkCoefficient;
+
+    private Float sumForVlk;
 }

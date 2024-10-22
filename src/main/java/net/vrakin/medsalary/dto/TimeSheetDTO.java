@@ -1,6 +1,5 @@
 package net.vrakin.medsalary.dto;
 
-import jakarta.persistence.*;
 import lombok.*;
 
 @Getter
@@ -20,4 +19,6 @@ public class TimeSheetDTO {
     private Float planTime;
 
     private Float factTime;
+
+    private Float vlkTime;
 }
