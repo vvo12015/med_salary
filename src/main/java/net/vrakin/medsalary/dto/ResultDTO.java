@@ -45,4 +45,8 @@ public class ResultDTO {
     private Float vlkCoefficient;
 
     private Float sumForVlk;
+
+    private Float wholeSumVlk;
+
+    private LocalDate employmentStartDate;
 }

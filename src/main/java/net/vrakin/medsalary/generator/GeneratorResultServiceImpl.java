@@ -53,7 +53,7 @@ public class GeneratorResultServiceImpl implements GeneratorResultService {
 
         Result result = new Result(staffListRecord.getUser(), staffListRecord.getUserPosition(),
                 staffListRecord.getDepartment(), getEmployment(staffListRecord.getUser()),
-                employmentPart, hourCoefficient, vlkCoefficient);
+                employmentPart, hourCoefficient, vlkCoefficient, staffListRecord.getEmploymentStartDate());
 
         if (Objects.requireNonNullElse(staffListRecord.getDepartment().getServicePackages(), EMPTY_SING).equals(EMPTY_SING)
                 || Objects.requireNonNullElse(staffListRecord.getUserPosition().getServicePackageNumbers(), EMPTY_SING).equals(EMPTY_SING)) {

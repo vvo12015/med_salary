@@ -3,6 +3,7 @@ package net.vrakin.medsalary.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -40,10 +41,10 @@ public class StaffListRecord {
     private PremiumCategory premiumCategory;
 
     @Column
-    private LocalDateTime employmentStartDate;
+    private LocalDate employmentStartDate;
 
     @Column
-    private LocalDateTime employmentEndDate;
+    private LocalDate employmentEndDate;
 
     @Column
     private LocalDateTime startDate;

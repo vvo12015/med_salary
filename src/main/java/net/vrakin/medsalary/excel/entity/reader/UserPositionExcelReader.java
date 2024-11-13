@@ -62,7 +62,7 @@ public class UserPositionExcelReader extends AbstractExcelReader<UserPosition, U
 
             if (stringList.size() >= fileFormatDetails.getFileColumnCount()){
 
-                dto.setName(stringList.getFirst());
+                dto.setName(stringList.get(USER_POSITION_NAME_INDEX));
                 dto.setCodeIsPro(stringList.get(USER_POSITION_CODE_IS_PRO_INDEX));
                 dto.setMaxPoint(Integer.parseInt(stringList.get(USER_POSITION_MAX_POINT)));
                 dto.setPointValue(Integer.parseInt(stringList.get(USER_POSITION_POINT_VALUE)));

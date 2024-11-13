@@ -96,6 +96,7 @@ public class NszuDecryptionExcelReader extends AbstractExcelReader<NszuDecryptio
     public NszuDecryptionDTO toDTOFromString(String stringDTO) {
 
             List<String> stringList = Arrays.stream(stringDTO.split(ExcelHelper.WORD_SEPARATOR))
+                    .map(s->s.replace("  ", "").trim())
                     .collect(Collectors.toList());
 
             stringList = stringList.stream().map(s->{
@@ -111,7 +112,7 @@ public class NszuDecryptionExcelReader extends AbstractExcelReader<NszuDecryptio
                 dto.setMonth(Integer.parseInt(stringList.get(index++)));
                 dto.setRecordKind(truncateString(stringList.get(index++)));
                 dto.setRecordID(truncateString(stringList.get(index++)));
-                dto.setCreationDate(excelHelper.mapToDate(stringList.get(index++)));
+                dto.setCreationDate(excelHelper.mapToDateTime(stringList.get(index++)));
                 dto.setExecutorUserPosition(truncateString(stringList.get(index++)));
                 dto.setExecutorName(truncateString(stringList.get(index++)));
                 dto.setProviderPlace(truncateString(stringList.get(index++)));
@@ -120,9 +121,9 @@ public class NszuDecryptionExcelReader extends AbstractExcelReader<NszuDecryptio
                 dto.setReferringUserPosition(truncateString(stringList.get(index++)));
                 dto.setEpisodeId(truncateString(stringList.get(index++)));
                 dto.setEpisodeKind(truncateString(stringList.get(index++)));
-                dto.setEpisodeStartDate(excelHelper.mapToDate(stringList.get(index++)));
-                dto.setPeriodStartDate(excelHelper.mapToDate(stringList.get(index++)));
-                dto.setPeriodEndDate(excelHelper.mapToDate(stringList.get(index++)));
+                dto.setEpisodeStartDate(excelHelper.mapToDateTime(stringList.get(index++)));
+                dto.setPeriodStartDate(excelHelper.mapToDateTime(stringList.get(index++)));
+                dto.setPeriodEndDate(excelHelper.mapToDateTime(stringList.get(index++)));
                 dto.setPeriodLength(Integer.parseInt(stringList.get(index++)));
                 dto.setMainDiagnosis(truncateString(stringList.get(index++)));
                 dto.setMainDiagnosisValidationStatus(truncateString(stringList.get(index++)));
@@ -154,7 +155,7 @@ public class NszuDecryptionExcelReader extends AbstractExcelReader<NszuDecryptio
                 dto.setGroupErrorDetails(truncateString(stringList.get(index++)));
                 dto.setDetailsPreviewNSZU(truncateString(stringList.get(index++)));
                 dto.setAdditionalComment(truncateString(stringList.get(index++)));
-                dto.setDatePreviewNSZU(excelHelper.mapToDate(stringList.get(index)));
+                dto.setDatePreviewNSZU(excelHelper.mapToDateTime(stringList.get(index)));
                 log.info("NszuDecryptionDTO: {}", dto.toString());
             return dto;
     }

@@ -3,6 +3,7 @@ package net.vrakin.medsalary.mapper;
 import lombok.NoArgsConstructor;
 import net.vrakin.medsalary.domain.Result;
 import net.vrakin.medsalary.dto.ResultDTO;
+import net.vrakin.medsalary.service.service_package_handler.CalculateVlk;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -29,6 +30,7 @@ public abstract class ResultMapper implements BaseMapper<Result, ResultDTO> {
         listOfResult.add(result.getDepartment().getName());
         listOfResult.add(result.getDepartment().getDepartmentTemplateId());
         listOfResult.add(result.getUserPosition().getName());
+        listOfResult.add(String.format(Objects.requireNonNullElse(result.getEmploymentStartDate(), "01-01-2024").toString()));
         listOfResult.add(Objects.requireNonNullElse(result.getHourCoefficient(), 0).toString());
         listOfResult.add(Objects.requireNonNullElse(result.getUserPosition().getMaxPoint(), 0).toString());
         listOfResult.add(Objects.requireNonNullElse(result.getUserPosition().getPointValue(), 0).toString());
@@ -42,8 +44,11 @@ public abstract class ResultMapper implements BaseMapper<Result, ResultDTO> {
         listOfResult.add(Objects.requireNonNullElse(result.getCountEMR_priorityService(), 0f).toString());
         listOfResult.add(Objects.requireNonNullElse(result.getOneDaySurgery(), 0f).toString());
         listOfResult.add(Objects.requireNonNullElse(result.getCountEMR_oneDaySurgery(), 0f).toString());
-        listOfResult.add(Objects.requireNonNullElse(result.getVlkCoefficient(), 0f).toString());
+
+        float coefficientVlk = Objects.requireNonNullElse(result.getVlkCoefficient(), 0f) * CalculateVlk.CALCULATE_PERCENT;
+        listOfResult.add(Float.toString(coefficientVlk));
         listOfResult.add(Objects.requireNonNullElse(result.getSumForVlk(), 0f).toString());
+        listOfResult.add(Objects.requireNonNullElse(result.getWholeSumVlk(), 0f).toString());
         listOfResult.add(result.getDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
 
         return listOfResult;
@@ -56,6 +61,7 @@ public abstract class ResultMapper implements BaseMapper<Result, ResultDTO> {
         listOfResult.add("Назва відділення");
         listOfResult.add("Код шаблона відділення");
         listOfResult.add("Назва посади");
+        listOfResult.add("Дата прийому");
         listOfResult.add("Коефіцієнт відпрацьованих годин");
         listOfResult.add("Максимальна кількість балів");
         listOfResult.add("Сума за бал");
@@ -69,7 +75,8 @@ public abstract class ResultMapper implements BaseMapper<Result, ResultDTO> {
         listOfResult.add("Кількість пріоритетних послуг");
         listOfResult.add("Премія за стаціонар одного дня");
         listOfResult.add("Кількість ЕМЗ стаціонару одного дня");
-        listOfResult.add("Коефіцієнт год по ВЛК");
+        listOfResult.add("Коефіцієнт по ВЛК");
+        listOfResult.add("Премія по ВЛК");
         listOfResult.add("Сума по ВЛК");
         listOfResult.add("Дата");
 

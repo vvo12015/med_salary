@@ -2,6 +2,7 @@ package net.vrakin.medsalary.excel.entity.reader;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -16,7 +17,8 @@ public interface ExcelHelper {
     List<String> readExcel(File file, int startColNumber);
 
     List<String> readRowCountExcel(File file, int startRowNumber, int count) throws Exception;
-    LocalDateTime mapToDate(String excelStringDate);
+    LocalDate mapToDate(String excelStringDate);
+    LocalDateTime mapToDateTime(String excelStringDate);
 
     void writeExcel(File file, List<List<String>> listCells) throws IOException;
 }

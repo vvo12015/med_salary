@@ -3,6 +3,7 @@ package net.vrakin.medsalary.dto;
 import jakarta.persistence.Column;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -35,9 +36,9 @@ public class StaffListRecordDTO {
 
     private String premiumCategoryName;
 
-    private LocalDateTime employmentStartDate;
+    private LocalDate employmentStartDate;
 
-    private LocalDateTime employmentEndDate;
+    private LocalDate employmentEndDate;
 
     private LocalDateTime startDate;
 

@@ -11,7 +11,7 @@ import java.util.Objects;
 @Service
 public class CalculateVlk extends AbstractCalculateStrategy implements CalculateStrategy {
 
-    private static final float CALCULATE_PERCENT = 1.25f/100f;
+    public static final float CALCULATE_PERCENT = 1.25f/100f;
 
     private static Float packageSum;
 
@@ -26,6 +26,8 @@ public class CalculateVlk extends AbstractCalculateStrategy implements Calculate
         if (Objects.isNull(packageSum)){
             packageSum = nszu_decryptionService.sumTariffUAHByServicePackageName(servicePackage.getFullName());
         }
+
+        result.setWholeSumVlk(packageSum);
 
         result.setSumForVlk(result.getSumForVlk() +
                 + packageSum * CALCULATE_PERCENT * result.getVlkCoefficient());

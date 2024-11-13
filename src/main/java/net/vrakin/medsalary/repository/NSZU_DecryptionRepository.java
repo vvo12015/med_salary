@@ -40,7 +40,7 @@ public interface NSZU_DecryptionRepository extends JpaRepository<NszuDecryption,
 
     Optional<NszuDecryption> findByRecordID(String recordID);
 
-    @Query("SELECT SUM(n.tariffUAH) FROM NszuDecryption n WHERE n.servicePackageName = :servicePackageName")
+    @Query("SELECT SUM(n.tariffUAH) FROM NszuDecryption n WHERE n.servicePackageName = :servicePackageName and n.statisticStatus and n.reportStatus")
     Float sumTariffUAHByServicePackageName(@Param("servicePackageName") String servicePackageName);
 
 }

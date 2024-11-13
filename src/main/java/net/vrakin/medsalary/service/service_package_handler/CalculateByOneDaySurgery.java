@@ -12,7 +12,7 @@ import java.util.List;
 @Service
 public class CalculateByOneDaySurgery extends AbstractCalculateStrategy implements CalculateStrategy {
 
-    public static final float PACKAGE_COST = 160f;
+    public static final float PACKAGE_COST = 480f;
 
     @Autowired
     public CalculateByOneDaySurgery(NSZU_DecryptionService nszu_decryptionService) {
@@ -26,6 +26,6 @@ public class CalculateByOneDaySurgery extends AbstractCalculateStrategy implemen
         result.setCountEMR_oneDaySurgery(nszuDecryptionList.size());
 
         result.setOneDaySurgery(result.getOneDaySurgery() +
-                + PACKAGE_COST * nszuDecryptionList.size() * result.getEmploymentPart() * result.getHourCoefficient());
+                + PACKAGE_COST * nszuDecryptionList.size());
     }
 }

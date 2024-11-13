@@ -65,10 +65,14 @@ public class Result {
 
     private Float sumForVlk;
 
+    private Float wholeSumVlk;
+
+    private LocalDate employmentStartDate;
+
     public Result(User user, UserPosition userPosition,
                   Department department,
                   Float employment, Float employmentPart,
-                  Float hourCoefficient, Float vlkCoefficient) {
+                  Float hourCoefficient, Float vlkCoefficient, LocalDate employmentStartDate) {
         this.id = null;
         this.user = user;
         this.userPosition = userPosition;
@@ -82,6 +86,7 @@ public class Result {
         this.date = LocalDate.now();
         this.hourCoefficient = hourCoefficient;
         this.vlkCoefficient = vlkCoefficient;
+        this.employmentStartDate = employmentStartDate;
     }
 
     @Override

@@ -38,7 +38,7 @@ public class FastExcelHelperImpl implements ExcelHelper{
             try (Stream<Row> rows = sheet.openStream()) {
                 rows.forEach(r -> {
 
-                    if ((r.getRowNum() > startColNumber) && r.getCellCount()>0
+                    if ((r.getRowNum() > startColNumber) && r.getCellCount() > 0
                     ) {
                         StringBuilder row = new StringBuilder();
 
@@ -62,7 +62,7 @@ public class FastExcelHelperImpl implements ExcelHelper{
     }
 
     @Override
-    public LocalDateTime mapToDate(String excelStringDate){
+    public LocalDateTime mapToDateTime(String excelStringDate){
 
         LocalDate baseDate = LocalDate.of(1900, 1, 1);
 
@@ -79,12 +79,37 @@ public class FastExcelHelperImpl implements ExcelHelper{
             datePart = baseDate.plusDays(days - 2); // -2 to adjust for the incorrect leap year in Excel
 
             int totalSecondsInDay = (int) (fraction * 24 * 3600);
+
             timePart = LocalTime.ofSecondOfDay(totalSecondsInDay);
         }catch (NumberFormatException e){
-            return null;
+            //TODO
+            return LocalDateTime.of(2024, 01, 01, 00, 00);
         }
 
         return LocalDateTime.of(datePart, timePart);
+    }
+
+    @Override
+    public LocalDate mapToDate(String excelStringDate){
+
+        LocalDate baseDate = LocalDate.of(1900, 1, 1);
+
+        LocalDate datePart;
+
+        try {
+            double excelDate = Double.parseDouble(excelStringDate);
+
+            int days = (int) excelDate;
+            double fraction = excelDate - days;
+
+            datePart = baseDate.plusDays(days - 2); // -2 to adjust for the incorrect leap year in Excel
+
+        }catch (NumberFormatException e){
+            //TODO
+            return baseDate;
+        }
+
+        return datePart;
     }
 
     @Override

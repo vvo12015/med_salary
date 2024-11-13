@@ -53,7 +53,7 @@ public class ServicePackageExcelReader extends AbstractExcelReader<ServicePackag
         ServicePackageDTO dto = new ServicePackageDTO();
         if (stringList.size() > 5){
 
-            dto.setName(stringList.getFirst());
+            dto.setName(stringList.get(SERVICE_PACKAGE_NAME_INDEX));
             dto.setNumber(stringList.get(SERVICE_PACKAGE_NUMBER));
             dto.setHospKind(stringList.get(SERVICE_IS_HOSP)
                     .equals("Амбулаторний")?ServicePackage.HospKind.AMBULATORY

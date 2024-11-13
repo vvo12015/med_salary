@@ -57,8 +57,8 @@ public class DepartmentExcelReader extends AbstractExcelReader<Department, Depar
             DepartmentDTO dto = new DepartmentDTO();
 
             if (stringList.size()<= fileFormatDetails.getFileColumnCount() &&
-                    !stringList.getFirst().isEmpty()) {
-                dto.setDepartmentTemplateId(stringList.getFirst());
+                    !stringList.stream().findFirst().isEmpty()) {
+                dto.setDepartmentTemplateId(stringList.stream().findFirst().get());
                 dto.setDepartmentIsProId(stringList.get(DEPARTMENT_IS_PRO_ID_INDEX));
                 dto.setNameEleks(stringList.get(DEPARTMENT_ELEKS_NAME_INDEX));
                 dto.setName(stringList.get(DEPARTMENT_ISPRO_NAME_INDEX));
