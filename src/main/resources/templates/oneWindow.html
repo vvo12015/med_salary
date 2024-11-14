@@ -12,13 +12,14 @@
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
 
-
 <div class="container mt-5">
-    <h2>Завантаження файлу штатного розпису</h2>
-    <form method="POST" id="AddFile" enctype="multipart/form-data" action="/stafflist/files">
+    <h2 th:text="'Завантаження файлі для розрахунку премії'"></h2>
+    <form method="POST" id="AddFile" enctype="multipart/form-data" th:action="@{/one-window/files}">
         <div class="mb-3">
             <label for="file" class="form-label">Виберіть файл для завантаження:</label>
-            <input id="file" type="file" name="file" class="form-control" />
+            <input id="file" type="file" name="files" class="form-control" multiple/>
+            <label for="monthYear">Місяць:</label><br>
+            <input type="month" id="monthYear" name="monthYear" />
         </div>
         <button type="submit" class="btn btn-primary">Завантажити</button>
     </form>
@@ -31,146 +32,16 @@
                 <button class="btn btn-danger btn-sm" th:data-name="${file}" th:onclick="deleteFile(this.getAttribute('data-name'))">Видалити</button>
             </li>
         </ul>
+        <h4 th:text="${message}"></h4>
+    </div>
+
+    <div th:if="${messageErrors != null && !messageErrors.isEmpty()}" class="alert alert-danger mt-3">
+        <ul>
+            <li th:each="error : ${messageErrors}" th:text="${error}"></li>
+        </ul>
     </div>
 </div>
 
-<div class="container mt-5 d-flex justify-content-center">
-    <img th:src="@{/img/stafflist.jpg}" alt="Excel Spreadsheet Header" class="img-fluid w-100" />
-</div>
-
-<div class="container mt-5">
-    <table class="table">
-        <thead>
-        <tr>
-            <th>Назва відділу</th>
-            <th>Номер шаблону</th>
-            <th>Код в isPro</th>
-            <th>Назва в Eleks</th>
-            <th>Дії</th>
-        </tr>
-        </thead>
-        <tbody id="departmentTable">
-        <tr th:each="department : ${departments}" th:attr="data-id=${department.id}">
-            <td><input type="text" class="form-control" th:name="'name'" th:value="${department.name}"></td>
-            <td>
-                <input type="text"
-                       class="form-control"
-                       th:name="'departmentTemplateId'"
-                       th:value="${department.departmentTemplateId ?? ''}"
-                       th:classappend="${department.departmentTemplateId == null} ? 'error-field' : ''">
-            </td>
-            <td>
-                <input type="text"
-                       class="form-control"
-                       th:name="'departmentIsProId'"
-                       th:value="${department.departmentIsProId ?? ''}">
-            </td>
-            <td>
-                <input type="text"
-                       class="form-control"
-                       th:name="'nameEleks'"
-                       th:value="${department.nameEleks ?? ''}"
-                       th:classappend="${department.nameEleks == null} ? 'error-field' : ''">
-            </td>
-            <td>
-                <input type="text"
-                       class="form-control"
-                       th:name="'servicePackages'"
-                       th:value="${department.servicePackages ?? ''}"
-                       th:classappend="${department.servicePackages == null} ? 'error-field' : ''">
-            </td>
-            <td>
-                <button class="btn btn-primary" th:attr="onclick='updateDepartment(' + ${department.id} + ')'">Зберегти</button>
-                <button class="btn btn-danger" th:attr="onclick='deleteDepartment(' + ${department.id} + ')'">Видалити</button>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</div>
-
-
-<script>
-        function updateDepartment(id) {
-        console.log("Update function");
-        const row = document.querySelector(`tr[data-id='${id}']`);
-        console.log("Updating row:");
-
-        const dId = id;
-        const updatedData = {
-        id: dId,
-        name: row.querySelector("input[name='name']").value,
-        departmentTemplateId: row.querySelector("input[name='departmentTemplateId']").value,
-        departmentIsProId: row.querySelector("input[name='departmentIsProId']").value,
-        nameEleks: row.querySelector("input[name='nameEleks']").value,
-        servicePackages: row.querySelector("input[name='servicePackages']").value,
-        status: "EDIT"
-    };
-
-        console.log("Updated data: ", updatedData);
-
-        fetch(`/api/departments/${id}`, {
-        method: 'PUT',
-        headers: {
-        'Content-Type': 'application/json'
-    },
-        body: JSON.stringify(updatedData)
-    })
-        .then(response => {
-        console.log("Response: ", response);
-        if (response.ok) {
-        alert('Дані успішно оновлено!');
-    } else {
-        alert('Помилка при оновленні даних!');
-    }
-    })
-        .catch(error => {
-        console.error('Error:', error);
-        alert('Помилка при оновленні даних!');
-    });
-    }
-
-        function deleteDepartment(id) {
-        if (confirm('Ви дійсно хочете видалити цей запис?')) {
-        fetch(`/api/departments/${id}`, {
-        method: 'DELETE'
-    })
-        .then(response => {
-        console.log("Response: ", response);
-        if (response.ok) {
-        document.querySelector(`tr[data-id='${id}']`).remove();
-        alert('Запис успішно видалено!');
-    } else {
-        alert('Помилка при видаленні запису!');
-    }
-    })
-        .catch(error => {
-        console.error('Error:', error);
-        alert('Помилка при видаленні запису!');
-    });
-    }
-    }
-    function deleteFile(fileName) {
-        if (confirm('Ви дійсно хочете видалити цей файл?')) {
-            const deleteUrl = '/delete/files?file=' + encodeURIComponent(fileName);
-
-            fetch(deleteUrl, {
-                method: 'DELETE'
-            })
-                .then(response => {
-                    if (response.ok) {
-                        alert('Файл успішно видалено!');
-                        location.reload(); // Оновлення сторінки після видалення файлу
-                    } else {
-                        alert('Помилка при видаленні файлу!');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Помилка при видаленні файлу!');
-                });
-        }
-    }
-</script>
 
 </body>
 </html>

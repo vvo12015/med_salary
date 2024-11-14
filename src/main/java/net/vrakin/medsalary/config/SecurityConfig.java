@@ -49,6 +49,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/nszudecryption**", "/nszudecryption/**").hasAnyRole("ADMIN", "USER")
                         .requestMatchers(HttpMethod.POST, "/nszudecryption**", "/nszudecryption/**").hasAnyRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/department/**", "/department**").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers(HttpMethod.GET, "/one-window/**", "/one-window**").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers(HttpMethod.GET, "/one-window/**", "/one-window**").hasAnyRole("ADMIN", "USER")
                         .requestMatchers(HttpMethod.POST, "/department/**", "/department**").hasAnyRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/result**", "/result/**").hasAnyRole("ADMIN", "USER")
                         .anyRequest().authenticated())
