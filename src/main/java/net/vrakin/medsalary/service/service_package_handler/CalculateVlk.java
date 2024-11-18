@@ -26,10 +26,10 @@ public class CalculateVlk extends AbstractCalculateStrategy implements Calculate
         if (Objects.isNull(packageSum)){
             packageSum = nszu_decryptionService.sumTariffUAHByServicePackageName(servicePackage.getFullName());
         }
-
+/*
         result.setWholeSumVlk(packageSum);
 
         result.setSumForVlk(result.getSumForVlk() +
-                + packageSum * CALCULATE_PERCENT * result.getVlkCoefficient());
+                + packageSum * CALCULATE_PERCENT * result.getVlkCoefficient());*/
     }
 }

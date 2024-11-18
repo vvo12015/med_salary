@@ -46,7 +46,7 @@ public abstract class AbstractController<E, D> {
         int yearNumber = yearMonth.getYear();
         String savedFileName = String.format("%s_%d_%02d" + ExcelHelper.FILE_EXTENSION, entityName, yearNumber, monthNumber);
 
-        File destinationFile = storageService.store(file, savedFileName);
+        File destinationFile = storageService.storeUploadDir(file, savedFileName);
 
         String messageReadError = "";
         List<String> errorList = excelReader.isValidateFile(destinationFile);
@@ -88,6 +88,6 @@ public abstract class AbstractController<E, D> {
         int monthNumber = yearMonth.getMonthValue();
         int yearNumber = yearMonth.getYear();
         String savedFileName = String.format("%s_%d_%02d" + ExcelHelper.FILE_EXTENSION, entityName, yearNumber, monthNumber);
-        return storageService.store(file, savedFileName);
+        return storageService.storeUploadDir(file, savedFileName);
     }
 }

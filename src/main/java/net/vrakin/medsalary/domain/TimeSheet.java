@@ -3,6 +3,8 @@ package net.vrakin.medsalary.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -26,7 +28,7 @@ public class TimeSheet {
     private Float factTime;
 
     @Column
-    private Float vlkTime;
+    private LocalDate period;
 
     @Override
     public String toString() {
@@ -35,7 +37,6 @@ public class TimeSheet {
                 ", staffListRecordId='" + staffListRecordId + '\'' +
                 ", planTime=" + planTime +
                 ", factTime=" + factTime +
-                ", hourVlk=" + vlkTime +
                 '}';
     }
 }

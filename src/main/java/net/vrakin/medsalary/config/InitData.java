@@ -46,6 +46,14 @@ public class InitData {
         if (servicePackageService.findAll().isEmpty()){
             servicePackageService.save(new ServicePackage(null, "Стаціонарна допомога дорослим та дітям без проведення хірургічних операцій", "4"
                     , ServicePackage.HospKind.STATIONARY, ServicePackage.OperationKind.NO_OPERATION, true));
+            servicePackageService.save(new ServicePackage(null, "Медична допомога при гострому мозковому інсульті", "5"
+                    , ServicePackage.HospKind.STATIONARY, ServicePackage.OperationKind.NO_OPERATION, true));
+            servicePackageService.save(new ServicePackage(null, "Медична допомога при гострому інфаркті міокарда", "6"
+                    , ServicePackage.HospKind.STATIONARY, ServicePackage.OperationKind.NO_OPERATION, true));
+            servicePackageService.save(new ServicePackage(null, "Медична допомога при пологах", "7"
+                    , ServicePackage.HospKind.STATIONARY, ServicePackage.OperationKind.NO_OPERATION, true));
+            servicePackageService.save(new ServicePackage(null, "Медична допомога новонародженим у складних неонатальних випадках", "8"
+                    , ServicePackage.HospKind.STATIONARY, ServicePackage.OperationKind.NO_OPERATION, true));
             servicePackageService.save(new ServicePackage(null, "Профілактика, діагностика, спостереження та лікування в амбулаторних умовах", "9"
                     , ServicePackage.HospKind.AMBULATORY, ServicePackage.OperationKind.NO_OPERATION, true));
             servicePackageService.save(new ServicePackage(null, "Мамографія", "10"
@@ -65,12 +73,12 @@ public class InitData {
                     , ServicePackage.HospKind.AMBULATORY, ServicePackage.OperationKind.NO_OPERATION, true ));
             servicePackageService.save(new ServicePackage(null, "Стаціонарна паліативна медична допомога дорослим та дітям", "23"
                     , ServicePackage.HospKind.AMBULATORY, ServicePackage.OperationKind.NO_OPERATION, true ));
-            servicePackageService.save(new ServicePackage(null, "Ведення вагітності в амбулаторних умовах", "35"
-                    , ServicePackage.HospKind.AMBULATORY, ServicePackage.OperationKind.NO_OPERATION, true ));
             servicePackageService.save(new ServicePackage(null, "Лікування та супровід дорослих та дітей з гематологічними " +
                     "та онкогематологічними захворюваннями у амбулаторних та стаціонарних умовах\n", "38"
                     , ServicePackage.HospKind.AMBULATORY, ServicePackage.OperationKind.NO_OPERATION, true ));
             servicePackageService.save(new ServicePackage(null, "Хірургічні операції дорослим та дітям в умовах стаціонару одного дня", "47"
+                    , ServicePackage.HospKind.AMBULATORY, ServicePackage.OperationKind.NO_OPERATION, true ));
+            servicePackageService.save(new ServicePackage(null, "Реабілітаційна допомога дорослим і дітям у стаціонарних умовах", "53"
                     , ServicePackage.HospKind.AMBULATORY, ServicePackage.OperationKind.NO_OPERATION, true ));
             servicePackageService.save(new ServicePackage(null, "Медичний огляд осіб, який організовується територіальними центрами комплектування та соціальної підтримки", "60"
                     , ServicePackage.HospKind.AMBULATORY, ServicePackage.OperationKind.NO_OPERATION, true ));

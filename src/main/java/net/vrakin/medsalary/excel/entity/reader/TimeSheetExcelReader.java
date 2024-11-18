@@ -24,7 +24,6 @@ public class TimeSheetExcelReader extends AbstractExcelReader<TimeSheet, TimeShe
     public static final int TIME_SHEET_NAME_INDEX = 2;
     public static final int TIME_SHEET_PLAN_INDEX = 4;
     public static final int TIME_SHEET_FACT_INDEX = 5;
-    private static final int TIME_SHEET_VLK_INDEX = 6;
     public static final String NULL = "null";
     public static final String ZERO = "0";
 
@@ -49,7 +48,6 @@ public class TimeSheetExcelReader extends AbstractExcelReader<TimeSheet, TimeShe
         columns.add(new Column("Прізвище Ім'я По-батькові", TIME_SHEET_NAME_INDEX));
         columns.add(new Column("Пл.|Годин.", TIME_SHEET_PLAN_INDEX));
         columns.add(new Column("Фк.|Годин.", TIME_SHEET_FACT_INDEX));
-        columns.add(new Column("ВЛК", TIME_SHEET_VLK_INDEX));
 
         this.fileFormatDetails = new FileFormatDetails(columns, 6, ExcelHelper.FIRST_ROW_NUMBER);
     }
@@ -67,9 +65,8 @@ public class TimeSheetExcelReader extends AbstractExcelReader<TimeSheet, TimeShe
 
                 dto.setStaffListRecordId(stringList.get(TIME_SHEET_STAFFLISTID_INDEX));
                 dto.setFactTime(Float.parseFloat(stringList.get(TIME_SHEET_FACT_INDEX).equals(NULL)? ZERO:stringList.get(TIME_SHEET_FACT_INDEX)));
-                dto.setVlkTime(Float.parseFloat(stringList.get(TIME_SHEET_VLK_INDEX).equals(NULL)? ZERO:stringList.get(TIME_SHEET_VLK_INDEX)));
                 dto.setPlanTime(Float.parseFloat(stringList.get(TIME_SHEET_PLAN_INDEX)));
-                dto.setFactTime(dto.getFactTime()-dto.getVlkTime());
+                dto.setFactTime(dto.getFactTime());
             }
 
             return dto;

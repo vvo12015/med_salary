@@ -13,19 +13,11 @@ public interface BaseMapper <E, D>{
     }
     default List<E> toEntityList(List<D> dtoList){
         return dtoList.stream().map(d->{
-            if (d.toString().contains("servicePackageName")) {
-                System.out.println(d.toString().substring(d.toString().indexOf("servicePackageName"),
-                        d.toString().indexOf("servicePackageNumber")));
-            }
             E e = null;
             try {
                 e = toEntity(d);
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
-            }
-            if (e.toString().contains("servicePackageName")) {
-                System.out.println(e.toString().substring(d.toString().indexOf("servicePackageName"),
-                        e.toString().indexOf("servicePackageNumber")));
             }
             return e;
         }).collect(Collectors.toList());

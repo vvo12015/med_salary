@@ -20,5 +20,4 @@ public class TimeSheetDTO {
 
     private Float factTime;
 
-    private Float vlkTime;
 }

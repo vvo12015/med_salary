@@ -13,14 +13,12 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @Slf4j
 public abstract class AbstractExcelReader<E, D> implements ExcelReader<E, D> {
-
     private static final int ONE_COLUMN_NUMBER = 1;
     public static final String MESSAGE_ABOUT_NOT_MATCH_COUNT_COLUMNS_ENG = "The number of columns in the file does not match: %s";
     public static final String MESSAGE_ABOUT_NOT_MATCH_COUNT_COLUMNS_UA = "У файлі не збігається кількість колонок в файлі/в базі: %d/%d %s";
+
     protected BaseMapper<E, D> mapper;
-
     protected ExcelHelper excelHelper;
-
     protected FileFormatDetails fileFormatDetails;
 
     public AbstractExcelReader(ExcelHelper excelHelper,
@@ -47,6 +45,7 @@ public abstract class AbstractExcelReader<E, D> implements ExcelReader<E, D> {
         List<String> errors = new ArrayList<>();
 
         Optional<String> tableHeadFromFileOptional = Optional.empty();
+
         try {
             tableHeadFromFileOptional = excelHelper.readRowCountExcel(file, fileFormatDetails.getStartColNumber(), ONE_COLUMN_NUMBER).stream().findFirst();
         } catch (Exception e) {
@@ -83,7 +82,8 @@ public abstract class AbstractExcelReader<E, D> implements ExcelReader<E, D> {
         for(Column domainColumn: fileFormatDetails.getColumns()){
 
             if (domainColumn.getIndexColumn()<tableHeads.size()) {
-                log.info("tableHeads.get(domainColumn.getIndexColumn()): {}, domainColumn.getNameColumn(): {}",
+                log.info("{}: tableHeads.get(domainColumn.getIndexColumn()): {}, domainColumn.getNameColumn(): {}",
+                        this.getClass().getName(),
                         Objects.requireNonNullElse(tableHeads.get(domainColumn.getIndexColumn()), "null")
                                                                     , domainColumn.getNameColumn());
                 if (!tableHeads.get(domainColumn.getIndexColumn()).equals(domainColumn.getNameColumn())) {

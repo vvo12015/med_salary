@@ -20,9 +20,4 @@ public class TimeSheetServiceImpl extends AbstractService<TimeSheet> implements 
     public Optional<TimeSheet> findByStaffListRecordId(String staffListId) {
         return timeSheetRepository.findByStaffListRecordId(staffListId);
     }
-
-    @Override
-    public Float sumVlkTime() {
-        return timeSheetRepository.sumVlkTime();
-    }
 }

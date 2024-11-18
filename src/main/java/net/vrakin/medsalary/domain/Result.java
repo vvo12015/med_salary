@@ -61,18 +61,12 @@ public class Result {
 
     private Float hourCoefficient;
 
-    private Float vlkCoefficient;
-
-    private Float sumForVlk;
-
-    private Float wholeSumVlk;
-
     private LocalDate employmentStartDate;
-
     public Result(User user, UserPosition userPosition,
                   Department department,
                   Float employment, Float employmentPart,
-                  Float hourCoefficient, Float vlkCoefficient, LocalDate employmentStartDate) {
+                  Float hourCoefficient,
+                  LocalDate employmentStartDate) {
         this.id = null;
         this.user = user;
         this.userPosition = userPosition;
@@ -82,10 +76,8 @@ public class Result {
         this.hospNSZU_Premium = 0f;
         this.amblNSZU_Premium = 0f;
         this.oneDaySurgery = 0f;
-        this.sumForVlk = 0f;
         this.date = LocalDate.now();
         this.hourCoefficient = hourCoefficient;
-        this.vlkCoefficient = vlkCoefficient;
         this.employmentStartDate = employmentStartDate;
     }
 
@@ -108,7 +100,6 @@ public class Result {
                 ", countEMR_priorityService=" + countEMR_priorityService +
                 ", employment=" + employment +
                 ", hourCoefficient=" + hourCoefficient +
-                ", vlkCoefficient=" + vlkCoefficient +
                 '}';
     }
 }

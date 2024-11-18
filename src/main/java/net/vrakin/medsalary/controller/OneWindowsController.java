@@ -15,6 +15,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.io.File;
@@ -50,6 +52,7 @@ public class OneWindowsController {
                                 ExcelReader<TimeSheet, TimeSheetDTO> timeSheetExcelReader,
                                 ExcelReader<ServicePackage, ServicePackageDTO> servicePackageExcelReader,
                                 StaffListRecordService staffListRecordService,
+                                NSZU_DecryptionService nszu_decryptionService,
                                 StorageService storageService) {
         this.staffListExcelReader = staffListExcelReader;
         this.userPositionExcelReader = userPositionExcelReader;
@@ -58,6 +61,7 @@ public class OneWindowsController {
         this.timeSheetExcelReader = timeSheetExcelReader;
         this.servicePackageExcelReader = servicePackageExcelReader;
         this.staffListRecordService = staffListRecordService;
+        this.nszu_decryptionService = nszu_decryptionService;
         this.storageService = storageService;
 }
 
@@ -72,32 +76,43 @@ public class OneWindowsController {
                                    RedirectAttributes redirectAttributes) throws IOException {
 
         List<String> messageErrors = new ArrayList<>();
+        List<File> distinationFiles = new ArrayList<>();
+        for (MultipartFile file: files){
+            distinationFiles.add(storageService.loadFromWorkDir(file.getName()).toFile());
+        }
 
-        for (MultipartFile file: files) {
-            File distinationFile = storageService.load(file.getName()).toFile();
+        LocalDateTime datePeriod = LocalDate.parse(monthYear + "-01").atTime(0, 0);
 
-            if (staffListExcelReader.isValidateFile(file.getResource().getFile()).isEmpty()){
-                staffListRecordService.saveAll(staffListExcelReader.readAllEntries(file.getResource().getFile()));
+        for (File file: distinationFiles) {
+
+            if (staffListExcelReader.isValidateFile(file).isEmpty()){
+                staffListRecordService.saveAll(staffListExcelReader.readAllEntries(file)
+                        .stream()
+                        .map(st-> {
+                            st.setStartDate(datePeriod);
+                            return st;
+                        })
+                        .toList());
                 continue;
             }
 
-            if (userPositionExcelReader.isValidateFile(file.getResource().getFile()).isEmpty()){
-                userPositionService.saveAll(userPositionExcelReader.readAllEntries(file.getResource().getFile()));
+            if (userPositionExcelReader.isValidateFile(file).isEmpty()){
+                userPositionService.saveAll(userPositionExcelReader.readAllEntries(file));
                 continue;
             }
 
-            if (departmentExcelReader.isValidateFile(file.getResource().getFile()).isEmpty()){
-                departmentService.saveAll(departmentExcelReader.readAllEntries(file.getResource().getFile()));
+            if (departmentExcelReader.isValidateFile(file).isEmpty()){
+                departmentService.saveAll(departmentExcelReader.readAllEntries(file));
                 continue;
             }
 
-            if (nszuDecryptionExcelReader.isValidateFile(file.getResource().getFile()).isEmpty()){
-                nszu_decryptionService.saveAll(nszuDecryptionExcelReader.readAllEntries(file.getResource().getFile()));
+            if (nszuDecryptionExcelReader.isValidateFile(file).isEmpty()){
+                nszu_decryptionService.saveAll(nszuDecryptionExcelReader.readAllEntries(file));
                 continue;
             }
 
-            if (timeSheetExcelReader.isValidateFile(file.getResource().getFile()).isEmpty()){
-                timeSheetService.saveAll(timeSheetExcelReader.readAllEntries(file.getResource().getFile()));
+            if (timeSheetExcelReader.isValidateFile(file).isEmpty()){
+                timeSheetService.saveAll(timeSheetExcelReader.readAllEntries(file));
                 continue;
             }
 

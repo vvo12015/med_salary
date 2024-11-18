@@ -12,6 +12,4 @@ import java.util.Optional;
 @Repository
 public interface TimeSheetRepository extends JpaRepository<TimeSheet, Long> {
     Optional<TimeSheet> findByStaffListRecordId(String staffListRecordId);
-    @Query("SELECT SUM(ts.vlkTime) FROM TimeSheet ts")
-    Float sumVlkTime();
 }

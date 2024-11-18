@@ -45,11 +45,11 @@ public abstract class ResultMapper implements BaseMapper<Result, ResultDTO> {
         listOfResult.add(Objects.requireNonNullElse(result.getOneDaySurgery(), 0f).toString());
         listOfResult.add(Objects.requireNonNullElse(result.getCountEMR_oneDaySurgery(), 0f).toString());
 
-        float coefficientVlk = Objects.requireNonNullElse(result.getVlkCoefficient(), 0f) * CalculateVlk.CALCULATE_PERCENT;
+        /*float coefficientVlk = Objects.requireNonNullElse(result.getVlkCoefficient(), 0f) * CalculateVlk.CALCULATE_PERCENT;
         listOfResult.add(Float.toString(coefficientVlk));
         listOfResult.add(Objects.requireNonNullElse(result.getSumForVlk(), 0f).toString());
         listOfResult.add(Objects.requireNonNullElse(result.getWholeSumVlk(), 0f).toString());
-        listOfResult.add(result.getDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+        listOfResult.add(result.getDate().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));*/
 
         return listOfResult;
     }

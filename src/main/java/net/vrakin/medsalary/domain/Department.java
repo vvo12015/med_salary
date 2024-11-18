@@ -3,6 +3,7 @@ package net.vrakin.medsalary.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Getter
@@ -34,6 +35,9 @@ public class Department {
 
     @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<StaffListRecord> staffListRecords;
+
+    @Column
+    private LocalDate period;
 
     @Override
     public String toString() {

@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -38,6 +40,8 @@ public class UserPosition {
     @Column
     private String nszuName;
 
+    @Column
+    private LocalDate period;
 
     @Override
     public String toString() {

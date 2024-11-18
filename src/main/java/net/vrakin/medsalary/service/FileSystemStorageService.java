@@ -44,16 +44,25 @@ public class FileSystemStorageService implements StorageService {
     }
 
     @Override
-    public File store(MultipartFile file, String filename) {
+    public File storeUploadDir(MultipartFile file, String filename) {
+        return store(file, filename, this.rootLocation.toAbsolutePath());
+    }
+
+    @Override
+    public File storeWorkDir(MultipartFile file, String filename) {
+        return store(file, filename, this.workLocation.toAbsolutePath());
+    }
+
+    private File store(MultipartFile file, String filename, Path path) {
         try {
             if (file.isEmpty()) {
                 throw new StorageException("Failed to store empty file.");
             }
-            Path destinationFile = this.rootLocation.resolve(
+            Path destinationFile = path.resolve(
                             Paths.get(filename))
                     .normalize().toAbsolutePath();
 
-            if (!destinationFile.getParent().equals(this.rootLocation.toAbsolutePath())) {
+            if (!destinationFile.getParent().equals(path.toAbsolutePath())) {
 
                 throw new StorageException(
                         "Cannot store file outside current directory.");
@@ -64,8 +73,7 @@ public class FileSystemStorageService implements StorageService {
             }
 
             return destinationFile.toFile();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new StorageException("Failed to store file.", e);
         }
     }

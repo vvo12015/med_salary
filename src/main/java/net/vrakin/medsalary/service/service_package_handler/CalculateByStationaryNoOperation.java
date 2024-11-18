@@ -13,7 +13,7 @@ import java.util.Objects;
 @Service
 public class CalculateByStationaryNoOperation extends AbstractCalculateStrategy implements CalculateStrategy {
 
-    private final float PACKAGE_COST = 200F / 3;
+    private final float PACKAGE_COST = 56;
 
         @Autowired
     public CalculateByStationaryNoOperation(NSZU_DecryptionService nszu_decryptionService) {

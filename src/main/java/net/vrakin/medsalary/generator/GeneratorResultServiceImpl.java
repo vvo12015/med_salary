@@ -31,8 +31,6 @@ public class GeneratorResultServiceImpl implements GeneratorResultService {
 
     private final TimeSheetService timeSheetService;
 
-    private static Float sumVlkTime;
-
     @Autowired
     public GeneratorResultServiceImpl(StaffListRecordService staffListRecordService, ServicePackageService servicePackageService,
                                       CalculateManager calculateManager, TimeSheetService timeSheetService) {
@@ -49,11 +47,9 @@ public class GeneratorResultServiceImpl implements GeneratorResultService {
 
         Float hourCoefficient = getHourCoefficient(staffListRecord.getStaffListId());
 
-        Float vlkCoefficient = getVlkCoefficient(staffListRecord.getStaffListId());
-
         Result result = new Result(staffListRecord.getUser(), staffListRecord.getUserPosition(),
                 staffListRecord.getDepartment(), getEmployment(staffListRecord.getUser()),
-                employmentPart, hourCoefficient, vlkCoefficient, staffListRecord.getEmploymentStartDate());
+                employmentPart, hourCoefficient, staffListRecord.getEmploymentStartDate());
 
         if (Objects.requireNonNullElse(staffListRecord.getDepartment().getServicePackages(), EMPTY_SING).equals(EMPTY_SING)
                 || Objects.requireNonNullElse(staffListRecord.getUserPosition().getServicePackageNumbers(), EMPTY_SING).equals(EMPTY_SING)) {
@@ -79,22 +75,6 @@ public class GeneratorResultServiceImpl implements GeneratorResultService {
         log.info("result: {}", result);
 
         return result;
-    }
-
-    private Float getVlkCoefficient(String staffListId) {
-        Optional<TimeSheet> timeSheetOptional = timeSheetService.findByStaffListRecordId(staffListId);
-
-        if (Objects.isNull(sumVlkTime)){
-            sumVlkTime = timeSheetService.sumVlkTime();
-        }
-
-        if (timeSheetOptional.isPresent()){
-            Float vlkTime = timeSheetOptional.get().getVlkTime();
-
-            return vlkTime / sumVlkTime;
-        }
-
-        return 0f;
     }
 
     private Float getHourCoefficient(String staffListId) {
