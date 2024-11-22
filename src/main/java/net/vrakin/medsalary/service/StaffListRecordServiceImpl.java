@@ -7,6 +7,7 @@ import net.vrakin.medsalary.repository.StaffListRecordRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,7 +29,12 @@ public class StaffListRecordServiceImpl extends AbstractService<StaffListRecord>
 
     @Override
     public List<StaffListRecord> findByUserPosition(UserPosition userPosition) {
-        return findByUserPosition(userPosition);
+        return staffListRecordRepository.findByUserPosition(userPosition);
+    }
+
+    @Override
+    public List<StaffListRecord> findByPeriod(LocalDate period) {
+        return staffListRecordRepository.findByStartDate(period.atTime(0, 0));
     }
 
     @Override

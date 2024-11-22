@@ -14,12 +14,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.io.File;
 
 @Controller
 @RequestMapping("/one-window")
@@ -81,38 +80,32 @@ public class OneWindowsController {
             distinationFiles.add(storageService.loadFromWorkDir(file.getName()).toFile());
         }
 
-        LocalDateTime datePeriod = LocalDate.parse(monthYear + "-01").atTime(0, 0);
+        LocalDate datePeriod = LocalDate.parse(monthYear + "-01");
 
         for (File file: distinationFiles) {
 
             if (staffListExcelReader.isValidateFile(file).isEmpty()){
-                staffListRecordService.saveAll(staffListExcelReader.readAllEntries(file)
-                        .stream()
-                        .map(st-> {
-                            st.setStartDate(datePeriod);
-                            return st;
-                        })
-                        .toList());
+                staffListRecordService.saveAll(staffListExcelReader.readAllEntries(file, datePeriod));
                 continue;
             }
 
             if (userPositionExcelReader.isValidateFile(file).isEmpty()){
-                userPositionService.saveAll(userPositionExcelReader.readAllEntries(file));
+                userPositionService.saveAll(userPositionExcelReader.readAllEntries(file, datePeriod));
                 continue;
             }
 
             if (departmentExcelReader.isValidateFile(file).isEmpty()){
-                departmentService.saveAll(departmentExcelReader.readAllEntries(file));
+                departmentService.saveAll(departmentExcelReader.readAllEntries(file, datePeriod));
                 continue;
             }
 
             if (nszuDecryptionExcelReader.isValidateFile(file).isEmpty()){
-                nszu_decryptionService.saveAll(nszuDecryptionExcelReader.readAllEntries(file));
+                nszu_decryptionService.saveAll(nszuDecryptionExcelReader.readAllEntries(file, datePeriod));
                 continue;
             }
 
             if (timeSheetExcelReader.isValidateFile(file).isEmpty()){
-                timeSheetService.saveAll(timeSheetExcelReader.readAllEntries(file));
+                timeSheetService.saveAll(timeSheetExcelReader.readAllEntries(file, datePeriod));
                 continue;
             }
 

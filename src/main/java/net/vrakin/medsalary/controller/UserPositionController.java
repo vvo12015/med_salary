@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.YearMonth;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/userposition")
@@ -58,6 +60,10 @@ public class UserPositionController extends AbstractController<UserPosition, Use
         log.info("Accessing post files {} page", entityName);
 
         saveEntitiesAndSendDtoAndErrors(file, monthYear, redirectAttributes);
+        service.saveAll(service.findAll().stream().map(up-> {
+            up.setPeriod(YearMonth.parse(monthYear).atDay(1));
+            return up;
+        }).collect(Collectors.toList()));
 
         return "redirect:/" + entityName;
     }

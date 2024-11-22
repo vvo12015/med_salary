@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -47,7 +48,7 @@ public class ServicePackageExcelReader extends AbstractExcelReader<ServicePackag
     }
 
     @Override
-    public ServicePackageDTO toDTOFromString(String stringDTO) {
+    public ServicePackageDTO toDTOFromString(String stringDTO, LocalDate period) {
 
         List<String> stringList = Arrays.stream(stringDTO.split(ExcelHelper.WORD_SEPARATOR)).toList();
         ServicePackageDTO dto = new ServicePackageDTO();

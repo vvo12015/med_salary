@@ -3,6 +3,7 @@ package net.vrakin.medsalary.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class NszuDecryption {
+public class NszuDecryption implements PeriodControl{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -159,6 +160,16 @@ public class NszuDecryption {
 
     @Column(name = "date_preview_nszu")
     private LocalDateTime datePreviewNSZU;
+
+    @Override
+    public LocalDate getPeriod() {
+        return LocalDate.of(yearNum, monthNum, 1);
+    }
+    @Override
+    public void setPeriod(LocalDate period) {
+        yearNum = period.getYear();
+        monthNum = period.getMonthValue();
+    }
 
     @Override
     public String toString() {

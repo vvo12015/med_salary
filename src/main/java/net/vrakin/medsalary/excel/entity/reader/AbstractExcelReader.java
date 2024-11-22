@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.vrakin.medsalary.mapper.BaseMapper;
 
 import java.io.File;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -30,12 +31,12 @@ public abstract class AbstractExcelReader<E, D> implements ExcelReader<E, D> {
 
     protected abstract List<String> filterRow(File file);
 
-    public List<E> readAllEntries(File file){
-        return mapper.toEntityList(readAllDto(file));
+    public List<E> readAllEntries(File file, LocalDate period){
+        return mapper.toEntityList(readAllDto(file, period));
     }
 
-    public List<D> readAllDto(File file){
-        return filterRow(file).stream().map(this::toDTOFromString)
+    public List<D> readAllDto(File file, LocalDate period){
+        return filterRow(file).stream().map(s ->toDTOFromString(s, period))
                 .collect(Collectors.toList());
     }
 
@@ -47,7 +48,8 @@ public abstract class AbstractExcelReader<E, D> implements ExcelReader<E, D> {
         Optional<String> tableHeadFromFileOptional = Optional.empty();
 
         try {
-            tableHeadFromFileOptional = excelHelper.readRowCountExcel(file, fileFormatDetails.getStartColNumber(), ONE_COLUMN_NUMBER).stream().findFirst();
+            tableHeadFromFileOptional = excelHelper
+                    .readRowCountExcel(file, fileFormatDetails.getStartColNumber(), ONE_COLUMN_NUMBER).stream().findFirst();
         } catch (Exception e) {
             String errorText = "Помилка читання файлу";
             errors.add(errorText);
@@ -111,5 +113,5 @@ public abstract class AbstractExcelReader<E, D> implements ExcelReader<E, D> {
 
     protected abstract void generateFormatDetails();
 
-    protected abstract D toDTOFromString(String s);
+    protected abstract D toDTOFromString(String s, LocalDate period);
 }

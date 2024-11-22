@@ -2,6 +2,8 @@ package net.vrakin.medsalary.dto;
 
 import lombok.*;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -24,4 +26,6 @@ public class UserPositionDTO {
     private String nszuName;
 
     private String servicePackageNumbers;
+
+    private LocalDate period;
 }

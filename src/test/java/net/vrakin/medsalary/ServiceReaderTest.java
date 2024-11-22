@@ -19,6 +19,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -102,7 +103,7 @@ public final class ServiceReaderTest {
 
         String destinationFileName = String.format("%s_test%s", USER_POSITION_FILENAME, ExcelHelper.FILE_EXTENSION);
 
-        List<UserPosition> userPositionList = userPositionExcelReader.readAllEntries(storageService.load(destinationFileName).toFile());
+        List<UserPosition> userPositionList = userPositionExcelReader.readAllEntries(storageService.load(destinationFileName).toFile(), LocalDate.now());
 
         userPositionService.saveAll(userPositionList);
 
@@ -119,7 +120,7 @@ public final class ServiceReaderTest {
 
         String destinationFileName = String.format("%s_test%s", DEPARTMENT_FILENAME, ExcelHelper.FILE_EXTENSION);
 
-        List<Department> departmentList = departmentExcelReader.readAllEntries(storageService.load(destinationFileName).toFile());
+        List<Department> departmentList = departmentExcelReader.readAllEntries(storageService.load(destinationFileName).toFile(), LocalDate.now());
 
         departmentService.saveAll(departmentList);
 
@@ -136,7 +137,7 @@ public final class ServiceReaderTest {
 
         String destinationFileName = String.format("%s_test%s", STAFFLIST_FILENAME, ExcelHelper.FILE_EXTENSION);
 
-        List<StaffListRecordDTO> staffListDTO = staffListRecordExcelReader.readAllDto(storageService.load(destinationFileName).toFile());
+        List<StaffListRecordDTO> staffListDTO = staffListRecordExcelReader.readAllDto(storageService.load(destinationFileName).toFile(), LocalDate.now());
         List<StaffListRecord> staffList = new ArrayList<>();
 
         for (StaffListRecordDTO staffListRecordDTO : staffListDTO) {
@@ -157,7 +158,7 @@ public final class ServiceReaderTest {
 
         String destinationFileName = String.format("%s_test%s", NSZU_DECRYPTION_FILENAME, ExcelHelper.FILE_EXTENSION);
 
-        List<NszuDecryption> nszuDecryptionList = nszuDecryptionExcelReader.readAllEntries(storageService.load(destinationFileName).toFile());
+        List<NszuDecryption> nszuDecryptionList = nszuDecryptionExcelReader.readAllEntries(storageService.load(destinationFileName).toFile(), LocalDate.now());
 
         nszuDecryptionService.saveAll(nszuDecryptionList);
 

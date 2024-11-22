@@ -5,6 +5,8 @@ import net.vrakin.medsalary.repository.DepartmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -21,6 +23,16 @@ public class DepartmentServiceImpl extends AbstractService<Department> implement
     @Override
     public Optional<Department> findByName(String name){
         return departmentRepository.findByName(name);
+    }
+
+    @Override
+    public Optional<Department> findByDepartmentIsProIdAndPeriod(String departmentIsProId, LocalDate period) {
+        return departmentRepository.findByDepartmentIsProIdAndPeriod(departmentIsProId, period);
+    }
+
+    @Override
+    public List<Department> findByPeriod(LocalDate period) {
+        return departmentRepository.findByPeriod(period);
     }
 
     @Override

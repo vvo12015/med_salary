@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -54,7 +55,7 @@ public class UserPositionExcelReader extends AbstractExcelReader<UserPosition, U
     }
 
         @Override
-        public UserPositionDTO toDTOFromString(String stringDTO) {
+        public UserPositionDTO toDTOFromString(String stringDTO, LocalDate period) {
 
             List<String> stringList = Arrays.stream(stringDTO.split(ExcelHelper.WORD_SEPARATOR))
                     .toList();
@@ -69,6 +70,7 @@ public class UserPositionExcelReader extends AbstractExcelReader<UserPosition, U
                 dto.setBasicPremium(Integer.parseInt(stringList.get(USER_POSITION_BASIC_PREMIUM)));
                 dto.setServicePackageNumbers(stringList.get(USER_POSITION_SERVICE_PACKAGE));
                 dto.setNszuName(stringList.get(USER_POSITION_NSZU_NAME));
+                dto.setPeriod(period);
             }
 
 

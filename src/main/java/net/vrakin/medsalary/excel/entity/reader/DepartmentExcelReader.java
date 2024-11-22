@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -49,7 +50,7 @@ public class DepartmentExcelReader extends AbstractExcelReader<Department, Depar
     }
 
         @Override
-        public DepartmentDTO toDTOFromString(String stringDTO) {
+        public DepartmentDTO toDTOFromString(String stringDTO, LocalDate period) {
 
             List<String> stringList = Arrays.stream(stringDTO.split(ExcelHelper.WORD_SEPARATOR))
                     .toList();

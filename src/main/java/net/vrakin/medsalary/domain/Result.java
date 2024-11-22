@@ -14,7 +14,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Entity
 @Table(name="result")
-public class Result {
+public class Result implements PeriodControl{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,6 +47,16 @@ public class Result {
     @Column
     private LocalDate date;
 
+    @Override
+    public LocalDate getPeriod() {
+        return date;
+    }
+
+    @Override
+    public void setPeriod(LocalDate period) {
+        date = period;
+    }
+
     private Integer countEMR_stationary;
 
     private Float sumForAmlPackage;
@@ -62,11 +72,17 @@ public class Result {
     private Float hourCoefficient;
 
     private LocalDate employmentStartDate;
+
+    @Column(name = "other_premium")
+    private Double otherPremium;
+
+    @Column
+    private String comment;
     public Result(User user, UserPosition userPosition,
                   Department department,
                   Float employment, Float employmentPart,
                   Float hourCoefficient,
-                  LocalDate employmentStartDate) {
+                  LocalDate employmentStartDate, LocalDate period) {
         this.id = null;
         this.user = user;
         this.userPosition = userPosition;
@@ -76,7 +92,7 @@ public class Result {
         this.hospNSZU_Premium = 0f;
         this.amblNSZU_Premium = 0f;
         this.oneDaySurgery = 0f;
-        this.date = LocalDate.now();
+        this.date = period;
         this.hourCoefficient = hourCoefficient;
         this.employmentStartDate = employmentStartDate;
     }

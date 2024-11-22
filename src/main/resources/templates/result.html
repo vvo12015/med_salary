@@ -14,14 +14,47 @@
 
 <div class="container mt-5">
     <p th:text="${result_count}">Кількість згенерованих результатів</p>
-    <button type="button" class="btn btn-primary" th:onclick="location = '/result/generate'">
-        Сгенерувати результати з бази
-    </button>
-    <button type="button" class="btn btn-primary" th:onclick="location = '/result/generate-f'">
-        Сгенерувати результати з файлів
-    </button>
+    <h2 th:text="'Завантаження файлу таблиці ' + результатів"></h2>
+    <form method="POST" id="GenerateFromBase" enctype="multipart/form-data" th:action="'/result/generate'">
+        <div class="mb-3">
+            <label for="period1">Місяць:</label><br>
+            <input type="month" id="period1" name="period" />
+        </div>
+        <button type="submit" class="btn btn-primary">Сгенерувати результати з бази</button>
+    </form>
+    <form method="POST" id="GenerateFromFile" enctype="multipart/form-data" th:action="'/result/generate-f'">
+        <div class="mb-3">
+            <label for="period2">Місяць:</label><br>
+            <input type="month" id="period2" name="period" />
+        </div>
+        <button type="submit" class="btn btn-primary">Сгенерувати результати з файлів</button>
+    </form>
 </div>
-
+<div class="container mt-5">
+    <h3>Статистика</h3>
+    <table class="table table-striped table-bordered">
+        <thead>
+        <tr>
+            <th>Показник</th>
+            <th>Значення</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>Кількість записів у StaffList</td>
+            <td th:text="${StaffListCount}"></td>
+        </tr>
+        <tr>
+            <td>Кількість записів у Department</td>
+            <td th:text="${DepartmentCount}"></td>
+        </tr>
+        <tr>
+            <td>Кількість записів у UserPosition</td>
+            <td th:text="${UserPositionCount}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 <div class="container mt-5 table-container">
     <table class="table table-bordered">
         <thead>

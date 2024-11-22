@@ -2,6 +2,8 @@ package net.vrakin.medsalary.dto;
 
 import lombok.*;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -20,4 +22,7 @@ public class TimeSheetDTO {
 
     private Float factTime;
 
+    private LocalDate period;
+
+    private Float nightHours;
 }

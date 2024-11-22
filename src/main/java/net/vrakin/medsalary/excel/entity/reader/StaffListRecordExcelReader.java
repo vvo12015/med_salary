@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -55,7 +56,7 @@ public class StaffListRecordExcelReader extends AbstractExcelReader<StaffListRec
         }).collect(Collectors.toList());
     }
 
-    public StaffListRecordDTO toDTOFromString(String stringDTO) {
+    public StaffListRecordDTO toDTOFromString(String stringDTO, LocalDate period) {
 
         List<String> stringList = Arrays.stream(stringDTO.split(ExcelHelper.WORD_SEPARATOR))
                 .collect(Collectors.toList());
@@ -104,7 +105,7 @@ public class StaffListRecordExcelReader extends AbstractExcelReader<StaffListRec
             dto.setSalary(Float.parseFloat(stringList.get(SALARY_INDEX)));
         }
 
-        dto.setStartDate(LocalDateTime.now());
+        dto.setStartDate(period.atTime(0, 0));
 
         if (Objects.nonNull(stringList.get(CATEGORY_INDEX))){
             dto.setPremiumCategoryName(stringList.get(CATEGORY_INDEX));

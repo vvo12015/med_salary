@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
-public class CalculateByStationaryNoOperation extends AbstractCalculateStrategy implements CalculateStrategy {
+public class CalculateByStationaryNoOperation extends AbstractCalculateStrategyNSZU implements CalculateStrategyNSZU {
 
     private final float PACKAGE_COST = 56;
 

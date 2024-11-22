@@ -14,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 
 @RestController
@@ -55,7 +57,8 @@ public class StaffListRecordRestController {
             throw new ResourceExistException("StaffListRecordId", staffListRecordDTO.getId().toString());
         }
 
-        StaffListRecord staffListRecord = staffListRecordService.save(generatorStaffListRecordService.generate(staffListRecordDTO));
+        StaffListRecord staffListRecord = staffListRecordService.save(
+                generatorStaffListRecordService.generate(staffListRecordDTO));
 
         StaffListRecordDTO savedStaffListRecord = staffListRecordMapper.toDto(staffListRecord);
 

@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.File;
+import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,6 +45,9 @@ public abstract class AbstractController<E, D> {
         YearMonth yearMonth = YearMonth.parse(monthYear);
         int monthNumber = yearMonth.getMonthValue();
         int yearNumber = yearMonth.getYear();
+
+        LocalDate period = LocalDate.of(yearNumber, monthNumber, 01);
+
         String savedFileName = String.format("%s_%d_%02d" + ExcelHelper.FILE_EXTENSION, entityName, yearNumber, monthNumber);
 
         File destinationFile = storageService.storeUploadDir(file, savedFileName);
@@ -55,9 +59,9 @@ public abstract class AbstractController<E, D> {
             messageReadError = errorList.stream().reduce((s, s2) -> s.concat(";\n Errors:\n" + s2)).toString();
         }else{
             log.info("Start save to DB");
-            service.saveAll(excelReader.readAllEntries(destinationFile));
+            service.saveAll(excelReader.readAllEntries(destinationFile, period));
             log.info("Finish save to DB");
-            redirectAttributes.addFlashAttribute(entityName+"s", excelReader.readAllDto(destinationFile));
+            redirectAttributes.addFlashAttribute(entityName+"s", excelReader.readAllDto(destinationFile, period));
         }
 
         redirectAttributes.addFlashAttribute("message",

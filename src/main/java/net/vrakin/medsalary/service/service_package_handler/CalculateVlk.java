@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.Objects;
 
 @Service
-public class CalculateVlk extends AbstractCalculateStrategy implements CalculateStrategy {
+public class CalculateVlk extends AbstractCalculateStrategyNSZU implements CalculateStrategyNSZU {
 
     public static final float CALCULATE_PERCENT = 1.25f/100f;
 

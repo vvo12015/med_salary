@@ -15,6 +15,8 @@ public abstract class TimeSheetMapper implements BaseMapper<TimeSheet, TimeSheet
         dto.setPlanTime(entity.getPlanTime());
         dto.setFactTime(entity.getFactTime());
         dto.setStaffListRecordId(entity.getStaffListRecordId());
+        dto.setNightHours(entity.getNightHours());
+        dto.setPeriod(entity.getPeriod());
 
         return dto;
     }

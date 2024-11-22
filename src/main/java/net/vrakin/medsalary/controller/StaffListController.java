@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.YearMonth;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -95,6 +96,11 @@ public class StaffListController extends AbstractController<StaffListRecord, Sta
                                    RedirectAttributes redirectAttributes) {
 
         saveEntitiesAndSendDtoAndErrors(file, monthYear, redirectAttributes);
+
+        service.saveAll(service.findAll().stream().map(sl-> {
+            sl.setStartDate(YearMonth.parse(monthYear).atDay(1).atTime(0, 0));
+            return sl;
+        }).collect(Collectors.toList()));
 
         List<UserPosition> userPositions = userPositionService.findAll();
         List<Department> departments = departmentService.findAll();

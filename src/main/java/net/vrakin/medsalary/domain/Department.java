@@ -13,7 +13,7 @@ import java.util.List;
 @Entity
 @Builder
 @Table(name = "department")
-public class Department {
+public class Department implements PeriodControl{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

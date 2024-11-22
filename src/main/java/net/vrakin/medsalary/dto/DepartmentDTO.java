@@ -1,6 +1,9 @@
 package net.vrakin.medsalary.dto;
 
 import lombok.*;
+import net.vrakin.medsalary.domain.PeriodControl;
+
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -8,7 +11,7 @@ import lombok.*;
 @AllArgsConstructor
 @EqualsAndHashCode
 @ToString
-public class DepartmentDTO {
+public class DepartmentDTO implements PeriodControl {
     private Long id;
 
     private String name;
@@ -22,4 +25,6 @@ public class DepartmentDTO {
     private String servicePackages;
 
     private DTOStatus status;
+
+    private LocalDate period;
 }

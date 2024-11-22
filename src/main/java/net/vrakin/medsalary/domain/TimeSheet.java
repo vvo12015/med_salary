@@ -12,8 +12,9 @@ import java.time.LocalDate;
 @Entity
 @Builder
 @Table(name = "time_sheet")
-public class TimeSheet {
+public class TimeSheet implements PeriodControl{
 
+    public static final int NIGHT_TO_FULL_DAY_COEFFICIENT = 3;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,8 +28,20 @@ public class TimeSheet {
     @Column
     private Float factTime;
 
+    @Column(name = "night_hours")
+    private Float nightHours;
+
     @Column
     private LocalDate period;
+    
+    public float getHourCoefficient(){
+        return factTime / planTime;
+    }
+    
+    public boolean getUgrency(){
+        return
+                (nightHours* NIGHT_TO_FULL_DAY_COEFFICIENT) > (factTime/2);
+    }
 
     @Override
     public String toString() {
@@ -37,6 +50,8 @@ public class TimeSheet {
                 ", staffListRecordId='" + staffListRecordId + '\'' +
                 ", planTime=" + planTime +
                 ", factTime=" + factTime +
+                ", nightHours=" + nightHours +
+                ", period=" + period.toString() +
                 '}';
     }
 }

@@ -1,7 +1,9 @@
 package net.vrakin.medsalary.dto;
 
 import lombok.*;
+import net.vrakin.medsalary.domain.PeriodControl;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -10,7 +12,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @EqualsAndHashCode
 @ToString
-public class NszuDecryptionDTO {
+public class NszuDecryptionDTO  implements PeriodControl {
 
     private Long id;
 
@@ -110,4 +112,14 @@ public class NszuDecryptionDTO {
 
     private LocalDateTime datePreviewNSZU;
 
+    @Override
+    public LocalDate getPeriod() {
+        return LocalDate.of(year, month, 1);
+    }
+
+    @Override
+    public void setPeriod(LocalDate period) {
+        year = period.getYear();
+        month = period.getMonthValue();
+    }
 }

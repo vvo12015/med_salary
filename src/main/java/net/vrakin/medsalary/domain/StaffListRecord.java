@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Entity
 @Builder
 @Table(name = "staff_list")
-public class StaffListRecord {
+public class StaffListRecord implements PeriodControl{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -54,6 +54,16 @@ public class StaffListRecord {
 
     @Column
     private Float Salary;
+
+    @Override
+    public LocalDate getPeriod() {
+        return startDate.toLocalDate();
+    }
+
+    @Override
+    public void setPeriod(LocalDate period) {
+        startDate = period.atTime(0, 0);
+    }
 
     @Override
     public String toString() {

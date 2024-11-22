@@ -3,14 +3,12 @@ package net.vrakin.medsalary.service.service_package_handler;
 import lombok.extern.slf4j.Slf4j;
 import net.vrakin.medsalary.domain.*;
 import net.vrakin.medsalary.service.NSZU_DecryptionService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
 
 @Slf4j
-public class CalculateByAmbulatoryNoOperation extends AbstractCalculateStrategy implements CalculateStrategy {
+public class CalculateByAmbulatoryNoOperation extends AbstractCalculateStrategyNSZU implements CalculateStrategyNSZU {
 
     public static final int SUM_THRESHOLD = 30_000;
     public static final int LIMIT_THRESHOLD = 20_000;

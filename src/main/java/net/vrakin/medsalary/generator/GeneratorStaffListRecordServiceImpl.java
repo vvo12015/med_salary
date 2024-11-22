@@ -12,13 +12,14 @@ import org.hibernate.NonUniqueResultException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 @Service
 @Slf4j
-public class GeneratorStaffListRecordServiceImpl implements Generator<StaffListRecordDTO, StaffListRecord>, GeneratorStaffListRecordService {
+public class GeneratorStaffListRecordServiceImpl implements GeneratorStaffListRecordService {
     private final UserPositionService userPositionService;
     private final DepartmentService departmentService;
     private final PremiumCategoryService premiumCategoryService;
@@ -62,20 +63,15 @@ public class GeneratorStaffListRecordServiceImpl implements Generator<StaffListR
 
         UserPosition userPosition;
         List<UserPosition> userPositions = userPositionService
-                .findByCodeIsPro(staffListRecordDTO.getUserPosition().getCodeIsPro());
+                .findByCodeIsProAndPeriod(staffListRecordDTO.getUserPosition().getCodeIsPro(), staffListRecordDTO.getPeriod());
 
         if (!userPositions.isEmpty())
         {
             userPosition = userPositions.stream().findFirst().get();
-
         }else if(Objects.nonNull(staffListRecordDTO.getUserPosition().getCodeIsPro())){
-            userPosition = new UserPosition();
-            userPosition.setCodeIsPro(staffListRecordDTO.getUserPosition().getCodeIsPro());
-            if (Objects.nonNull(staffListRecordDTO.getUserPosition().getName())) {
-                userPosition.setName(staffListRecordDTO.getUserPosition().getName());
-            }
-            userPosition = userPositionService.save(userPosition);
-            log.info("Create userPosition: {}", userPosition.toString());
+            throw new ResourceNotFoundException("userPosition", "name or codeIsPro", staffListRecordDTO
+                                                                                    .getUserPosition()
+                                                                                    .getCodeIsPro());
         }else {
             throw new ExcelFileErrorException("userPosition", "name or codeIsPro", "");
         }
@@ -85,8 +81,8 @@ public class GeneratorStaffListRecordServiceImpl implements Generator<StaffListR
         Department department;
         Optional<Department> departmentOptional = Optional.empty();
         try {
-            departmentOptional = departmentService.findByDepartmentIsProId(
-                    staffListRecordDTO.getDepartment().getDepartmentIsProId());
+            departmentOptional = departmentService.findByDepartmentIsProIdAndPeriod(
+                    staffListRecordDTO.getDepartment().getDepartmentIsProId(), staffListRecordDTO.getPeriod());
         }catch (NonUniqueResultException e){
             log.error("departmentIsProId: {} , errorMessage: {}"
                     , staffListRecordDTO.getDepartment().getDepartmentIsProId(),
@@ -97,14 +93,7 @@ public class GeneratorStaffListRecordServiceImpl implements Generator<StaffListR
         {
             department = departmentOptional.get();
         }else if(Objects.nonNull(staffListRecordDTO.getDepartment().getDepartmentIsProId())){
-            department = new Department();
-            department.setDepartmentIsProId(staffListRecordDTO.getDepartment().getDepartmentIsProId());
-            if (Objects.nonNull(staffListRecordDTO.getDepartment().getName())) {
-                department.setName(staffListRecordDTO.getDepartment().getName());
-            }
-
-            department = departmentService.save(department);
-            log.info(department.toString());
+            throw new ResourceNotFoundException("department", "departmentIsProId",staffListRecordDTO.getDepartment().getDepartmentIsProId() );
         }else {
             throw new ExcelFileErrorException("department", "name or DepartmentIsProId", "");
         }

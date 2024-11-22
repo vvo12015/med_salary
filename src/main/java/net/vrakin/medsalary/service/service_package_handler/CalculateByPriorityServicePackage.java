@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
-public class CalculateByPriorityServicePackage extends AbstractCalculateStrategy implements CalculateStrategy {
+public class CalculateByPriorityServicePackage extends AbstractCalculateStrategyNSZU implements CalculateStrategyNSZU {
 
     public static final float PACKAGE_COST = 80f/3;
     @Autowired

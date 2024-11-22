@@ -2,19 +2,21 @@ package net.vrakin.medsalary.generator;
 
 import net.vrakin.medsalary.domain.*;
 import net.vrakin.medsalary.exception.ResourceNotFoundException;
+import net.vrakin.medsalary.service.PremiumCategoryService;
 import net.vrakin.medsalary.service.ServicePackageService;
 import net.vrakin.medsalary.service.StaffListRecordService;
 import net.vrakin.medsalary.service.TimeSheetService;
 import net.vrakin.medsalary.service.service_package_handler.CalculateManager;
+import net.vrakin.medsalary.service.service_package_handler.PremiumKind;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,13 +33,17 @@ public class GeneratorResultServiceImpl implements GeneratorResultService {
 
     private final TimeSheetService timeSheetService;
 
+    private final PremiumCategoryService premiumCategoryService;
+
     @Autowired
     public GeneratorResultServiceImpl(StaffListRecordService staffListRecordService, ServicePackageService servicePackageService,
-                                      CalculateManager calculateManager, TimeSheetService timeSheetService) {
+                                      CalculateManager calculateManager, TimeSheetService timeSheetService,
+                                      PremiumCategoryService premiumCategoryService) {
         this.staffListRecordService = staffListRecordService;
         this.servicePackageService = servicePackageService;
         this.calculateManager = calculateManager;
         this.timeSheetService = timeSheetService;
+        this.premiumCategoryService = premiumCategoryService;
     }
 
     @Override
@@ -45,11 +51,14 @@ public class GeneratorResultServiceImpl implements GeneratorResultService {
 
         Float employmentPart = getEmploymentPart(staffListRecord, staffListRecord.getUser());
 
-        Float hourCoefficient = getHourCoefficient(staffListRecord.getStaffListId());
+        TimeSheet timeSheet = timeSheetService.findByStaffListRecordIdAndPeriod(staffListRecord.getStaffListId(),
+                staffListRecord.getPeriod()).orElseThrow(()->new ResourceNotFoundException("timeSheet", "staffListRecordId", staffListRecord.getStaffListId()));
+
+        Float hourCoefficient = timeSheet.getHourCoefficient();
 
         Result result = new Result(staffListRecord.getUser(), staffListRecord.getUserPosition(),
                 staffListRecord.getDepartment(), getEmployment(staffListRecord.getUser()),
-                employmentPart, hourCoefficient, staffListRecord.getEmploymentStartDate());
+                employmentPart, hourCoefficient, staffListRecord.getEmploymentStartDate(), staffListRecord.getPeriod());
 
         if (Objects.requireNonNullElse(staffListRecord.getDepartment().getServicePackages(), EMPTY_SING).equals(EMPTY_SING)
                 || Objects.requireNonNullElse(staffListRecord.getUserPosition().getServicePackageNumbers(), EMPTY_SING).equals(EMPTY_SING)) {
@@ -72,22 +81,15 @@ public class GeneratorResultServiceImpl implements GeneratorResultService {
             calculateManager.calculate(servicePackage, result);
         }
 
+        if (timeSheet.getUgrency() && staffListRecord.getPremiumCategory().getName().equals(PremiumKind.ZERO.name())){
+            staffListRecord.setPremiumCategory(premiumCategoryService.findByName(PremiumKind.URG.name()).get());
+        }
+
+        calculateManager.calculate(staffListRecord, result);
+
         log.info("result: {}", result);
 
         return result;
-    }
-
-    private Float getHourCoefficient(String staffListId) {
-        Optional<TimeSheet> timeSheetOptional = timeSheetService.findByStaffListRecordId(staffListId);
-
-        if (timeSheetOptional.isPresent()){
-            Float hourFact = timeSheetOptional.get().getFactTime();
-            Float hourPlan = timeSheetOptional.get().getPlanTime();
-
-            return hourFact/hourPlan;
-        }else {
-            throw new ResourceNotFoundException("Result", "StaffListId", staffListId);
-        }
     }
 
     private Float getEmploymentPart(StaffListRecord staffListRecord, User user) {

@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.YearMonth;
+import java.util.stream.Collectors;
+
 @Controller
 @RequestMapping("/department")
 @Slf4j
@@ -61,6 +64,11 @@ public class DepartmentController extends AbstractController<Department, Departm
         log.info("Accessing post files department page");
 
         saveEntitiesAndSendDtoAndErrors(file, monthYear, redirectAttributes);
+
+        service.saveAll(service.findAll().stream().map(d-> {
+            d.setPeriod(YearMonth.parse(monthYear).atDay(1));
+            return d;
+        }).collect(Collectors.toList()));
 
         return "redirect:/" + entityName;
     }

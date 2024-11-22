@@ -9,13 +9,17 @@ import net.vrakin.medsalary.generator.GeneratorResultService;
 import net.vrakin.medsalary.generator.GeneratorStaffListRecordService;
 import net.vrakin.medsalary.mapper.ResultMapper;
 import net.vrakin.medsalary.service.*;
-import net.vrakin.medsalary.service.service_package_handler.CalculateManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.YearMonth;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -98,54 +102,73 @@ public class ResultController {
     public String result(Model model){
         log.info("Accessing result page");
 
-        model.addAttribute("resultList", resultList);
+        updateData(model, LocalDate.now().withDayOfMonth(1));
 
         return "result";
     }
 
-    @GetMapping("/generate")
-    public String resultGenerate(Model model) throws IOException {
+    private void updateData(Model model, LocalDate period) {
+        model.addAttribute("resultList", resultList);
+        model.addAttribute("StaffListCount", staffListRecordService.findByPeriod(period).size());
+        model.addAttribute("DepartmentCount", departmentService.findByPeriod(period).size());
+        model.addAttribute("UserPositionCount", userPositionService.findByPeriod(period).size());
+    }
+
+    @GetMapping("/update")
+    public String updateForPeriod(@RequestParam String period, Model model) throws IOException {
         log.info("Accessing generate result page");
 
-        generateAndSendResult(model);
+        updateData(model, YearMonth.parse(period).atDay(01));
 
         return "result";
     }
 
-    @GetMapping("/generate-f")
-    public String resultGenerateFromFiles(Model model) throws Exception {
+    @PostMapping("/generate")
+    public String resultGenerate(@RequestParam String period, Model model) throws IOException {
+        log.info("Accessing generate result page");
+
+        generateAndSendResult(model, YearMonth.parse(period).atDay(01));
+
+        return "result";
+    }
+
+    @PostMapping("/generate-f")
+    public String resultGenerateFromFiles(@RequestParam String monthYear, Model model) throws Exception {
         log.info("Accessing generate result from files page");
+
+        YearMonth yearMonth = YearMonth.parse(monthYear);
+        LocalDate period = yearMonth.atDay(1);
 
         log.info("resultList.size: {}", resultList.size());
 
         if (resultList.isEmpty()) {
             String userPositionFile = String.format("%s%s", USER_POSITION_FILENAME, ExcelHelper.FILE_EXTENSION);
             log.info("Loading userPositions from file");
-            List<UserPosition> userPositionList = userPositionExcelReader.readAllEntries(storageService.loadFromWorkDir(userPositionFile).toFile());
+            List<UserPosition> userPositionList = userPositionExcelReader.readAllEntries(storageService.loadFromWorkDir(userPositionFile).toFile(), period);
 
             log.info("Saving userPositions");
             userPositionService.saveAll(userPositionList);
 
             String departmentFileName = String.format("%s%s", DEPARTMENT_FILENAME, ExcelHelper.FILE_EXTENSION);
             log.info("Loading department from file");
-            List<Department> departmentList = departmentExcelReader.readAllEntries(storageService.loadFromWorkDir(departmentFileName).toFile());
+            List<Department> departmentList = departmentExcelReader.readAllEntries(storageService.loadFromWorkDir(departmentFileName).toFile(), period);
             log.info("Saving department");
             departmentService.saveAll(departmentList);
 
             String timeSheetFileName = String.format("%s%s", TIME_SHEET_FILENAME, ExcelHelper.FILE_EXTENSION);
             log.info("Loading time sheet from file");
-            List<TimeSheet> timeSheets = timeSheetExcelReader.readAllEntries(storageService.loadFromWorkDir(timeSheetFileName).toFile());
+            List<TimeSheet> timeSheets = timeSheetExcelReader.readAllEntries(storageService.loadFromWorkDir(timeSheetFileName).toFile(), period);
             log.info("Saving timeSheets");
             timeSheetService.saveAll(timeSheets);
 
             String staffListFileName = String.format("%s%s", STAFFLIST_FILENAME, ExcelHelper.FILE_EXTENSION);
 
             log.info("Loading staffList from file");
-            List<StaffListRecordDTO> staffListDTO = staffListRecordExcelReader.readAllDto(storageService.loadFromWorkDir(staffListFileName).toFile());
+            List<StaffListRecordDTO> staffListDTOs = staffListRecordExcelReader.readAllDto(storageService.loadFromWorkDir(staffListFileName).toFile(), period);
             List<StaffListRecord> staffList = new ArrayList<>();
 
             log.info("Generating stafflist start");
-            for (StaffListRecordDTO staffListRecordDTO : staffListDTO) {
+            for (StaffListRecordDTO staffListRecordDTO : staffListDTOs) {
                 if (staffListRecordService.findByStaffListId(staffListRecordDTO.getStaffListId()).isEmpty()) {
                     StaffListRecord staffListRecord = generatorStaffListRecordService.generate(staffListRecordDTO);
                     staffList.add(staffListRecord);
@@ -157,19 +180,25 @@ public class ResultController {
             String nszuDecryptionName = String.format("%s%s", NSZU_DECRYPTION_FILENAME, ExcelHelper.FILE_EXTENSION);
 
             log.info("Loading NSZU_Decryption from file");
-            List<NszuDecryption> nszuDecryptionList = nszuDecryptionExcelReader.readAllEntries(storageService.loadFromWorkDir(nszuDecryptionName).toFile());
+            List<NszuDecryption> nszuDecryptionList = nszuDecryptionExcelReader.readAllEntries(storageService.loadFromWorkDir(nszuDecryptionName).toFile(), period);
 
             log.info("Saving NSZU_Decryption");
             if (nszuDecryptionService.findAll().size() < 5) nszuDecryptionService.saveAll(nszuDecryptionList);
 
-            generateAndSendResult(model);
+            log.info("Period: {}", period);
+            generateAndSendResult(model, period);
         }
         return "result";
     }
 
-    private void generateAndSendResult(Model model) throws IOException {
+
+
+    private void generateAndSendResult(Model model, LocalDate period) throws IOException {
         log.info("StaffList find start");
-        List<StaffListRecord> staffListRecordList = staffListRecordService.findAll();
+
+        LocalDate previousPeriod = period.minusMonths(1);
+
+        List<StaffListRecord> staffListRecordList = staffListRecordService.findByPeriod(previousPeriod);
 
         log.info("Result generating start");
         resultList = staffListRecordList.stream().map(s -> {
@@ -180,6 +209,7 @@ public class ResultController {
                     }
                 })
                 .toList();
+
 
         log.info("Result write in file");
         resultExcelWriter.writeAll(resultList);

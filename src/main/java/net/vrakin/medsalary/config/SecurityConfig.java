@@ -50,9 +50,11 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/nszudecryption**", "/nszudecryption/**").hasAnyRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/department/**", "/department**").hasAnyRole("ADMIN", "USER")
                         .requestMatchers(HttpMethod.GET, "/one-window/**", "/one-window**").hasAnyRole("ADMIN", "USER")
-                        .requestMatchers(HttpMethod.GET, "/one-window/**", "/one-window**").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers(HttpMethod.POST, "/one-window/**", "/one-window**").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers(HttpMethod.GET, "/department/**", "/department**").hasAnyRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/department/**", "/department**").hasAnyRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/result**", "/result/**").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers(HttpMethod.POST, "/result**", "/result/**").hasAnyRole("ADMIN", "USER")
                         .anyRequest().authenticated())
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login")

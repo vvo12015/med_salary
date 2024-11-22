@@ -100,16 +100,16 @@ public class CalculateTest {
     public void setUp() throws Exception {
         initData.init();
         String userPositionFile = String.format("%s_test%s", USER_POSITION_FILENAME, ExcelHelper.FILE_EXTENSION);
-        List<UserPosition> userPositionList = userPositionExcelReader.readAllEntries(storageService.load(userPositionFile).toFile());
+        List<UserPosition> userPositionList = userPositionExcelReader.readAllEntries(storageService.load(userPositionFile).toFile(), LocalDate.now());
         userPositionService.saveAll(userPositionList);
 
         String departmentFileName = String.format("%s_test%s", DEPARTMENT_FILENAME, ExcelHelper.FILE_EXTENSION);
-        List<Department> departmentList = departmentExcelReader.readAllEntries(storageService.load(departmentFileName).toFile());
+        List<Department> departmentList = departmentExcelReader.readAllEntries(storageService.load(departmentFileName).toFile(), LocalDate.now());
         departmentService.saveAll(departmentList);
 
         String staffListFileName = String.format("%s_test%s", STAFFLIST_FILENAME, ExcelHelper.FILE_EXTENSION);
 
-        List<StaffListRecordDTO> staffListDTO = staffListRecordExcelReader.readAllDto(storageService.load(staffListFileName).toFile());
+        List<StaffListRecordDTO> staffListDTO = staffListRecordExcelReader.readAllDto(storageService.load(staffListFileName).toFile(), LocalDate.now());
         List<StaffListRecord> staffList = new ArrayList<>();
 
         for (StaffListRecordDTO staffListRecordDTO : staffListDTO) {
@@ -120,7 +120,7 @@ public class CalculateTest {
 
         String nszuDecryptionName = String.format("%s_test%s", NSZU_DECRYPTION_FILENAME, ExcelHelper.FILE_EXTENSION);
 
-        List<NszuDecryption> nszuDecryptionList = nszuDecryptionExcelReader.readAllEntries(storageService.load(nszuDecryptionName).toFile());
+        List<NszuDecryption> nszuDecryptionList = nszuDecryptionExcelReader.readAllEntries(storageService.load(nszuDecryptionName).toFile(), LocalDate.now());
 
         nszuDecryptionService.saveAll(nszuDecryptionList);
     }
@@ -132,7 +132,7 @@ public class CalculateTest {
         ServicePackage servicePackage4 = servicePackageService.findByNumber(SERVICE_PACKAGE_4_NUMBER).get();
 
         Result result = new Result(staffListRecordDoctor3.getUser(), staffListRecordDoctor3.getUserPosition(),
-                staffListRecordDoctor3.getDepartment(), 1f, 1f, 1f, LocalDate.now());
+                staffListRecordDoctor3.getDepartment(), 1f, 1f, 1f, LocalDate.now(), LocalDate.now());
 
         calculateManager.calculate(servicePackage4, result);
 
@@ -146,7 +146,7 @@ public class CalculateTest {
         ServicePackage servicePackage9 = servicePackageService.findByNumber(SERVICE_PACKAGE_9_NUMBER).get();
 
         Result result = new Result(staffListRecordDoctor2.getUser(), staffListRecordDoctor2.getUserPosition(),
-                staffListRecordDoctor2.getDepartment(), 1f, 1f, 1f, LocalDate.now());
+                staffListRecordDoctor2.getDepartment(), 1f, 1f, 1f, LocalDate.now(), LocalDate.now());
 
         calculateManager.calculate(servicePackage9, result);
 
@@ -160,7 +160,7 @@ public class CalculateTest {
         ServicePackage servicePackage47 = servicePackageService.findByNumber(SERVICE_PACKAGE_47_NUMBER).get();
 
         Result result = new Result(staffListRecordDoctor1.getUser(), staffListRecordDoctor1.getUserPosition(),
-                staffListRecordDoctor1.getDepartment(), 1f, 1f, 1f, LocalDate.now());
+                staffListRecordDoctor1.getDepartment(), 1f, 1f, 1f, LocalDate.now(), LocalDate.now());
 
         calculateManager.calculate(servicePackage47, result);
 
@@ -175,7 +175,7 @@ public class CalculateTest {
         ServicePackage servicePackage13 = servicePackageService.findByNumber(SERVICE_PACKAGE_13_NUMBER).get();
 
         Result result = new Result(staffListRecordDoctor4.getUser(), staffListRecordDoctor4.getUserPosition(),
-                staffListRecordDoctor4.getDepartment(), 1f, 1f, 1f, LocalDate.now());
+                staffListRecordDoctor4.getDepartment(), 1f, 1f, 1f, LocalDate.now(), LocalDate.now());
 
         calculateManager.calculate(servicePackage12, result);
         calculateManager.calculate(servicePackage13, result);

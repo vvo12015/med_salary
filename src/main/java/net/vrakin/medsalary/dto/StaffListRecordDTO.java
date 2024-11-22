@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 @ToString
 @Builder
 public class StaffListRecordDTO {
+    public static final int FIRST_DAY_OF_MONTH = 01;
     private Long id;
 
     private String staffListId;
@@ -47,4 +49,14 @@ public class StaffListRecordDTO {
     private Float Salary;
 
     private DTOStatus status;
+
+    public LocalDate getPeriod(){
+
+        return this.startDate==null?null:this.startDate.toLocalDate();
+    }
+
+    public void setPeriod(LocalDate period){
+
+        startDate = period==null?null:period.withDayOfMonth(FIRST_DAY_OF_MONTH).atTime(0,0);
+    }
 }

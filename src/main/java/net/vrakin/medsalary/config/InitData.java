@@ -7,8 +7,11 @@ import net.vrakin.medsalary.domain.PremiumCategory;
 import net.vrakin.medsalary.domain.ServicePackage;
 import net.vrakin.medsalary.service.PremiumCategoryService;
 import net.vrakin.medsalary.service.ServicePackageService;
+import net.vrakin.medsalary.service.service_package_handler.PremiumKind;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Arrays;
 
 @Service
 public class InitData {
@@ -34,11 +37,22 @@ public class InitData {
     }
 
     void createPremiumCategory() {
+
         if (premiumCategoryService.findAll().isEmpty()){
-            premiumCategoryService.save(new PremiumCategory(null, "ZERO", 0, 1f, null));
-            premiumCategoryService.save(new PremiumCategory(null, "DIAGNOSTIC", 2880, 1f, null));
-            premiumCategoryService.save(new PremiumCategory(null, "URGENCY", 2880, 1f, null));
-            premiumCategoryService.save(new PremiumCategory(null, "RECEPTION", 0, 1.6f, null));
+            Arrays.stream(PremiumKind.values())
+                    .forEach(kind ->{
+                        if (premiumCategoryService.findByName(kind.name()).isEmpty())
+                                premiumCategoryService.save(
+                                        new PremiumCategory(
+                                                null,
+                                                kind.name(),
+                                                kind.getSum(),
+                                                1f,
+                                                null
+                                        )
+                                );
+                            }
+            );
         }
     }
 

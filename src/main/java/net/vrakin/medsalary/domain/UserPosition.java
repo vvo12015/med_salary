@@ -14,7 +14,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Entity
 @Table(name = "user_position")
-public class UserPosition {
+public class UserPosition implements PeriodControl{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

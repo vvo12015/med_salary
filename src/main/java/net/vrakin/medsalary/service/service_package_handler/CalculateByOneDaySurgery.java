@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class CalculateByOneDaySurgery extends AbstractCalculateStrategy implements CalculateStrategy {
+public class CalculateByOneDaySurgery extends AbstractCalculateStrategyNSZU implements CalculateStrategyNSZU {
 
     public static final float PACKAGE_COST = 480f;
 
