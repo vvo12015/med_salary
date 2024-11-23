@@ -52,15 +52,16 @@
             <th>Табельний номер</th>
             <th>План годин</th>
             <th>Фактично відпрацьовані години</th>
+            <th>Нічні години</th>
             <th>Дії</th>
         </tr>
         </thead>
         <tbody id="timeSheetTable">
 			<tr th:each="timesheet : ${timesheets}" th:attr="data-id=${timesheet.id}">
-				<td><input type="text" class="form-control" th:name="'name'" th:value="${timesheet.name}"></td>
 				<td><input type="text" class="form-control" th:name="'staffListRecordId'" th:value="${timesheet.staffListRecordId}"></td>
 				<td><input type="text" class="form-control" th:name="'planTime'" th:value="${timesheet.planTime}"></td>
 				<td><input type="text" class="form-control" th:name="'factTime'" th:value="${timesheet.factTime}"></td>
+				<td><input type="text" class="form-control" th:name="'nightHours'" th:value="${timesheet.nightHours}"></td>
 				<td>
 					<button class="btn btn-primary" th:attr="onclick='updateTimeSheet(' + ${timesheet.id} + ')'">Зберегти</button>
 					<button class="btn btn-danger" th:attr="onclick='deleteTimeSheet(' + ${timesheet.id} + ')'">Видалити</button>

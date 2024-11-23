@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,7 +35,8 @@ public class StaffListRecordServiceImpl extends AbstractService<StaffListRecord>
 
     @Override
     public List<StaffListRecord> findByPeriod(LocalDate period) {
-        return staffListRecordRepository.findByStartDate(period.atTime(0, 0));
+        LocalDateTime periodWithTime = period.atTime(0, 0);
+        return staffListRecordRepository.findByStartDateAndEmploymentStartDateLessThan(periodWithTime, periodWithTime);
     }
 
     @Override

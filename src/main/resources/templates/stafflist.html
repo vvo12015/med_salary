@@ -95,9 +95,14 @@
                     </select>
                 </td>
                 <td>
-                    <select class="form-select">
-                        <option th:each="category : ${premiumCategories}" th:value="${category.id}" th:selected="${category.id == staff.premiumCategory.id}" th:text="${category.name}"></option>
-                    </select>
+                    <!--<select class="form-select">
+                        <option th:each="category : ${premiumCategories}"
+                                th:value="${category.id}"
+                                th:selected="${staff.premiumCategory != null and category.id == staff.premiumCategory.id}"
+                                th:text="${category.name}">
+                        </option>
+                    </select>-->
+                    <input type="text" class="form-control" th:value="${staff.premiumCategory.name}">
                 </td>
                 <td>
                     <select class="form-select">

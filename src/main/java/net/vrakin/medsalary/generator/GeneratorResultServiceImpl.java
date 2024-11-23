@@ -49,6 +49,7 @@ public class GeneratorResultServiceImpl implements GeneratorResultService {
     @Override
     public Result generate(StaffListRecord staffListRecord){
 
+        log.info("Generate result. StaffListRecordId: {}", staffListRecord.getStaffListId());
         Float employmentPart = getEmploymentPart(staffListRecord, staffListRecord.getUser());
 
         TimeSheet timeSheet = timeSheetService.findByStaffListRecordIdAndPeriod(staffListRecord.getStaffListId(),

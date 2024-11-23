@@ -53,7 +53,7 @@ public class StaffListRecord implements PeriodControl{
     private LocalDateTime endDate;
 
     @Column
-    private Float Salary;
+    private Float salary;
 
     @Override
     public LocalDate getPeriod() {
@@ -64,6 +64,8 @@ public class StaffListRecord implements PeriodControl{
     public void setPeriod(LocalDate period) {
         startDate = period.atTime(0, 0);
     }
+
+
 
     @Override
     public String toString() {
