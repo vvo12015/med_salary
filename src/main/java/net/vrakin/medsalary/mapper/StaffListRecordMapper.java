@@ -35,15 +35,24 @@ public abstract class StaffListRecordMapper  implements BaseMapper<StaffListReco
     }
 
     public StaffListRecordDTO toDto(StaffListRecord entity){
-        StaffListRecordDTO staffListRecordDTO = new StaffListRecordDTO();
-        staffListRecordDTO.setId(entity.getId());
-        staffListRecordDTO.setStaffListId(entity.getStaffListId());
-        staffListRecordDTO.setUser(userMapper.toDto(entity.getUser()));
-        staffListRecordDTO.setDepartment(departmentMapper.toDto(entity.getDepartment()));
-        staffListRecordDTO.setUserPosition(userPositionMapper.toDto(entity.getUserPosition()));
-        staffListRecordDTO.setEmployment(entity.getEmployment());
-        staffListRecordDTO.setPremiumCategory(premiumCategoryMapper.toDto(entity.getPremiumCategory()));
-        //TODO builder
+
+        StaffListRecordDTO staffListRecordDTO = StaffListRecordDTO.builder()
+                .id(entity.getId())
+                .staffListId(entity.getStaffListId())
+                .userPosition(userPositionMapper.toDto(entity.getUserPosition()))
+                .userPositionId(entity.getUserPosition().getId())
+                .department(departmentMapper.toDto(entity.getDepartment()))
+                .departmentId(entity.getDepartment().getId())
+                .employment(entity.getEmployment())
+                .user(userMapper.toDto(entity.getUser()))
+                .userId(entity.getUser().getId())
+                .premiumCategory(premiumCategoryMapper.toDto(entity.getPremiumCategory()))
+                .premiumCategoryName(entity.getPremiumCategory().getName())
+                .startDate(entity.getStartDate())
+                .endDate(entity.getEndDate())
+                .salary(entity.getSalary())
+                .build();
+
         return staffListRecordDTO;
     }
 

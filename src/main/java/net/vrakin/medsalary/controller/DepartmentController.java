@@ -65,11 +65,6 @@ public class DepartmentController extends AbstractController<Department, Departm
 
         saveEntitiesAndSendDtoAndErrors(file, monthYear, redirectAttributes);
 
-        service.saveAll(service.findAll().stream().map(d-> {
-            d.setPeriod(YearMonth.parse(monthYear).atDay(1));
-            return d;
-        }).collect(Collectors.toList()));
-
         return "redirect:/" + entityName;
     }
 

@@ -1,5 +1,6 @@
 package net.vrakin.medsalary.generator;
 
+import lombok.extern.slf4j.Slf4j;
 import net.vrakin.medsalary.domain.*;
 import net.vrakin.medsalary.exception.ResourceNotFoundException;
 import net.vrakin.medsalary.service.PremiumCategoryService;
@@ -20,9 +21,8 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class GeneratorResultServiceImpl implements GeneratorResultService {
-
-    private static final Logger log = LoggerFactory.getLogger(GeneratorResultServiceImpl.class);
 
     public static final String EMPTY_SING = "0";
     private final StaffListRecordService staffListRecordService;
@@ -57,9 +57,9 @@ public class GeneratorResultServiceImpl implements GeneratorResultService {
 
         Float hourCoefficient = timeSheet.getHourCoefficient();
 
-        Result result = new Result(staffListRecord.getUser(), staffListRecord.getUserPosition(),
-                staffListRecord.getDepartment(), getEmployment(staffListRecord.getUser()),
-                employmentPart, hourCoefficient, staffListRecord.getEmploymentStartDate(), staffListRecord.getPeriod());
+        Result result = new Result(
+                staffListRecord, staffListRecord.getEmployment(), employmentPart, hourCoefficient
+        );
 
         if (Objects.requireNonNullElse(staffListRecord.getDepartment().getServicePackages(), EMPTY_SING).equals(EMPTY_SING)
                 || Objects.requireNonNullElse(staffListRecord.getUserPosition().getServicePackageNumbers(), EMPTY_SING).equals(EMPTY_SING)) {
@@ -94,12 +94,12 @@ public class GeneratorResultServiceImpl implements GeneratorResultService {
     }
 
     private Float getEmploymentPart(StaffListRecord staffListRecord, User user) {
-        Float employmentSum = getEmployment(user);
+        Float employmentSum = getEmployment(user, staffListRecord.getUserPosition(), staffListRecord.getPeriod());
         return staffListRecord.getEmployment() / employmentSum;
     }
 
-    private Float getEmployment(User user) {
-        return staffListRecordService.findByUser(user)
+    private Float getEmployment(User user, UserPosition userPosition, LocalDate period) {
+        return staffListRecordService.findByUserAndUserPositionAndPeriod(user, userPosition, period)
                 .stream()
                 .map(StaffListRecord::getEmployment)
                 .reduce(0f, Float::sum);
@@ -107,6 +107,7 @@ public class GeneratorResultServiceImpl implements GeneratorResultService {
 
     private List<ServicePackage> generateListUserPositionDepartment(StaffListRecord staffListRecord) {
         List<ServicePackage> servicePackageListByUserPositionAndDepartment;
+
         List<ServicePackage> servicePackages = servicePackageService.findByNumbers(
                 Arrays.stream(staffListRecord.getUserPosition().getServicePackageNumbers().split(", ")).toList());
         List<String> servicePackageNumbersFromDepartment = Arrays.stream(staffListRecord.getDepartment().getServicePackages().split(", "))

@@ -12,7 +12,7 @@ import java.util.List;
 @Service
 public class CalculateByOneDaySurgery extends AbstractCalculateStrategyNSZU implements CalculateStrategyNSZU {
 
-    public static final float PACKAGE_COST = 480f;
+    public static final float PACKAGE_COST = 250f;
 
     @Autowired
     public CalculateByOneDaySurgery(NSZU_DecryptionService nszu_decryptionService) {

@@ -32,7 +32,8 @@ public abstract class AbstractExcelReader<E, D> implements ExcelReader<E, D> {
     protected abstract List<String> filterRow(File file);
 
     public List<E> readAllEntries(File file, LocalDate period){
-        return mapper.toEntityList(readAllDto(file, period));
+        var dtos =  readAllDto(file, period);
+        return mapper.toEntityList(dtos);
     }
 
     public List<D> readAllDto(File file, LocalDate period){

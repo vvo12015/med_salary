@@ -53,6 +53,7 @@ public class UserPosition implements PeriodControl{
                 ", basicPremium=" + basicPremium +
                 ", nszuName=" + nszuName +
                 ", servicePackageNumbers=" + servicePackageNumbers +
+                ", period= " + period +
                 '}';
     }
 }

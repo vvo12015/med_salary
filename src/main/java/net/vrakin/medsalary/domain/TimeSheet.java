@@ -35,12 +35,12 @@ public class TimeSheet implements PeriodControl{
     private LocalDate period;
     
     public float getHourCoefficient(){
-        return factTime / planTime;
+        return factTime / (planTime!=0?planTime:factTime);
     }
     
     public boolean getUgrency(){
         return
-                (nightHours* NIGHT_TO_FULL_DAY_COEFFICIENT) > (factTime/2);
+                (nightHours * NIGHT_TO_FULL_DAY_COEFFICIENT) > (factTime/2);
     }
 
     @Override

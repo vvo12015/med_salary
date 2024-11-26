@@ -3,6 +3,7 @@ package net.vrakin.medsalary.service.service_package_handler;
 import net.vrakin.medsalary.domain.Result;
 import net.vrakin.medsalary.domain.StaffListRecord;
 
+import java.util.Objects;
 import java.util.Set;
 
 public class CalculateByPremiumCategory implements CalculateStrategy {

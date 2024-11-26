@@ -24,6 +24,10 @@ public class Result implements PeriodControl{
     @JoinColumn(name = "user_id")
     private User user;
 
+    @OneToOne
+    @JoinColumn(name = "stafflist_id")
+    private StaffListRecord staffListRecord;
+
     @ManyToOne
     @JoinColumn(name = "user_position_id")
     private UserPosition userPosition;
@@ -47,34 +51,32 @@ public class Result implements PeriodControl{
     @Column
     private LocalDate date;
 
-    @Override
-    public LocalDate getPeriod() {
-        return date;
-    }
-
-    @Override
-    public void setPeriod(LocalDate period) {
-        date = period;
-    }
-
+    @Column(name = "countemr_stationary")
     private Integer countEMR_stationary;
 
+    @Column(name = "sum_for_aml_package")
     private Float sumForAmlPackage;
 
+    @Column(name = "countemr_ambulatory")
     private Integer countEMR_ambulatory;
 
+    @Column(name = "countemr_one_day_surgery")
     private Integer countEMR_oneDaySurgery;
 
+    @Column(name = "countemr_priority_service")
     private Integer countEMR_priorityService;
 
+    @Column(name = "employment")
     private Float employment;
 
+    @Column(name = "hour_coefficient")
     private Float hourCoefficient;
 
-    private LocalDate employmentStartDate;
-
     @Column(name = "other_premium")
-    private Double otherPremium;
+    private Float otherPremium;
+
+    @Column(name = "employment_start_date")
+    private LocalDate employmentStartDate;
 
     @Column
     private String comment;
@@ -87,14 +89,53 @@ public class Result implements PeriodControl{
         this.user = user;
         this.userPosition = userPosition;
         this.department = department;
+
         this.employment = employment;
         this.employmentPart = employmentPart;
+        this.employmentStartDate = employmentStartDate;
+        this.date = period;
+        this.hourCoefficient = hourCoefficient;
+
+        this.countEMR_stationary = 0;
+        this.countEMR_ambulatory = 0;
+        this.countEMR_oneDaySurgery = 0;
+        this.countEMR_priorityService = 0;
+        this.sumForAmlPackage = 0f;
+
         this.hospNSZU_Premium = 0f;
         this.amblNSZU_Premium = 0f;
         this.oneDaySurgery = 0f;
-        this.date = period;
+        this.otherPremium = 0f;
+
+        this.comment = "";
+    }
+
+    public Result(StaffListRecord staffListRecord, Float employment, Float employmentPart, Float hourCoefficient) {
+
+        this.id = null;
+        this.staffListRecord = staffListRecord;
+        this.user = staffListRecord.getUser();
+        this.userPosition = staffListRecord.getUserPosition();
+        this.department = staffListRecord.getDepartment();
+
+        this.employment = employment;
+        this.employmentPart = employmentPart;
+        this.employmentStartDate = staffListRecord.getEmploymentStartDate();
+        this.date = staffListRecord.getPeriod();
         this.hourCoefficient = hourCoefficient;
-        this.employmentStartDate = employmentStartDate;
+
+        this.countEMR_stationary = 0;
+        this.countEMR_ambulatory = 0;
+        this.countEMR_oneDaySurgery = 0;
+        this.countEMR_priorityService = 0;
+        this.sumForAmlPackage = 0f;
+
+        this.comment = "";
+
+        this.hospNSZU_Premium = 0f;
+        this.amblNSZU_Premium = 0f;
+        this.oneDaySurgery = 0f;
+        this.otherPremium = 0f;
     }
 
     @Override
@@ -102,8 +143,14 @@ public class Result implements PeriodControl{
         return "Result{" +
                 "id=" + id +
                 ", user=" + user.getName() +
+                ", staffListRecordID=" + staffListRecord.getStaffListId() +
                 ", userPosition=" + userPosition.getName() +
-                ", department=" + department.getName() +
+                ", userPosition=" + userPosition.getMaxPoint() +
+                ", userPosition=" + userPosition.getPointValue() +
+                ", departmentName=" + department.getName() +
+                ", departmentIsProId=" + department.getDepartmentIsProId() +
+                ", departmentTemplateId=" + department.getDepartmentTemplateId() +
+                ", departmentNameEleks=" + department.getNameEleks() +
                 ", hospNSZU_Premium=" + hospNSZU_Premium +
                 ", amblNSZU_Premium=" + amblNSZU_Premium +
                 ", oneDaySurgery=" + oneDaySurgery +
@@ -116,6 +163,19 @@ public class Result implements PeriodControl{
                 ", countEMR_priorityService=" + countEMR_priorityService +
                 ", employment=" + employment +
                 ", hourCoefficient=" + hourCoefficient +
+                ", otherPremium=" + otherPremium +
+                ", employmentStartDate=" + employmentStartDate +
+                ", comment='" + comment + '\'' +
                 '}';
     }
+
+    @Override
+    public LocalDate getPeriod() {
+        return date;
+    }
+
+    @Override
+    public void setPeriod(LocalDate period) {
+        date = period;
+}
 }

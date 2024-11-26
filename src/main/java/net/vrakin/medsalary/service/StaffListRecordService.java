@@ -5,6 +5,7 @@ import net.vrakin.medsalary.domain.User;
 import net.vrakin.medsalary.domain.UserPosition;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,4 +15,8 @@ public interface StaffListRecordService extends Service<StaffListRecord>{
     List<StaffListRecord> findByUser(User user);
 
     List<StaffListRecord> findByPeriod(LocalDate period);
+
+    List<StaffListRecord> findByUserAndPeriod(User user, LocalDate period);
+
+    List<StaffListRecord> findByUserAndUserPositionAndPeriod(User user, UserPosition userPosition, LocalDate period);
 }

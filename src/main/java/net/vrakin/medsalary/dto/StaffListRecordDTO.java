@@ -1,11 +1,9 @@
 package net.vrakin.medsalary.dto;
 
-import jakarta.persistence.Column;
 import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 @Getter
 @Setter
@@ -16,6 +14,7 @@ import java.util.Objects;
 @Builder
 public class StaffListRecordDTO {
     public static final int FIRST_DAY_OF_MONTH = 01;
+
     private Long id;
 
     private String staffListId;
@@ -46,7 +45,7 @@ public class StaffListRecordDTO {
 
     private LocalDateTime endDate;
 
-    private Float Salary;
+    private Float salary;
 
     private DTOStatus status;
 

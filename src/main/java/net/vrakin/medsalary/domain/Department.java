@@ -48,6 +48,7 @@ public class Department implements PeriodControl{
                 ", name='" + name + '\'' +
                 ", servicePackages" + servicePackages + '\'' +
                 ", id=" + id +
+                ", period=" + period +
                 '}';
     }
 }

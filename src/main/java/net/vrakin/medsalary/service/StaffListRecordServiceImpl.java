@@ -34,13 +34,23 @@ public class StaffListRecordServiceImpl extends AbstractService<StaffListRecord>
     }
 
     @Override
+    public List<StaffListRecord> findByUserAndPeriod(User user, LocalDate period){
+        return staffListRecordRepository.findByUserAndStartDate(user, period.atTime(0, 0));
+    }
+
+    @Override
     public List<StaffListRecord> findByPeriod(LocalDate period) {
         LocalDateTime periodWithTime = period.atTime(0, 0);
-        return staffListRecordRepository.findByStartDateAndEmploymentStartDateLessThan(periodWithTime, periodWithTime);
+        return staffListRecordRepository.findByStartDateAndEmploymentStartDateLessThan(periodWithTime, period);
     }
 
     @Override
     public List<StaffListRecord> findByUser(User user) {
         return staffListRecordRepository.findByUser(user);
+    }
+
+    @Override
+    public List<StaffListRecord> findByUserAndUserPositionAndPeriod(User user, UserPosition userPosition, LocalDate period){
+        return staffListRecordRepository.findByUserAndUserPositionAndStartDate(user, userPosition, period.atTime(0, 0));
     }
 }

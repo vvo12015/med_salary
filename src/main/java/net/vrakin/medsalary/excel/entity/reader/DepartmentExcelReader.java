@@ -64,6 +64,7 @@ public class DepartmentExcelReader extends AbstractExcelReader<Department, Depar
                 dto.setNameEleks(stringList.get(DEPARTMENT_ELEKS_NAME_INDEX));
                 dto.setName(stringList.get(DEPARTMENT_ISPRO_NAME_INDEX));
                 dto.setServicePackages(stringList.get(DEPARTMENT_SERVICE_PACKAGE));
+                dto.setPeriod(period);
             }
 
             return dto;

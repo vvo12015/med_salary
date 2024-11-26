@@ -64,6 +64,8 @@ public class ResultController {
 
     private final ResultMapper resultMapper;
 
+    private final ResultService resultService;
+
     public ResultController(GeneratorResultService generatorResultService,
                             StaffListRecordService staffListRecordService,
                             ResultExcelWriter resultExcelWriter,
@@ -78,7 +80,8 @@ public class ResultController {
                             InitData initData, StorageService storageService,
                             TimeSheetService timeSheetService,
                             TimeSheetExcelReader timeSheetExcelReader,
-                            ResultMapper resultMapper) {
+                            ResultMapper resultMapper,
+                            ResultService resultService) {
         this.generatorResultService = generatorResultService;
         this.staffListRecordService = staffListRecordService;
         this.resultExcelWriter = resultExcelWriter;
@@ -94,8 +97,10 @@ public class ResultController {
         this.timeSheetService = timeSheetService;
         this.timeSheetExcelReader = timeSheetExcelReader;
         this.resultMapper = resultMapper;
+        this.resultService = resultService;
     }
 
+    private List<Result> previousResultList = new ArrayList<>();
     private List<Result> resultList = new ArrayList<>();
 
     @GetMapping
@@ -198,10 +203,10 @@ public class ResultController {
 
         LocalDate previousPeriod = period.minusMonths(1);
 
-        List<StaffListRecord> staffListRecordList = staffListRecordService.findByPeriod(previousPeriod);
+        List<StaffListRecord> previousStaffListRecordList = staffListRecordService.findByPeriod(previousPeriod);
 
         log.info("Result generating start");
-        resultList = staffListRecordList.stream().map(s -> {
+        previousResultList = previousStaffListRecordList.stream().map(s -> {
                     try {
                         return generatorResultService.generate(s);
                     } catch (Exception e) {
@@ -212,7 +217,86 @@ public class ResultController {
 
 
         log.info("Result write in file");
+
+        resultService.saveAll(previousResultList);
+
+        List<StaffListRecord> staffListRecordList = staffListRecordService.findByPeriod(period);
+
+        log.info("Previous result generating start");
+        resultList = staffListRecordList.stream().map(s -> {
+            try {
+                // Генерація поточного результату
+                var result = generatorResultService.generate(s);
+
+                // Пошук попередніх результатів
+                List<Result> previousResults = resultService.findByUserAndPeriod(result.getUser(), result.getPeriod());
+
+                // Агрегація числових значень через Stream
+                int totalCountEMR_stationary = previousResults.stream()
+                        .mapToInt(Result::getCountEMR_stationary)
+                        .sum() + result.getCountEMR_stationary();
+
+                int totalCountEMR_ambulatory = previousResults.stream()
+                        .mapToInt(Result::getCountEMR_ambulatory)
+                        .sum() + result.getCountEMR_ambulatory();
+
+                int totalCountEMR_oneDaySurgery = previousResults.stream()
+                        .mapToInt(Result::getCountEMR_oneDaySurgery)
+                        .sum() + result.getCountEMR_oneDaySurgery();
+
+                int totalCountEMR_priorityService = previousResults.stream()
+                        .mapToInt(Result::getCountEMR_priorityService)
+                        .sum() + result.getCountEMR_priorityService();
+
+                float totalSumForAmlPackage = (float) previousResults.stream()
+                        .mapToDouble(Result::getSumForAmlPackage)
+                        .sum() + result.getSumForAmlPackage();
+
+                float totalHospNSZU_Premium = (float) previousResults.stream()
+                        .mapToDouble(Result::getHospNSZU_Premium)
+                        .sum() + result.getHospNSZU_Premium();
+
+                float totalAmblNSZU_Premium = (float) previousResults.stream()
+                        .mapToDouble(Result::getAmblNSZU_Premium)
+                        .sum() + result.getAmblNSZU_Premium();
+
+                float totalOneDaySurgery = (float) previousResults.stream()
+                        .mapToDouble(Result::getOneDaySurgery)
+                        .sum() + result.getOneDaySurgery();
+
+                float totalOtherPremium = (float) previousResults.stream()
+                        .mapToDouble(Result::getOtherPremium)
+                        .sum() + result.getOtherPremium();
+
+                // Оновлення полів поточного результату
+                result.setCountEMR_stationary(totalCountEMR_stationary);
+                result.setCountEMR_ambulatory(totalCountEMR_ambulatory);
+                result.setCountEMR_oneDaySurgery(totalCountEMR_oneDaySurgery);
+                result.setCountEMR_priorityService(totalCountEMR_priorityService);
+
+                result.setSumForAmlPackage(totalSumForAmlPackage * result.getEmploymentPart());
+                result.setHospNSZU_Premium(totalHospNSZU_Premium * result.getEmploymentPart());
+                result.setAmblNSZU_Premium(totalAmblNSZU_Premium * result.getEmploymentPart());
+                result.setOneDaySurgery(totalOneDaySurgery * result.getEmploymentPart());
+                result.setOtherPremium(totalOtherPremium * result.getEmploymentPart());
+
+                return result; // Додати оновлений результат до списку
+            } catch (Exception e) {
+                throw new RuntimeException("Error processing record for " + s, e);
+            }
+        }).toList();
+
+        log.info("Result write in excel file");
+        for (Result result :
+                resultList) {
+            log.info(result.toString());
+        }
         resultExcelWriter.writeAll(resultList);
+        log.info("Result write in sql file");
+        resultExcelWriter.writeAllTxt(resultList);
+        log.info("Result write in db");
+        resultService.saveAll(resultList);
+
 
         model.addAttribute("colNames", resultMapper.toStringListColNames());
         model.addAttribute("result_count", resultList.size());

@@ -67,7 +67,7 @@ public class StaffListController extends AbstractController<StaffListRecord, Sta
                 .collect(Collectors.toList()));
 
         List<StaffListRecordDTO> stafflist = mapper.toDtoList(service.findAll());
-        model.addAttribute("stafflist", stafflist.stream().limit(ELEMENT_MAX_COUNT));
+        model.addAttribute("stafflist", stafflist);
 
         stafflist.forEach(st->log.info("staffRecordDTOId: {}, name: {}", st.getId(), st.getUser().getName()));
 
@@ -96,11 +96,6 @@ public class StaffListController extends AbstractController<StaffListRecord, Sta
                                    RedirectAttributes redirectAttributes) {
 
         saveEntitiesAndSendDtoAndErrors(file, monthYear, redirectAttributes);
-
-        service.saveAll(service.findAll().stream().map(sl-> {
-            sl.setStartDate(YearMonth.parse(monthYear).atDay(1).atTime(0, 0));
-            return sl;
-        }).collect(Collectors.toList()));
 
         List<UserPosition> userPositions = userPositionService.findAll();
         List<Department> departments = departmentService.findAll();

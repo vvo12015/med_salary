@@ -59,9 +59,11 @@ public abstract class AbstractController<E, D> {
             messageReadError = errorList.stream().reduce((s, s2) -> s.concat(";\n Errors:\n" + s2)).toString();
         }else{
             log.info("Start save to DB");
-            service.saveAll(excelReader.readAllEntries(destinationFile, period));
+            var DTOs = excelReader.readAllDto(destinationFile, period);
+            var entities = mapper.toEntityList(DTOs);
+            service.saveAll(entities);
             log.info("Finish save to DB");
-            redirectAttributes.addFlashAttribute(entityName+"s", excelReader.readAllDto(destinationFile, period));
+            redirectAttributes.addFlashAttribute(entityName+"s", DTOs);
         }
 
         redirectAttributes.addFlashAttribute("message",

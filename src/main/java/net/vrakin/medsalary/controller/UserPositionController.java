@@ -36,10 +36,11 @@ public class UserPositionController extends AbstractController<UserPosition, Use
         log.info("Accessing {} page", entityName);
 
         sendDto(model);
+
         if (Objects.nonNull(model.getAttribute(entityName))){
-            log.info("entities is");
+            log.info("entities {} exist", entityName+"s");
         }else{
-            log.info("entities {} not exist", entityName);
+            log.info("entities {} not exist", entityName+"s");
         }
 
         return entityName;
@@ -60,10 +61,6 @@ public class UserPositionController extends AbstractController<UserPosition, Use
         log.info("Accessing post files {} page", entityName);
 
         saveEntitiesAndSendDtoAndErrors(file, monthYear, redirectAttributes);
-        service.saveAll(service.findAll().stream().map(up-> {
-            up.setPeriod(YearMonth.parse(monthYear).atDay(1));
-            return up;
-        }).collect(Collectors.toList()));
 
         return "redirect:/" + entityName;
     }

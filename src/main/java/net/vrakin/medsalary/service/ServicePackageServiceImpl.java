@@ -49,9 +49,21 @@ public class ServicePackageServiceImpl extends AbstractService<ServicePackage> i
 
     @Override
     public List<ServicePackage> findByNumbers(List<String> numbers) {
-        StringBuilder stringBuilder = new StringBuilder();
-        numbers.forEach(number -> stringBuilder.append(number).append(","));
-        log.info("numbers: {}", stringBuilder);
-        return numbers.stream().map(n->findByNumber(n).get()).collect(Collectors.toList());
+        StringBuilder existPackage = new StringBuilder();
+        StringBuilder noExistPackage = new StringBuilder();
+        numbers
+                .forEach(n -> {
+                    if (findByNumber(n).isPresent()){
+                        existPackage.append(n + ", ");
+                    }else {
+                        noExistPackage.append(n + ", ");
+                    }
+                });
+        if (existPackage.length() > 2) existPackage.delete(existPackage.length()-2, existPackage.length()-1);
+        if (noExistPackage.length() > 2) noExistPackage.delete(noExistPackage.length()-2, noExistPackage.length()-1);
+        log.info("Existing package numbers: [{}]; Non-existing package numbers: [{}]", existPackage, noExistPackage);
+        return numbers.stream()
+                .filter(n->findByNumber(n).isPresent())
+                .map(n->findByNumber(n).get()).collect(Collectors.toList());
     }
 }

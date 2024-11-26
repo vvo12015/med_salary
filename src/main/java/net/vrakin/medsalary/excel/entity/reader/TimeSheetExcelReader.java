@@ -72,6 +72,7 @@ public class TimeSheetExcelReader extends AbstractExcelReader<TimeSheet, TimeShe
                 dto.setFactTime(Float.parseFloat(stringList.get(TIME_SHEET_FACT_INDEX).equals(NULL)? ZERO:stringList.get(TIME_SHEET_FACT_INDEX)));
                 dto.setPlanTime(Float.parseFloat(stringList.get(TIME_SHEET_PLAN_INDEX)));
                 dto.setNightHours(Float.parseFloat(stringList.get(TIME_SHEET_NIGHT_HOURS_INDEX)));
+                dto.setPeriod(period);
             }
 
             return dto;

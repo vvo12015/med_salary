@@ -73,16 +73,82 @@
     <table class="table">
         <thead>
         <tr>
-            <th>Посада</th>
-            <th>Відділ</th>
-            <th>Преміальна категорія</th>
-            <th>Користувач</th>
-            <th>StaffListID</th>
+            <th>ID</th>
+            <th>Staff List ID</th>
+            <th>User Position</th>
+            <th>Department</th>
             <th>Employment</th>
-            <th>Дії</th>
+            <th>User</th>
+            <th>Premium Category</th>
+            <th>Employment Start Date</th>
+            <th>Employment End Date</th>
+            <th>Salary</th>
+            <th>Status</th>
+            <th>Period</th>
         </tr>
         </thead>
         <tbody id="staffTable">
+        <tr th:each="staff : ${stafflist}" th:attr="data-id=${staff.id}">
+            <td th:text="${staff.id}"></td>
+            <td th:text="${staff.staffListId}"></td>
+            <td th:text="${staff.userPosition.name}"></td>
+            <td th:text="${staff.department.name}"></td>
+            <td th:text="${staff.employment}"></td>
+            <td th:text="${staff.user.name}"></td>
+            <td th:text="${staff.premiumCategoryName}"></td>
+            <td th:text="${staff.employmentStartDate}"></td>
+            <td th:text="${staff.employmentEndDate}"></td>
+            <td th:text="${staff.salary}"></td>
+            <td th:text="${staff.status}"></td>
+            <td th:text="${staff.period}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- <table class="table">
+         <thead>
+         <tr>
+             <th>Посада</th>
+             <th>Відділ</th>
+             <th>Преміальна категорія</th>
+             <th>Користувач</th>
+             <th>StaffListID</th>
+             <th>Employment</th>
+             <th>Дії</th>
+         </tr>
+         </thead>
+         <tbody id="staffTable">
+         <tr th:each="staff : ${stafflist}" th:attr="data-id=${staff.id}">
+             <td th:text="'${staff.userPosition.name}'"></td>
+             <td>
+                 <select class="form-select">
+                     <option th:each="department : ${departments}" th:value="${department.id}" th:selected="${department.id == staff.department.id}" th:text="${department.name}"></option>
+                 </select>
+             </td>
+             <td>
+                 &lt;!&ndash;<select class="form-select">
+                 <option th:each="category : ${premiumCategories}"
+                         th:value="${category.id}"
+                         th:selected="${staff.premiumCategory != null and category.id == staff.premiumCategory.id}"
+                         th:text="${category.name}">
+                 </option>
+             </select>&ndash;&gt;
+                 <input type="text" class="form-control" th:value="${staff.premiumCategory.name}">
+             </td>
+             <td>
+                 <select class="form-select">
+                     <option th:each="user : ${users}" th:value="${user.id}" th:selected="${user.id == staff.user.id}" th:text="${user.name}"></option>
+                 </select>
+             </td>
+             <td><input type="text" class="form-control" th:value="${staff.staffListId}"></td>
+             <td><input type="text" class="form-control" th:value="${staff.employment}"></td>
+             <td>
+                 <button class="btn btn-primary" th:attr="onclick='updateStaff(' + ${staff.id} + ')'">Зберегти</button>
+                 <button class="btn btn-danger" th:attr="onclick='deleteStaff(' + ${staff.id} + ')'">Видалити</button>
+             </td>
+         </tr>
+         </tbody>-->
+        <!--<tbody id="staffTable">
             <tr th:each="staff : ${stafflist}" th:attr="data-id=${staff.id}">
                 <td>
                     <select class="form-select">
@@ -95,13 +161,13 @@
                     </select>
                 </td>
                 <td>
-                    <!--<select class="form-select">
+                    &lt;!&ndash;<select class="form-select">
                         <option th:each="category : ${premiumCategories}"
                                 th:value="${category.id}"
                                 th:selected="${staff.premiumCategory != null and category.id == staff.premiumCategory.id}"
                                 th:text="${category.name}">
                         </option>
-                    </select>-->
+                    </select>&ndash;&gt;
                     <input type="text" class="form-control" th:value="${staff.premiumCategory.name}">
                 </td>
                 <td>
@@ -116,7 +182,7 @@
                     <button class="btn btn-danger" th:attr="onclick='deleteStaff(' + ${staff.id} + ')'">Видалити</button>
                 </td>
             </tr>
-        </tbody>
+        </tbody>-->
     </table>
 </div>
 

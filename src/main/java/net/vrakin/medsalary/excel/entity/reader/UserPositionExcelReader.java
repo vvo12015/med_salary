@@ -73,7 +73,6 @@ public class UserPositionExcelReader extends AbstractExcelReader<UserPosition, U
                 dto.setPeriod(period);
             }
 
-
             return dto;
         }
     }
