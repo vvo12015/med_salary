@@ -203,7 +203,9 @@ public class ResultController {
 
         LocalDate previousPeriod = period.minusMonths(1);
 
-        List<StaffListRecord> previousStaffListRecordList = staffListRecordService.findByPeriod(previousPeriod);
+        List<StaffListRecord> previousStaffListRecordList = staffListRecordService.findByPeriod(previousPeriod).stream()
+                .filter(s->s.getUserPosition().getName().startsWith("лікар"))
+                .toList();
 
         log.info("Result generating start");
         previousResultList = previousStaffListRecordList.stream().map(s -> {
@@ -220,7 +222,9 @@ public class ResultController {
 
         resultService.saveAll(previousResultList);
 
-        List<StaffListRecord> staffListRecordList = staffListRecordService.findByPeriod(period);
+        List<StaffListRecord> staffListRecordList = staffListRecordService.findByPeriod(previousPeriod).stream()
+                .filter(s->s.getUserPosition().getName().startsWith("лікар"))
+                .toList();;
 
         log.info("Previous result generating start");
         resultList = staffListRecordList.stream().map(s -> {
