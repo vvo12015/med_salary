@@ -1,0 +1,17 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+                   http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd
+                   http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="vvo12015" id="1731407178608-36">
+        <!-- Видалити старий UNIQUE constraint -->
+        <dropUniqueConstraint constraintName="FKhxs07ib3wxrsqk2knbbq6ddle" tableName="result"/>
+    </changeSet>
+
+    <changeSet author="vvo12015" id="1731407178608-37">
+        <!-- Додати новий UNIQUE constraint на 'stafflist_id' та 'period' -->
+        <addUniqueConstraint columnNames="stafflist_id,period" constraintName="UK_stafflist_period" tableName="result"/>
+    </changeSet>
+</databaseChangeLog>
