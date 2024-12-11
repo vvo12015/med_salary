@@ -1,6 +1,7 @@
 package net.vrakin.medsalary.service;
 
 import net.vrakin.medsalary.domain.Result;
+import net.vrakin.medsalary.domain.StaffListRecord;
 import net.vrakin.medsalary.domain.User;
 import net.vrakin.medsalary.repository.ResultRepository;
 import net.vrakin.medsalary.repository.StaffListRecordRepository;
@@ -24,5 +25,10 @@ public class ResultServiceImpl extends AbstractService<Result> implements Result
     @Override
     public List<Result> findByUserAndPeriod(User user, LocalDate period) {
         return resultRepository.findByUserAndDate(user, period);
+    }
+
+    @Override
+    public List<Result> findByStaffListRecordAndDate(StaffListRecord staffListRecord, LocalDate period) {
+        return resultRepository.findByStaffListRecordAndDate(staffListRecord, period);
     }
 }

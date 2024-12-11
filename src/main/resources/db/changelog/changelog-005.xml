@@ -6,9 +6,6 @@
                    http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd
                    http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
     <changeSet author="vvo12015" id="id=1731407178608-32">
-        <addColumn tableName="result">
-            <column name="other_premium" type="FLOAT(12)" />
-        </addColumn>
         <dropColumn tableName="result">
             <column name="sum_for_vlk"/>
             <column name="vlk_coefficient"/>

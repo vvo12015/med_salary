@@ -154,19 +154,19 @@ public class FastExcelHelperImpl implements ExcelHelper{
 
 
         try (OutputStream os = Files.newOutputStream(file.toPath());
-             Workbook wb = new Workbook(os, "MyApplication", "1.0")) {
-            Worksheet ws = wb.newWorksheet("Премія");
-            ws.width(0, 25);
-            ws.width(1, 15);
+                Workbook wb = new Workbook(os, "MyApplication", "1.0")) {
+                Worksheet ws = wb.newWorksheet("Премія");
+                ws.width(0, 25);
+                ws.width(1, 15);
 
-            List<String> colNames = listCells.stream().findFirst().orElseThrow(()->new ResourceNotFoundException("List from resultList", "first el", "first el"));
+            List<String> colNames = listCells.stream().findFirst().orElseThrow(
+                    ()->new ResourceNotFoundException("List from resultList", "first el", "first el"));
 
             ws.range(0, 0, 0, colNames.size() - 1).style()
                     .fontName("Calibri")
                     .fontSize(11)
+                    .fillColor("#111111")
                     .bold()
-                    .fontColor("#000000")  // Чорний шрифт
-                    .fillColor("#00FF00")  // Яскраво-зелений фон
                     .set();
 
             for (int i = 0; i < listCells.size(); i++) {

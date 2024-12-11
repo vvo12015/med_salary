@@ -12,23 +12,37 @@ import java.time.LocalDate;
 @ToString
 public class ResultDTO {
 
+    private Long id;
+
     private String username;
 
+    private String staffListId;
+
     private String userPositionName;
+
+    private String departmentName;
+
+    private LocalDate employmentStartDate;
+
+    private Float employment;
+
+    private Float employmentPart;
+
+    private Float hourCoefficient;
+
+    private Float nightHours;
 
     private Float maxPoint;
 
     private Float pointValue;
 
-    private String departmentName;
-
     private Float hospNSZU_Premium;
 
     private Float amblNSZU_Premium;
 
-    private Float employmentPart;
+    private Float oneDaySurgeryPremium;
 
-    private Float employment;
+    private Float otherPremium;
 
     private LocalDate date;
 
@@ -42,5 +56,6 @@ public class ResultDTO {
 
     private Integer countEMR_priorityService;
 
-    private LocalDate employmentStartDate;
+    private String comment;
+
 }

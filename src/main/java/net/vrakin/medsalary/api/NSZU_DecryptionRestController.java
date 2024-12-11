@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -128,8 +129,11 @@ public class NSZU_DecryptionRestController {
             @PathVariable String executorName, @PathVariable String userPosition,
             @RequestParam int year, @RequestParam int month){
 
+
+        LocalDate period = LocalDate.of(year, month, 1);
+
         List<NszuDecryptionDTO> nszuDecryptionDtoList = nszuDecryptionMapper
-                .toDtoList(nszuDecryptionService.findByExecutorNameAndExecutorUserPosition(executorName, userPosition));
+                .toDtoList(nszuDecryptionService.findByExecutorNameAndExecutorUserPositionAndPeriod(executorName, userPosition, period));
 
         return getListResponseEntity(year, month, nszuDecryptionDtoList);
     }

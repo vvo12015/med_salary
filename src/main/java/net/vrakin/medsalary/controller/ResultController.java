@@ -5,10 +5,12 @@ import net.vrakin.medsalary.config.InitData;
 import net.vrakin.medsalary.domain.*;
 import net.vrakin.medsalary.dto.StaffListRecordDTO;
 import net.vrakin.medsalary.excel.entity.reader.*;
+import net.vrakin.medsalary.excel.entity.writer.ResultWriter;
 import net.vrakin.medsalary.generator.GeneratorResultService;
 import net.vrakin.medsalary.generator.GeneratorStaffListRecordService;
 import net.vrakin.medsalary.mapper.ResultMapper;
 import net.vrakin.medsalary.service.*;
+import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,9 +21,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/result")
@@ -38,7 +41,7 @@ public class ResultController {
     private final GeneratorResultService generatorResultService;
 
     private final StaffListRecordService staffListRecordService;
-    private final ResultExcelWriter resultExcelWriter;
+    private final ResultWriter resultWriter;
 
     private final UserPositionExcelReader userPositionExcelReader;
 
@@ -68,7 +71,7 @@ public class ResultController {
 
     public ResultController(GeneratorResultService generatorResultService,
                             StaffListRecordService staffListRecordService,
-                            ResultExcelWriter resultExcelWriter,
+                            ResultWriter resultWriter,
                             UserPositionExcelReader userPositionExcelReader,
                             UserPositionService userPositionService,
                             DepartmentExcelReader departmentExcelReader,
@@ -84,7 +87,7 @@ public class ResultController {
                             ResultService resultService) {
         this.generatorResultService = generatorResultService;
         this.staffListRecordService = staffListRecordService;
-        this.resultExcelWriter = resultExcelWriter;
+        this.resultWriter = resultWriter;
         this.userPositionExcelReader = userPositionExcelReader;
         this.userPositionService = userPositionService;
         this.departmentExcelReader = departmentExcelReader;
@@ -203,8 +206,14 @@ public class ResultController {
 
         LocalDate previousPeriod = period.minusMonths(1);
 
+       /* int offset = 20; // Кількість записів, які потрібно пропустити
+        int limit = 2; */ // Кількість записів, які потрібно отримати
+
         List<StaffListRecord> previousStaffListRecordList = staffListRecordService.findByPeriod(previousPeriod).stream()
                 .filter(s->s.getUserPosition().getName().startsWith("лікар"))
+                .sorted(Comparator.comparing(s -> s.getUser().getName()))
+                /*.limit(offset)
+                .limit(limit)*/
                 .toList();
 
         log.info("Result generating start");
@@ -220,70 +229,83 @@ public class ResultController {
 
         log.info("Result write in file");
 
-        resultService.saveAll(previousResultList);
+        try {
+            resultService.saveAll(previousResultList);
+        }catch (Exception e){
+            log.error(e.getMessage());
+        }
 
-        List<StaffListRecord> staffListRecordList = staffListRecordService.findByPeriod(previousPeriod).stream()
+        List<StaffListRecord> staffListRecordList = staffListRecordService.findByPeriod(period).stream()
                 .filter(s->s.getUserPosition().getName().startsWith("лікар"))
-                .toList();;
+                .sorted(Comparator.comparing(s -> s.getUser().getName()))
+                /*.limit(offset)
+                .limit(limit)*/
+                .toList();
 
         log.info("Previous result generating start");
         resultList = staffListRecordList.stream().map(s -> {
             try {
                 // Генерація поточного результату
-                var result = generatorResultService.generate(s);
+                Result result = generatorResultService.generate(s);
 
-                // Пошук попередніх результатів
-                List<Result> previousResults = resultService.findByUserAndPeriod(result.getUser(), result.getPeriod());
+                List<StaffListRecord> firstRecordList = previousStaffListRecordList.stream()
+                        .filter(pSt -> pSt.getStaffListId().equals(s.getStaffListId()))
+                        .toList();
 
-                // Агрегація числових значень через Stream
-                int totalCountEMR_stationary = previousResults.stream()
-                        .mapToInt(Result::getCountEMR_stationary)
-                        .sum() + result.getCountEMR_stationary();
+                if (firstRecordList.size() == 1) {
+                    StaffListRecord previousStaffListRecord = firstRecordList.stream().findFirst().get();
 
-                int totalCountEMR_ambulatory = previousResults.stream()
-                        .mapToInt(Result::getCountEMR_ambulatory)
-                        .sum() + result.getCountEMR_ambulatory();
+                    // Пошук попередніх результатів
+                    List<Result> previousResults = resultService.findByStaffListRecordAndDate(previousStaffListRecord, previousPeriod);
 
-                int totalCountEMR_oneDaySurgery = previousResults.stream()
-                        .mapToInt(Result::getCountEMR_oneDaySurgery)
-                        .sum() + result.getCountEMR_oneDaySurgery();
+                    // Агрегація числових значень через Stream
+                    int totalCountEMR_stationary = previousResults.stream()
+                            .mapToInt(Result::getCountEMR_stationary)
+                            .sum() + result.getCountEMR_stationary();
 
-                int totalCountEMR_priorityService = previousResults.stream()
-                        .mapToInt(Result::getCountEMR_priorityService)
-                        .sum() + result.getCountEMR_priorityService();
+                    int totalCountEMR_ambulatory = previousResults.stream()
+                            .mapToInt(Result::getCountEMR_ambulatory)
+                            .sum() + result.getCountEMR_ambulatory();
 
-                float totalSumForAmlPackage = (float) previousResults.stream()
-                        .mapToDouble(Result::getSumForAmlPackage)
-                        .sum() + result.getSumForAmlPackage();
+                    int totalCountEMR_oneDaySurgery = previousResults.stream()
+                            .mapToInt(Result::getCountEMR_oneDaySurgery)
+                            .sum() + result.getCountEMR_oneDaySurgery();
 
-                float totalHospNSZU_Premium = (float) previousResults.stream()
-                        .mapToDouble(Result::getHospNSZU_Premium)
-                        .sum() + result.getHospNSZU_Premium();
+                    int totalCountEMR_priorityService = previousResults.stream()
+                            .mapToInt(Result::getCountEMR_priorityService)
+                            .sum() + result.getCountEMR_priorityService();
 
-                float totalAmblNSZU_Premium = (float) previousResults.stream()
-                        .mapToDouble(Result::getAmblNSZU_Premium)
-                        .sum() + result.getAmblNSZU_Premium();
+                    float totalSumForAmlPackage = (float) previousResults.stream()
+                            .mapToDouble(Result::getSumForAmlPackage)
+                            .sum() + result.getSumForAmlPackage();
 
-                float totalOneDaySurgery = (float) previousResults.stream()
-                        .mapToDouble(Result::getOneDaySurgery)
-                        .sum() + result.getOneDaySurgery();
+                    float totalHospNSZU_Premium = (float) previousResults.stream()
+                            .mapToDouble(Result::getHospNSZU_Premium)
+                            .sum() + result.getHospNSZU_Premium();
 
-                float totalOtherPremium = (float) previousResults.stream()
-                        .mapToDouble(Result::getOtherPremium)
-                        .sum() + result.getOtherPremium();
+                    float totalAmblNSZU_Premium = (float) previousResults.stream()
+                            .mapToDouble(Result::getAmblNSZU_Premium)
+                            .sum() + result.getAmblNSZU_Premium();
 
-                // Оновлення полів поточного результату
-                result.setCountEMR_stationary(totalCountEMR_stationary);
-                result.setCountEMR_ambulatory(totalCountEMR_ambulatory);
-                result.setCountEMR_oneDaySurgery(totalCountEMR_oneDaySurgery);
-                result.setCountEMR_priorityService(totalCountEMR_priorityService);
+                    float totalOneDaySurgery = (float) previousResults.stream()
+                            .mapToDouble(Result::getOneDaySurgeryPremium)
+                            .sum() + result.getOneDaySurgeryPremium();
 
-                result.setSumForAmlPackage(totalSumForAmlPackage * result.getEmploymentPart());
-                result.setHospNSZU_Premium(totalHospNSZU_Premium * result.getEmploymentPart());
-                result.setAmblNSZU_Premium(totalAmblNSZU_Premium * result.getEmploymentPart());
-                result.setOneDaySurgery(totalOneDaySurgery * result.getEmploymentPart());
-                result.setOtherPremium(totalOtherPremium * result.getEmploymentPart());
+                    // Оновлення полів поточного результату
+                    result.setCountEMR_stationary(totalCountEMR_stationary);
+                    result.setCountEMR_ambulatory(totalCountEMR_ambulatory);
+                    result.setCountEMR_oneDaySurgery(totalCountEMR_oneDaySurgery);
+                    result.setCountEMR_priorityService(totalCountEMR_priorityService);
 
+                    result.setSumForAmlPackage(totalSumForAmlPackage);
+                    result.setHospNSZU_Premium(totalHospNSZU_Premium);
+                    result.setAmblNSZU_Premium(totalAmblNSZU_Premium);
+                    result.setOneDaySurgeryPremium(totalOneDaySurgery);
+                } else if (firstRecordList.size() > 1) {
+                    throw new BadRequestException(String.format("Duplicate staffListRecord: %s", s.getStaffListId()));
+                }else{
+                    log.warn("This staffListRecord not found: {}", s.toString());
+                }
                 return result; // Додати оновлений результат до списку
             } catch (Exception e) {
                 throw new RuntimeException("Error processing record for " + s, e);
@@ -295,14 +317,13 @@ public class ResultController {
                 resultList) {
             log.info(result.toString());
         }
-        resultExcelWriter.writeAll(resultList);
+        resultWriter.writeAll(resultList);
         log.info("Result write in sql file");
-        resultExcelWriter.writeAllTxt(resultList);
+        resultWriter.writeAllToSQL(resultList);
         log.info("Result write in db");
         resultService.saveAll(resultList);
 
-
-        model.addAttribute("colNames", resultMapper.toStringListColNames());
+        model.addAttribute("colNames", resultMapper.toStringListColNameForExcel());
         model.addAttribute("result_count", resultList.size());
         model.addAttribute("results", resultList.stream().map(resultMapper::toStringList).toList());
     }

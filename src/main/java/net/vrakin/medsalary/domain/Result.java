@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.Objects;
+import java.util.Optional;
 
 @Getter
 @Setter
@@ -36,6 +38,23 @@ public class Result implements PeriodControl{
     @JoinColumn(name = "department_id")
     private Department department;
 
+    @Column(name = "employment_start_date")
+    private LocalDate employmentStartDate;
+
+    @Column(name = "employment")
+    private Float employment;
+    @Column
+    private Float employmentPart;
+
+    @Column(name = "employment_user_position_part")
+    private Float employmentUserPositionPart;
+
+    @Column(name = "hour_coefficient")
+    private Float hourCoefficient;
+
+    @Column(name = "night_hours")
+    private Float nightHours;
+
     @Column
     private Float hospNSZU_Premium;
 
@@ -43,10 +62,10 @@ public class Result implements PeriodControl{
     private Float amblNSZU_Premium;
 
     @Column
-    private Float oneDaySurgery;
+    private Float oneDaySurgeryPremium;
 
-    @Column
-    private Float employmentPart;
+    @Column(name = "other_premium")
+    private Float otherPremium;
 
     @Column
     private LocalDate date;
@@ -65,25 +84,13 @@ public class Result implements PeriodControl{
 
     @Column(name = "countemr_priority_service")
     private Integer countEMR_priorityService;
-
-    @Column(name = "employment")
-    private Float employment;
-
-    @Column(name = "hour_coefficient")
-    private Float hourCoefficient;
-
-    @Column(name = "other_premium")
-    private Float otherPremium;
-
-    @Column(name = "employment_start_date")
-    private LocalDate employmentStartDate;
-
     @Column
     private String comment;
     public Result(User user, UserPosition userPosition,
                   Department department,
-                  Float employment, Float employmentPart,
+                  Float employment, Float employmentPart, Float employmentUserPositionPart,
                   Float hourCoefficient,
+                  Float nightHours,
                   LocalDate employmentStartDate, LocalDate period) {
         this.id = null;
         this.user = user;
@@ -92,9 +99,11 @@ public class Result implements PeriodControl{
 
         this.employment = employment;
         this.employmentPart = employmentPart;
+        this.employmentUserPositionPart = employmentUserPositionPart;
         this.employmentStartDate = employmentStartDate;
         this.date = period;
         this.hourCoefficient = hourCoefficient;
+        this.nightHours = nightHours;
 
         this.countEMR_stationary = 0;
         this.countEMR_ambulatory = 0;
@@ -104,13 +113,15 @@ public class Result implements PeriodControl{
 
         this.hospNSZU_Premium = 0f;
         this.amblNSZU_Premium = 0f;
-        this.oneDaySurgery = 0f;
+        this.oneDaySurgeryPremium = 0f;
         this.otherPremium = 0f;
 
         this.comment = "";
     }
 
-    public Result(StaffListRecord staffListRecord, Float employment, Float employmentPart, Float hourCoefficient) {
+    public Result(StaffListRecord staffListRecord, Float employment, Float employmentPart,
+                  Float employmentUserPositionPart,
+                  Float hourCoefficient, Float nightHours) {
 
         this.id = null;
         this.staffListRecord = staffListRecord;
@@ -120,9 +131,11 @@ public class Result implements PeriodControl{
 
         this.employment = employment;
         this.employmentPart = employmentPart;
+        this.employmentUserPositionPart = employmentUserPositionPart;
         this.employmentStartDate = staffListRecord.getEmploymentStartDate();
         this.date = staffListRecord.getPeriod();
         this.hourCoefficient = hourCoefficient;
+        this.nightHours = nightHours;
 
         this.countEMR_stationary = 0;
         this.countEMR_ambulatory = 0;
@@ -134,37 +147,38 @@ public class Result implements PeriodControl{
 
         this.hospNSZU_Premium = 0f;
         this.amblNSZU_Premium = 0f;
-        this.oneDaySurgery = 0f;
+        this.oneDaySurgeryPremium = 0f;
         this.otherPremium = 0f;
     }
 
     @Override
     public String toString() {
         return "Result{" +
-                "id=" + id +
-                ", user=" + user.getName() +
                 ", staffListRecordID=" + staffListRecord.getStaffListId() +
+                ", user=" + user.getName() +
                 ", userPosition=" + userPosition.getName() +
-                ", userPosition=" + userPosition.getMaxPoint() +
-                ", userPosition=" + userPosition.getPointValue() +
+                ", MaxPoint=" + userPosition.getMaxPoint() +
+                ", PointValue=" + userPosition.getPointValue() +
                 ", departmentName=" + department.getName() +
                 ", departmentIsProId=" + department.getDepartmentIsProId() +
                 ", departmentTemplateId=" + department.getDepartmentTemplateId() +
                 ", departmentNameEleks=" + department.getNameEleks() +
+                ", employmentStartDate=" + employmentStartDate +
+                ", employment=" + employment +
+                ", employmentPart=" + employmentPart +
+                ", employmentUserPositionPart=" + employmentUserPositionPart +
+                ", hourCoefficient=" + hourCoefficient +
+                ", nightHours=" + nightHours +
                 ", hospNSZU_Premium=" + hospNSZU_Premium +
                 ", amblNSZU_Premium=" + amblNSZU_Premium +
-                ", oneDaySurgery=" + oneDaySurgery +
-                ", employmentPart=" + employmentPart +
+                ", oneDaySurgeryPremium=" + oneDaySurgeryPremium +
+                ", otherPremium=" + otherPremium +
                 ", date=" + date +
                 ", countEMR_stationary=" + countEMR_stationary +
                 ", sumForAmlPackage=" + sumForAmlPackage +
                 ", countEMR_ambulatory=" + countEMR_ambulatory +
                 ", countEMR_oneDaySurgery=" + countEMR_oneDaySurgery +
                 ", countEMR_priorityService=" + countEMR_priorityService +
-                ", employment=" + employment +
-                ", hourCoefficient=" + hourCoefficient +
-                ", otherPremium=" + otherPremium +
-                ", employmentStartDate=" + employmentStartDate +
                 ", comment='" + comment + '\'' +
                 '}';
     }
@@ -178,4 +192,29 @@ public class Result implements PeriodControl{
     public void setPeriod(LocalDate period) {
         date = period;
 }
+
+    public Optional<Float> getEmploymentSum(){
+        try{
+            return Optional.of(employment / employmentPart);
+        }catch (Exception e) {
+            return Optional.empty();
+        }
+    }
+
+    public Optional<Float> getEmploymentPartStaffList(){
+        try{
+            float employmentSum = getEmploymentSum().isPresent()?getEmploymentSum().get():1;
+            return Optional.of(this.employmentPart
+                    * (employmentSum>1?1:employmentSum));
+        }catch (Exception e) {
+            return Optional.empty();
+        }
+    }
+
+    public Float getBasicPremium(){
+        return Objects.requireNonNullElse(this.amblNSZU_Premium, 0f) +
+                Objects.requireNonNullElse(this.hospNSZU_Premium, 0f) +
+                Objects.requireNonNullElse(this.oneDaySurgeryPremium, 0f) +
+                Objects.requireNonNullElse(this.otherPremium, 0f);
+    }
 }

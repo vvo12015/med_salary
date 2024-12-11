@@ -23,11 +23,13 @@ public abstract class AbstractCalculateStrategyNSZU {
                                                          Result result){
 
         List<NszuDecryption> nszuDecryptionList = nszu_decryptionService
-                .findByExecutorNameAndExecutorUserPositionAndServicePackageNameAndProviderPlace(
+                .findByExecutorNameAndExecutorUserPositionAndServicePackageNameAndProviderPlaceAndPeriod(
                         result.getUser().getName(),
                         result.getUserPosition().getNszuName(),
                         servicePackage.getFullName(),
-                        getPlaceProvide(result.getDepartment()));
+                        getPlaceProvide(result.getDepartment()),
+                        result.getPeriod()
+                        );
 
 
         List<NszuDecryption> nszuResult =  nszuDecryptionList.stream().filter(n->(n.isReportStatus() && n.isStatisticStatus())).toList();

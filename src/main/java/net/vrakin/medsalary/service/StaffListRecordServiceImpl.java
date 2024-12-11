@@ -40,8 +40,8 @@ public class StaffListRecordServiceImpl extends AbstractService<StaffListRecord>
 
     @Override
     public List<StaffListRecord> findByPeriod(LocalDate period) {
-        LocalDateTime periodWithTime = period.plusMonths(1).atTime(0, 0);
-        return staffListRecordRepository.findByStartDateAndEmploymentStartDateLessThan(periodWithTime, period);
+        LocalDate periodWithTime = period.plusMonths(1);
+        return staffListRecordRepository.findByStartDateAndEmploymentStartDateLessThan(period.atTime(0, 0), periodWithTime);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package net.vrakin.medsalary.excel.entity.reader;
+package net.vrakin.medsalary.excel.entity.writer;
 
 import java.io.IOException;
 import java.util.List;

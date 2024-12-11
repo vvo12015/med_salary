@@ -7,6 +7,7 @@ import net.vrakin.medsalary.repository.NSZU_DecryptionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +22,12 @@ public class NSZU_DecryptionServiceImpl extends AbstractService<NszuDecryption> 
     }
 
     private final NSZU_DecryptionRepository nszuDecryptionRepository;
+
+    @Override
+    public List<NszuDecryption> findByExecutorNameAndExecutorUserPositionAndPeriod(String executorName, String executorUserPosition, LocalDate period) {
+        return nszuDecryptionRepository.findByExecutorNameAndExecutorUserPositionAndMonthNumAndYearNum(executorName, executorUserPosition,
+                period.getYear(), period.getMonthValue());
+    }
 
     @Override
     public List<NszuDecryption> findByExecutorNameAndExecutorUserPosition(String executorName, String executorUserPosition) {
@@ -103,13 +110,27 @@ public class NSZU_DecryptionServiceImpl extends AbstractService<NszuDecryption> 
                 executorUserPosition, servicePackageName, providerPlace);
     }
 
+
+
+    @Override
+    public Optional<NszuDecryption> findByRecordIdAndPeriod(String recordId, LocalDate period) {
+        return nszuDecryptionRepository.findByRecordIDAndMonthNumAndYearNum(recordId, period.getMonthValue(), period.getYear());
+    }
+
     @Override
     public Optional<NszuDecryption> findByRecordId(String recordId) {
         return nszuDecryptionRepository.findByRecordID(recordId);
     }
 
     @Override
-    public Float sumTariffUAHByServicePackageName(String servicePackageName) {
-        return nszuDecryptionRepository.sumTariffUAHByServicePackageName(servicePackageName);
+    public Float sumTariffUAHByServicePackageNameAndPeriod(String servicePackageName, LocalDate period) {
+        return nszuDecryptionRepository.sumServicePackageAndPeriod
+                (servicePackageName, period.getMonthValue(), period.getYear());
+    }
+
+    @Override
+    public List<NszuDecryption> findByExecutorNameAndExecutorUserPositionAndServicePackageNameAndProviderPlaceAndPeriod(String name, String nszuName, String fullName, String placeProvide, LocalDate period) {
+        return nszuDecryptionRepository.findByExecutorNameAndExecutorUserPositionAndServicePackageNameAndProviderPlaceAndMonthNumAndYearNum
+                (name, nszuName, fullName, placeProvide, period.getMonthValue(), period.getYear());
     }
 }

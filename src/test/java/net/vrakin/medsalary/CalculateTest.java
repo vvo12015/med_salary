@@ -164,7 +164,7 @@ public class CalculateTest {
 
         calculateManager.calculate(servicePackage47, result);
 
-        assertEquals(result.getOneDaySurgery(), 1760f);
+        assertEquals(result.getOneDaySurgeryPremium(), 1760f);
     }
 
     @Test

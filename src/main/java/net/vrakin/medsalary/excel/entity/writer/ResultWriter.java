@@ -1,6 +1,7 @@
-package net.vrakin.medsalary.excel.entity.reader;
+package net.vrakin.medsalary.excel.entity.writer;
 
 import net.vrakin.medsalary.domain.Result;
+import net.vrakin.medsalary.excel.entity.reader.ExcelHelper;
 import net.vrakin.medsalary.mapper.ResultMapper;
 import net.vrakin.medsalary.service.StorageService;
 import org.springframework.stereotype.Service;
@@ -16,7 +17,7 @@ import java.util.List;
 import java.util.Locale;
 
 @Service
-public class ResultExcelWriter implements ExcelWriter<Result> {
+public class ResultWriter implements ExcelWriter<Result>, TextWriter<Result> {
 
     private final ResultMapper resultMapper;
 
@@ -24,9 +25,9 @@ public class ResultExcelWriter implements ExcelWriter<Result> {
 
     private final StorageService storageService;
 
-    public ResultExcelWriter(ResultMapper resultMapper,
-                             ExcelHelper excelHelper,
-                             StorageService storageService) {
+    public ResultWriter(ResultMapper resultMapper,
+                        ExcelHelper excelHelper,
+                        StorageService storageService) {
         this.resultMapper = resultMapper;
         this.excelHelper = excelHelper;
         this.storageService = storageService;
@@ -51,10 +52,10 @@ public class ResultExcelWriter implements ExcelWriter<Result> {
 
     private List<String> getColumnNames(){
 
-        return resultMapper.toStringListColNames();
+        return resultMapper.toStringListColNameForExcel();
     }
 
-    public void writeAllTxt(List<Result> resultList) {
+    public void writeAllToSQL(List<Result> resultList) {
         LocalDateTime dateTime = LocalDateTime.now();
         String filename = String.format("result_%s.%s", dateTime.format(DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm")), "sql");
 
@@ -64,65 +65,45 @@ public class ResultExcelWriter implements ExcelWriter<Result> {
         try(var buffer = new BufferedWriter(new FileWriter(file.toFile()))){
             var sb = new StringBuilder();
 
-            sb.append("USE [DoctorEleks v1]\n" +
+            sb.append(String.format("USE [DoctorEleks v1]\n" +
                     "GO\n" +
                     "\n" +
-                    "INSERT INTO [dbo].[Premium]\n" +
-                    "           ([UserShortName]\n" +
-                    "           ,[UserPosition]\n" +
-                    "           ,[Point]\n" +
-                    "           ,[PointValue]\n" +
-                    "           ,[Employment]\n" +
-                    "           ,[BasicPremium]\n" +
-                    "           ,[DepartmentID]\n" +
-                    "           ,[PremiumCreationDate]\n" +
-                    "           ,[DepartmentName]\n" +
-                    "           ,[PremiumStartDate]\n" +
-                    "           ,[PremiumEndDate]\n" +
-                    "           ,[sl_id]\n" +
-                    "           ,[HourCoefficient]\n" +
-                    "           ,[EmploymentPart]\n" +
-                    "           ,[EmploymentPosition]\n" +
-                    "           ,[HospNSZU_Premium]\n" +
-                    "           ,[CountEMR_stationary]\n" +
-                    "           ,[CountEMR_ambulatory]\n" +
-                    "           ,[CountEMR_oneDaySurgery]\n" +
-                    "           ,[CountEMR_priorityService]\n" +
-                    "           ,[SumForAmlPackage]\n" +
-                    "           ,[AmblNSZU_Premium]\n" +
-                    "           ,[OneDaySurgery]\n" +
-                    "           ,[OtherPremium])\n" +
-                    "           ,[EmploymentStartDate])\n");
+                    "INSERT INTO [dbo].[Premium](\n"));
+
+            resultMapper.toStringListColNameForSQL()
+                            .forEach(name->
+                                    sb.append(String.format("[%s]\n, ", name)));
+            sb.append("date)\n");
 
             for (Result result :
                     resultList) {
-
+                int i = 0;
                 sb.append(String.format(Locale.US,
-                        "SELECT N'%s', N'%s', %d, %d, %.2f, %.2f, %s, GETDATE(), N'%s', GETDATE(), NULL, %s, %.2f, %.2f, %.2f, " +
-                                "%.2f, %d, %d, %d, %d, %.2f, %.2f, %f, %.2f, '%s' " +
-                                "\nUNION ALL \n",
-                        ResultExcelWriter.apostroff(result.getUser().getName()),//UserShortName
-                        ResultExcelWriter.apostroff(result.getUserPosition().getName()),//UserPosition
-                        result.getUserPosition().getMaxPoint(),//Point
-                        result.getUserPosition().getPointValue(),//PointValue
-                        result.getEmployment(),//Employment
-                        result.getHospNSZU_Premium()+ result.getAmblNSZU_Premium()+result.getOtherPremium()+ result.getOneDaySurgery(),//BasicPremium
-                        result.getDepartment().getDepartmentTemplateId(),//DepartmentTemplate
-                        ResultExcelWriter.apostroff(result.getDepartment().getNameEleks()),//DepartmentName
-                        result.getStaffListRecord().getStaffListId(),//StaffListId
-                        result.getHourCoefficient(),//HourCoefficient
-                        result.getEmploymentPart(),//EmploymentPart
-                        (result.getEmploymentPart() * result.getEmployment()),//EmploymentPartPosition
-                        result.getHospNSZU_Premium(),//HospPremium
-                        result.getCountEMR_stationary(),//CountEMR_stationary
-                        result.getCountEMR_ambulatory(),//CountEMR_ambulatory
-                        result.getCountEMR_oneDaySurgery(),//CountEMR_oneDaySurgery
-                        result.getCountEMR_priorityService(),//CountEMR_priorityService
-                        result.getSumForAmlPackage(),//SumForAmlPackage
-                        result.getAmblNSZU_Premium(),//AmblNSZU_Premium
-                        result.getOneDaySurgery(),//OneDaySurgery
-                        result.getOtherPremium(),//OtherPremium
-                        result.getEmploymentStartDate().format(formatter)//EmploymentStartDate
+                        "SELECT '%s', N'%s', N'%s', %s, N'%s', '%s', %s, %s, %s, %s, %s, %s, %s, %s, %s, " +
+                                "%s, %s, %s, %s, %s, %s, %s, GETDATE()\n" +
+                                "UNION ALL \n",
+                        resultMapper.toStringList(result).get(i++),//StaffListId
+                        ResultWriter.apostroff(resultMapper.toStringList(result).get(i++)),//UserShortName
+                        ResultWriter.apostroff(resultMapper.toStringList(result).get(i++)),//DepartmentName
+                        resultMapper.toStringList(result).get(i++),//DepartmentID
+                        ResultWriter.apostroff(resultMapper.toStringList(result).get(i++)),//UserPosition
+                        resultMapper.toStringList(result).get(i++),//EmploymentStartDate
+                        resultMapper.toStringList(result).get(i++),//Employment
+                        resultMapper.toStringList(result).get(i++),//EmploymentPart
+                        resultMapper.toStringList(result).get(i++),//EmploymentPosition
+                        resultMapper.toStringList(result).get(i++),//HourCoefficient
+                        resultMapper.toStringList(result).get(i++),//NightHours
+                        resultMapper.toStringList(result).get(i++),//Point
+                        resultMapper.toStringList(result).get(i++),//PointValue
+                        resultMapper.toStringList(result).get(i++),//BasicPremium
+                        resultMapper.toStringList(result).get(i++),//HospPremium
+                        resultMapper.toStringList(result).get(i++),//CountEMR_stationary
+                        resultMapper.toStringList(result).get(i++),//AmblNSZU_Premium
+                        resultMapper.toStringList(result).get(i++),//SumForAmlPackage
+                        resultMapper.toStringList(result).get(i++),//CountEMR_priorityService
+                        resultMapper.toStringList(result).get(i++),//OneDaySurgery
+                        resultMapper.toStringList(result).get(i++),//CountEMR_oneDaySurgery
+                        resultMapper.toStringList(result).get(i)//OtherPremium
                 ));
 
             }

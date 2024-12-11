@@ -35,7 +35,8 @@ public class TimeSheet implements PeriodControl{
     private LocalDate period;
     
     public float getHourCoefficient(){
-        return factTime / (planTime!=0?planTime:factTime);
+        float coefficient = factTime / (planTime!=0?planTime:factTime);
+        return coefficient>1?1:coefficient;
     }
     
     public boolean getUgrency(){

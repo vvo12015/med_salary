@@ -13,7 +13,8 @@ public class CalculateByPremiumCategory implements CalculateStrategy {
         PremiumKind premiumCategory = PremiumKind.valueOf(staffListRecord.getPremiumCategory().getName());
 
         if (!premiumCategory.equals(PremiumKind.ZERO)){
-            result.setOtherPremium(result.getOtherPremium()+staffListRecord.getPremiumCategory().getAmount());
+
+            result.setOtherPremium(result.getOtherPremium()+staffListRecord.getPremiumCategory().getAmount()* result.getEmploymentPart());
 
             Set<PremiumKind> premiumKinds = PremiumKind.parsePremiumCode(result.getComment());
 

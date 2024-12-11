@@ -24,7 +24,7 @@ public class CalculateVlk extends AbstractCalculateStrategyNSZU implements Calcu
     public void calculate(ServicePackage servicePackage, Result result) {
 
         if (Objects.isNull(packageSum)){
-            packageSum = nszu_decryptionService.sumTariffUAHByServicePackageName(servicePackage.getFullName());
+            packageSum = nszu_decryptionService.sumTariffUAHByServicePackageNameAndPeriod(servicePackage.getFullName(), result.getPeriod());
         }
 /*
         result.setWholeSumVlk(packageSum);

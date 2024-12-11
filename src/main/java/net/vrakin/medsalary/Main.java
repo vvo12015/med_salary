@@ -1,9 +1,7 @@
 package net.vrakin.medsalary;
 
 import net.vrakin.medsalary.domain.*;
-import net.vrakin.medsalary.excel.entity.reader.ResultExcelWriter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import net.vrakin.medsalary.excel.entity.writer.ResultWriter;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -44,7 +42,7 @@ public class Main {
         result.setCountEMR_priorityService(4);//CountEMR_priorityService
         result.setSumForAmlPackage(500.0f);//SumForAmlPackage
         result.setAmblNSZU_Premium(1000.f);//AmblNSZU_Premium
-        result.setOneDaySurgery(8000.f);//OneDaySurgery
+        result.setOneDaySurgeryPremium(8000.f);//OneDaySurgery
         result.setOtherPremium(10000.0f);//OtherPremium
         result.setEmploymentStartDate(LocalDate.of(2024, 11, 01));//EmploymentStartDate
 
@@ -55,14 +53,14 @@ public class Main {
                 "SELECT N'%s', N'%s', %d, %d, %.2f, %.2f, %s, GETDATE(), N'%s', GETDATE(), NULL, %s, %.2f, %.2f, %.2f, " +
                          "%.2f, %d, %d, %d, %d, %.2f, %.2f, %f, %.2f, '%s' " +
                         "\nUNION ALL \n",
-                ResultExcelWriter.apostroff(result.getUser().getName()),//UserShortName
-                ResultExcelWriter.apostroff(result.getUserPosition().getName()),//UserPosition
+                ResultWriter.apostroff(result.getUser().getName()),//UserShortName
+                ResultWriter.apostroff(result.getUserPosition().getName()),//UserPosition
                 result.getUserPosition().getMaxPoint(),//Point
                 result.getUserPosition().getPointValue(),//PointValue
                 result.getEmployment(),//Employment
-                result.getHospNSZU_Premium()+ result.getAmblNSZU_Premium()+result.getOtherPremium()+ result.getOneDaySurgery(),//BasicPremium
+                result.getHospNSZU_Premium()+ result.getAmblNSZU_Premium()+result.getOtherPremium()+ result.getOneDaySurgeryPremium(),//BasicPremium
                 result.getDepartment().getDepartmentTemplateId(),//DepartmentTemplate
-                ResultExcelWriter.apostroff(result.getDepartment().getNameEleks()),//DepartmentName
+                ResultWriter.apostroff(result.getDepartment().getNameEleks()),//DepartmentName
                 result.getStaffListRecord().getStaffListId(),//StaffListId
                 result.getHourCoefficient(),//HourCoefficient
                 result.getEmploymentPart(),//EmploymentPart
@@ -74,7 +72,7 @@ public class Main {
                 result.getCountEMR_priorityService(),//CountEMR_priorityService
                 result.getSumForAmlPackage(),//SumForAmlPackage
                 result.getAmblNSZU_Premium(),//AmblNSZU_Premium
-                result.getOneDaySurgery(),//OneDaySurgery
+                result.getOneDaySurgeryPremium(),//OneDaySurgery
                 result.getOtherPremium(),//OtherPremium
                 result.getEmploymentStartDate().format(formatter)//EmploymentStartDate
         ));

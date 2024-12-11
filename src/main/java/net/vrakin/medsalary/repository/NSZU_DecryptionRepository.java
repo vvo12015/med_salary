@@ -40,7 +40,38 @@ public interface NSZU_DecryptionRepository extends JpaRepository<NszuDecryption,
 
     Optional<NszuDecryption> findByRecordID(String recordID);
 
-    @Query("SELECT SUM(n.tariffUAH) FROM NszuDecryption n WHERE n.servicePackageName = :servicePackageName and n.statisticStatus and n.reportStatus")
-    Float sumTariffUAHByServicePackageName(@Param("servicePackageName") String servicePackageName);
+    Optional<NszuDecryption> findByRecordIDAndMonthNumAndYearNum(String recordId, int monthValue, int year);
 
+    @Query(value = "SELECT SUM(CASE " +
+            "WHEN payment_fact ~ '^[0-9]+(\\.[0-9]+)?$' THEN CAST(payment_fact AS FLOAT) " +
+            "ELSE tariff_uah END) AS total " +
+            "FROM nszu_decryption " +
+            "WHERE service_package_name = :servicePackageName " +
+            "AND statistic_status IS TRUE " +
+            "AND report_status IS TRUE",
+            nativeQuery = true)
+    Float sumServicePackage(@Param("servicePackageName") String servicePackageName);
+
+    @Query(value = "SELECT SUM(CASE " +
+            "WHEN payment_fact ~ '^[0-9]+(\\.[0-9]+)?$' THEN CAST(payment_fact AS FLOAT) " +
+            "ELSE tariff_uah END) AS total " +
+            "FROM nszu_decryption " +
+            "WHERE service_package_name = :servicePackageName AND n.month_num = :monthNum AND n.year_num = :yearNum " +
+            "AND statistic_status IS TRUE " +
+            "AND report_status IS TRUE",
+            nativeQuery = true)
+    Float sumServicePackageAndPeriod(
+            @Param("servicePackageName") String servicePackageName,
+            @Param("monthNum") int monthNum,
+            @Param("yearNum") int yearNum
+    );
+
+
+    List<NszuDecryption> findByExecutorNameAndExecutorUserPositionAndServicePackageNameAndProviderPlaceAndMonthNumAndYearNum(String name,
+                                                                                                                    String nszuName,
+                                                                                                                    String fullName,
+                                                                                                                    String placeProvide,
+                                                                                                                    int monthNum, int yearNum);
+
+    List<NszuDecryption> findByExecutorNameAndExecutorUserPositionAndMonthNumAndYearNum(String executorName, String executorUserPosition, int year, int monthValue);
 }

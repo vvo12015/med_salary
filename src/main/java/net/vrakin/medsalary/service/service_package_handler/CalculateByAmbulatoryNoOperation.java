@@ -31,7 +31,7 @@ public class CalculateByAmbulatoryNoOperation extends AbstractCalculateStrategyN
         })
                 .reduce(0f, Float::sum);
 
-        nszuDecryptionList.forEach(n->log.info(n.toString()));
+//        nszuDecryptionList.forEach(n->log.info(n.toString()));
         result.setSumForAmlPackage(Objects.requireNonNullElse(result.getSumForAmlPackage(), 0f) + sum);
         result.setCountEMR_ambulatory(Objects.requireNonNullElse(result.getCountEMR_ambulatory(), 0) + nszuDecryptionList.size());
 

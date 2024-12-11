@@ -11,5 +11,7 @@ public abstract class NSZU_DecryptionMapper implements BaseMapper<NszuDecryption
 
     public abstract NszuDecryptionDTO toDto(NszuDecryption entity);
 
+
+
     public abstract NszuDecryption toEntity(NszuDecryptionDTO dto);
 }

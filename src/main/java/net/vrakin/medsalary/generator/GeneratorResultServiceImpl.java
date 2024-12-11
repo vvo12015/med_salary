@@ -9,12 +9,9 @@ import net.vrakin.medsalary.service.StaffListRecordService;
 import net.vrakin.medsalary.service.TimeSheetService;
 import net.vrakin.medsalary.service.service_package_handler.CalculateManager;
 import net.vrakin.medsalary.service.service_package_handler.PremiumKind;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -50,7 +47,9 @@ public class GeneratorResultServiceImpl implements GeneratorResultService {
     public Result generate(StaffListRecord staffListRecord){
 
         log.info("Generate result. StaffListRecordId: {}", staffListRecord.getStaffListId());
-        Float employmentPart = getEmploymentPart(staffListRecord, staffListRecord.getUser());
+        Float employmentPart = getEmploymentPart(staffListRecord);
+
+        Float employmentUserPositionPart = getEmploymentUserPositionPart(staffListRecord);
 
         TimeSheet timeSheet = timeSheetService.findByStaffListRecordIdAndPeriod(staffListRecord.getStaffListId(),
                 staffListRecord.getPeriod()).orElseThrow(()->new ResourceNotFoundException("timeSheet", "staffListRecordId", staffListRecord.getStaffListId()));
@@ -58,7 +57,7 @@ public class GeneratorResultServiceImpl implements GeneratorResultService {
         Float hourCoefficient = timeSheet.getHourCoefficient();
 
         Result result = new Result(
-                staffListRecord, staffListRecord.getEmployment(), employmentPart, hourCoefficient
+                staffListRecord, staffListRecord.getEmployment(), employmentPart, employmentUserPositionPart, hourCoefficient, timeSheet.getNightHours()
         );
 
         if (Objects.requireNonNullElse(staffListRecord.getDepartment().getServicePackages(), EMPTY_SING).equals(EMPTY_SING)
@@ -93,17 +92,28 @@ public class GeneratorResultServiceImpl implements GeneratorResultService {
         return result;
     }
 
-    private Float getEmploymentPart(StaffListRecord staffListRecord, User user) {
-        Float employmentSum = getEmployment(user, staffListRecord.getUserPosition(), staffListRecord.getPeriod());
-        return staffListRecord.getEmployment() / employmentSum;
-    }
+    private Float getEmploymentPart(StaffListRecord staffListRecord) {
 
-    private Float getEmployment(User user, UserPosition userPosition, LocalDate period) {
-        return staffListRecordService.findByUserAndUserPositionAndPeriod(user, userPosition, period)
+        Float employmentSum = staffListRecordService.findByUserAndPeriod(staffListRecord.getUser(), staffListRecord.getPeriod())
                 .stream()
                 .map(StaffListRecord::getEmployment)
                 .reduce(0f, Float::sum);
+
+        return staffListRecord.getEmployment() / employmentSum;
     }
+
+    private Float getEmploymentUserPositionPart(StaffListRecord staffListRecord){
+
+        Float employmentUserPositionSum = staffListRecordService.findByUserAndUserPositionAndPeriod(staffListRecord.getUser(),
+                        staffListRecord.getUserPosition(),
+                        staffListRecord.getPeriod())
+                .stream()
+                .map(StaffListRecord::getEmployment)
+                .reduce(0f, Float::sum);
+
+        return staffListRecord.getEmployment() / employmentUserPositionSum;
+    }
+
 
     private List<ServicePackage> generateListUserPositionDepartment(StaffListRecord staffListRecord) {
         List<ServicePackage> servicePackageListByUserPositionAndDepartment;
