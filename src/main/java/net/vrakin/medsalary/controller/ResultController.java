@@ -24,7 +24,6 @@ import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/result")
@@ -207,10 +206,10 @@ public class ResultController {
         LocalDate previousPeriod = period.minusMonths(1);
 
        /* int offset = 20; // Кількість записів, які потрібно пропустити
-        int limit = 2; */ // Кількість записів, які потрібно отримати
+        int limit = 2;*/ // Кількість записів, які потрібно отримати
 
         List<StaffListRecord> previousStaffListRecordList = staffListRecordService.findByPeriod(previousPeriod).stream()
-                .filter(s->s.getUserPosition().getName().startsWith("лікар"))
+                //.filter(s->s.getUserPosition().getName().startsWith("лікар"))
                 .sorted(Comparator.comparing(s -> s.getUser().getName()))
                 /*.limit(offset)
                 .limit(limit)*/
@@ -236,7 +235,7 @@ public class ResultController {
         }
 
         List<StaffListRecord> staffListRecordList = staffListRecordService.findByPeriod(period).stream()
-                .filter(s->s.getUserPosition().getName().startsWith("лікар"))
+                //.filter(s->s.getUserPosition().getName().startsWith("лікар"))
                 .sorted(Comparator.comparing(s -> s.getUser().getName()))
                 /*.limit(offset)
                 .limit(limit)*/
@@ -321,7 +320,7 @@ public class ResultController {
         log.info("Result write in sql file");
         resultWriter.writeAllToSQL(resultList);
         log.info("Result write in db");
-        resultService.saveAll(resultList);
+//        resultService.saveAll(resultList);
 
         model.addAttribute("colNames", resultMapper.toStringListColNameForExcel());
         model.addAttribute("result_count", resultList.size());
