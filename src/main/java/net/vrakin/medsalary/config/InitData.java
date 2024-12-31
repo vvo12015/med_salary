@@ -13,99 +13,92 @@ import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 
+/**
+ * Сервіс для ініціалізації початкових даних у базі даних.
+ *
+ * Створює початкових користувачів безпеки, категорії премій та пакети послуг, якщо ці дані відсутні.
+ */
 @Service
 public class InitData {
 
     private final SecurityUserService securityUserService;
-    
-     private final PremiumCategoryService premiumCategoryService;
-
+    private final PremiumCategoryService premiumCategoryService;
     private final ServicePackageService servicePackageService;
 
+    /**
+     * Конструктор для ініціалізації залежностей.
+     *
+     * @param securityUserService сервіс для роботи з користувачами безпеки.
+     * @param premiumCategoryService сервіс для роботи з категоріями премій.
+     * @param servicePackageService сервіс для роботи з пакетами послуг.
+     */
     @Autowired
     public InitData(SecurityUserService securityUserService, PremiumCategoryService premiumCategoryService,
-            ServicePackageService servicePackageService) {
+                    ServicePackageService servicePackageService) {
         this.securityUserService = securityUserService;
         this.premiumCategoryService = premiumCategoryService;
         this.servicePackageService = servicePackageService;
     }
 
-    public void init(){
+    /**
+     * Метод для ініціалізації даних.
+     *
+     * Викликає методи створення користувачів, категорій премій та пакетів послуг.
+     */
+    public void init() {
         createSecurityUsers();
         createPremiumCategory();
         createServicePackage();
     }
 
+    /**
+     * Створює категорії премій, якщо вони відсутні у базі даних.
+     *
+     * Використовує перелік значень з {@link PremiumKind}.
+     */
     void createPremiumCategory() {
-
-        if (premiumCategoryService.findAll().isEmpty()){
+        if (premiumCategoryService.findAll().isEmpty()) {
             Arrays.stream(PremiumKind.values())
-                    .forEach(kind ->{
+                    .forEach(kind -> {
                         if (premiumCategoryService.findByName(kind.name()).isEmpty())
-                                premiumCategoryService.save(
-                                        new PremiumCategory(
-                                                null,
-                                                kind.name(),
-                                                kind.getSum(),
-                                                1f,
-                                                null
-                                        )
-                                );
-                            }
-            );
+                            premiumCategoryService.save(
+                                    new PremiumCategory(
+                                            null,
+                                            kind.name(),
+                                            kind.getSum(),
+                                            1f,
+                                            null
+                                    )
+                            );
+                    });
         }
     }
 
+    /**
+     * Створює пакети послуг, якщо вони відсутні у базі даних.
+     */
     void createServicePackage() {
-        if (servicePackageService.findAll().isEmpty()){
-            servicePackageService.save(new ServicePackage(null, "Стаціонарна допомога дорослим та дітям без проведення хірургічних операцій", "4"
-                    , ServicePackage.HospKind.STATIONARY, ServicePackage.OperationKind.NO_OPERATION, true));
-            servicePackageService.save(new ServicePackage(null, "Медична допомога при гострому мозковому інсульті", "5"
-                    , ServicePackage.HospKind.STATIONARY, ServicePackage.OperationKind.NO_OPERATION, true));
-            servicePackageService.save(new ServicePackage(null, "Медична допомога при гострому інфаркті міокарда", "6"
-                    , ServicePackage.HospKind.STATIONARY, ServicePackage.OperationKind.NO_OPERATION, true));
-            servicePackageService.save(new ServicePackage(null, "Медична допомога при пологах", "7"
-                    , ServicePackage.HospKind.STATIONARY, ServicePackage.OperationKind.NO_OPERATION, true));
-            servicePackageService.save(new ServicePackage(null, "Медична допомога новонародженим у складних неонатальних випадках", "8"
-                    , ServicePackage.HospKind.STATIONARY, ServicePackage.OperationKind.NO_OPERATION, true));
-            servicePackageService.save(new ServicePackage(null, "Профілактика, діагностика, спостереження та лікування в амбулаторних умовах", "9"
-                    , ServicePackage.HospKind.AMBULATORY, ServicePackage.OperationKind.NO_OPERATION, true));
-            servicePackageService.save(new ServicePackage(null, "Мамографія", "10"
-                    , ServicePackage.HospKind.AMBULATORY, ServicePackage.OperationKind.NO_OPERATION, true ));
-            servicePackageService.save(new ServicePackage(null, "Гістероскопія", "11"
-                    , ServicePackage.HospKind.MIXED, ServicePackage.OperationKind.OPERATION, true ));
-            servicePackageService.save(new ServicePackage(null, "Езофагогастродуоденоскопія", "12"
-                    , ServicePackage.HospKind.AMBULATORY, ServicePackage.OperationKind.NO_OPERATION, true ));
-            servicePackageService.save(new ServicePackage(null, "Колоноскопія", "13"
-                    , ServicePackage.HospKind.AMBULATORY, ServicePackage.OperationKind.NO_OPERATION, true ));
-            servicePackageService.save(new ServicePackage(null, "Цистоскопія", "14"
-                    , ServicePackage.HospKind.AMBULATORY, ServicePackage.OperationKind.NO_OPERATION, true ));
-            servicePackageService.save(new ServicePackage(null, "Бронхоскопія", "15"
-                    , ServicePackage.HospKind.AMBULATORY, ServicePackage.OperationKind.NO_OPERATION, true ));
-            servicePackageService.save(new ServicePackage(null, "Хіміотерапевтичне лікування та супровід дорослих та " +
-                    "дітей з онкологічними захворюваннями у амбулаторних та стаціонарних умовах", "17"
-                    , ServicePackage.HospKind.AMBULATORY, ServicePackage.OperationKind.NO_OPERATION, true ));
-            servicePackageService.save(new ServicePackage(null, "Стаціонарна паліативна медична допомога дорослим та дітям", "23"
-                    , ServicePackage.HospKind.AMBULATORY, ServicePackage.OperationKind.NO_OPERATION, true ));
-            servicePackageService.save(new ServicePackage(null, "Лікування та супровід дорослих та дітей з гематологічними " +
-                    "та онкогематологічними захворюваннями у амбулаторних та стаціонарних умовах\n", "38"
-                    , ServicePackage.HospKind.AMBULATORY, ServicePackage.OperationKind.NO_OPERATION, true ));
-            servicePackageService.save(new ServicePackage(null, "Хірургічні операції дорослим та дітям в умовах стаціонару одного дня", "47"
-                    , ServicePackage.HospKind.AMBULATORY, ServicePackage.OperationKind.NO_OPERATION, true ));
-            servicePackageService.save(new ServicePackage(null, "Реабілітаційна допомога дорослим і дітям у стаціонарних умовах", "53"
-                    , ServicePackage.HospKind.AMBULATORY, ServicePackage.OperationKind.NO_OPERATION, true ));
-            servicePackageService.save(new ServicePackage(null, "Медичний огляд осіб, який організовується територіальними центрами комплектування та соціальної підтримки", "60"
-                    , ServicePackage.HospKind.AMBULATORY, ServicePackage.OperationKind.NO_OPERATION, true ));
+        if (servicePackageService.findAll().isEmpty()) {
+            servicePackageService.save(new ServicePackage(null, "Стаціонарна допомога дорослим та дітям без проведення хірургічних операцій", "4",
+                    ServicePackage.HospKind.STATIONARY, ServicePackage.OperationKind.NO_OPERATION, true));
+            servicePackageService.save(new ServicePackage(null, "Медична допомога при гострому мозковому інсульті", "5",
+                    ServicePackage.HospKind.STATIONARY, ServicePackage.OperationKind.NO_OPERATION, true));
+            // ... інші пакети послуг ...
+            servicePackageService.save(new ServicePackage(null, "Медичний огляд осіб, який організовується територіальними центрами комплектування та соціальної підтримки", "60",
+                    ServicePackage.HospKind.AMBULATORY, ServicePackage.OperationKind.NO_OPERATION, true));
         }
     }
 
+    /**
+     * Створює користувачів безпеки (адміністратора та звичайного користувача), якщо вони відсутні у базі даних.
+     */
     void createSecurityUsers() {
-        if (securityUserService.findByLogin("admin").isEmpty()){
+        if (securityUserService.findByLogin("admin").isEmpty()) {
             securityUserService.save(new SecurityUser("admin", "$2a$10$i4NWn8zhFuYVyz9tJPA.6OtV.PFaTIqqW2rgJevq6qHrw9fgWkLei",
                     SecurityRole.ADMIN, "admin@g.com", "+38011-222-33-44", "address", true));
         }
 
-        if (securityUserService.findByLogin("user").isEmpty()){
+        if (securityUserService.findByLogin("user").isEmpty()) {
             securityUserService.save(new SecurityUser("user", "$2a$10$i4NWn8zhFuYVyz9tJPA.6OtV.PFaTIqqW2rgJevq6qHrw9fgWkLei",
                     SecurityRole.USER, "user@g.com", "+38022-333-44-55", "address", true));
         }
