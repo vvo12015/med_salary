@@ -4,6 +4,47 @@ body {
 .navbar {
     background-color: #2a9d8f;
 }
+.hero {
+            background-color: #2a9d8f;
+            color: white;
+            padding: 50px;
+            margin-top: 50px;
+            text-align: center;
+            border-radius: 8px;
+}
+.nav-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+.nav-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid #2a9d8f;
+    transition: transform 0.2s;
+}
+.nav-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(42, 157, 143, 0.2);
+}
+.nav-card h3 {
+    color: #2a9d8f;
+    border-bottom: 2px solid #2a9d8f;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+}
+.nav-card a {
+    color: #2a9d8f;
+}
+.nav-card a:hover {
+    color: #21867a;
+}
+.btn-outline-light:hover {
+    color: #2a9d8f;
+    background-color: white;
+}
 .navbar-brand, .navbar-nav .nav-link {
     color: white;
 }

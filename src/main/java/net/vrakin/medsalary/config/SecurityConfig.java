@@ -10,6 +10,8 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
+import org.springframework.security.web.savedrequest.RequestCache;
 
 /**
  * Конфігурація безпеки для додатку.
@@ -20,7 +22,15 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private final InitData initData;
-    private final CustomAuthenticationSuccessHandler successHandler;
+    @Bean
+    public RequestCache requestCache() {
+        return new HttpSessionRequestCache();
+    }
+
+    @Bean
+    public CustomAuthenticationSuccessHandler authenticationSuccessHandler(RequestCache requestCache) {
+        return new CustomAuthenticationSuccessHandler(requestCache);
+    }
 
     /**
      * Конструктор для ініціалізації залежностей.
@@ -30,8 +40,8 @@ public class SecurityConfig {
     @Autowired
     public SecurityConfig(InitData initData) {
         this.initData = initData;
-        this.successHandler = new CustomAuthenticationSuccessHandler();
     }
+
 
     /**
      * Налаштування фільтра безпеки.
@@ -62,7 +72,6 @@ public class SecurityConfig {
                 )
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login") // Сторінка входу
-                        .successHandler(successHandler) // Кастомний обробник успішного входу
                         .failureUrl("/auth-error") // Сторінка помилки авторизації
                 )
                 .logout(logout -> logout

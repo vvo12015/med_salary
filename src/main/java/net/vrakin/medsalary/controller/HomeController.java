@@ -105,4 +105,12 @@ public class HomeController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Помилка при видаленні файлу");
         }
     }
+
+    @GetMapping("/home")
+    public String home(Model model){
+        log.info("Accessing home page");
+
+        return "home";
+    }
+
 }

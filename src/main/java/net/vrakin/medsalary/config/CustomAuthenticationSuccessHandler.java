@@ -1,11 +1,15 @@
 package net.vrakin.medsalary.config;
 
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
+import org.springframework.security.web.savedrequest.RequestCache;
+import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -18,33 +22,32 @@ import java.util.Set;
  */
 @Component
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
+    private RequestCache requestCache;
 
-    /**
-     * Метод викликається після успішної аутентифікації.
-     *
-     * Перенаправляє користувача на сторінку, що відповідає його ролі:
-     * <ul>
-     *     <li>Якщо користувач має роль "ROLE_ADMIN", його перенаправляють на `/security-user`.</li>
-     *     <li>В інших випадках користувача перенаправляють на головну сторінку `/`.</li>
-     * </ul>
-     *
-     * @param request HTTP-запит.
-     * @param response HTTP-відповідь.
-     * @param authentication об'єкт аутентифікації, що містить інформацію про аутентифікованого користувача.
-     * @throws IOException якщо сталася помилка вводу/виводу.
-     * @throws ServletException якщо сталася помилка в обробці сервлета.
-     */
+    public CustomAuthenticationSuccessHandler(RequestCache requestCache) {
+        this.requestCache = requestCache;
+    }
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-                                        Authentication authentication) throws IOException, ServletException {
-        // Отримуємо список ролей аутентифікованого користувача
-        Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
+                                        Authentication authentication) throws IOException {
+        response.setContentType("text/plain");
+        response.setCharacterEncoding("UTF-8");
 
-        // Перевіряємо, чи має користувач роль "ROLE_ADMIN"
-        if (roles.contains("ROLE_ADMIN")) {
-            response.sendRedirect("/security-user");
+        SavedRequest savedRequest = requestCache.getRequest(request, response);
+        String targetUrl;
+
+        if (savedRequest != null) {
+            targetUrl = savedRequest.getRedirectUrl();
+        } else if (request.getParameter("fromIndex") != null) {
+            targetUrl = "/home";
         } else {
-            response.sendRedirect("/");
+            Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
+            targetUrl = roles.contains("ROLE_ADMIN") ? "/security-user" : "/";
         }
+
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.getWriter().write(targetUrl);
+        response.getWriter().flush();
     }
 }
